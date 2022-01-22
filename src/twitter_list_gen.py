@@ -21,12 +21,18 @@ def main(api: tweepy.API) -> None:
 
                 # 入力ファイル読み込み
                 input_file_obj = open(input_file_path, 'r', encoding='utf_8', newline='\r\n')
-                input_file_path = csv.reader(input_file_obj, delimiter=',', doublequote=True, lineterminator='\r\n', quotechar='"', skipinitialspace=False)
+                input_file_rdr = csv.reader(input_file_obj, delimiter=',', doublequote=True, lineterminator='\r\n', quotechar='"', skipinitialspace=False)
 
                 # ユーザ追加
-                for input_row in input_file_path:
-                    __add_user(api, twitter_list, input_row[0], input_row[1])
+                for input_row in input_file_rdr:
+                    if len(input_row) != 0 and len(input_row) == 2:
+                        __add_user(api, twitter_list, input_row[0], input_row[1])
     except Exception as e:
+        # Twitterリスト削除
+        if twitter_list is not None:
+           api.destroy_list(list_id=twitter_list.id)
+           print(f'例外発生により、Twitterリストを削除しました。(リスト名：{twitter_list.name})')
+
         raise(e)
 
     return None
@@ -38,7 +44,7 @@ def __has_twitter_list(api: tweepy.API, list_name: str) -> bool:
     twitter_lists = api.get_lists()
     for twitter_list in twitter_lists:
         if twitter_list.name == list_name:
-            print(f'リストが既に存在します。(リスト名：{twitter_list.name})')
+            print(f'Twitterリストが既に存在します。(リスト名：{twitter_list.name})')
             return True
 
     return False
@@ -49,9 +55,9 @@ def __generate_twitter_list(api: tweepy.API, twitter_list_name: str) -> tweepy.L
 
     try:
         twitter_list = api.create_list(twitter_list_name, mode='private', description='')
-        print(f'リスト作成に成功しました。(リスト名：{twitter_list.name})')
+        print(f'Twitterリスト作成に成功しました。(リスト名：{twitter_list.name})')
     except Exception as e:
-        print(f'リスト作成に失敗しました。')
+        print(f'Twitterリスト作成に失敗しました。')
         raise(e)
 
     return twitter_list
