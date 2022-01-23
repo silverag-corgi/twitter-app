@@ -1,37 +1,38 @@
 import csv
 import glob
+import io
 import os
 
 import tweepy
 
 
-def do_logic(api: tweepy.API, csv_file_path: str) -> None:
+def do_logic(api: tweepy.API, csv_file_path_with_regex: str) -> None:
     '''ロジック実行'''
 
     try:
         # CSVファイル存在確認
-        csv_file_paths = glob.glob(csv_file_path)
+        csv_file_paths: list[str] = glob.glob(csv_file_path_with_regex)
         if __has_csv_files(csv_file_paths) == False:
             return None
         
         # TwitterAPI実行
         for csv_file_path in csv_file_paths:
             # Twitterリスト存在確認
-            csv_file_name = os.path.splitext(os.path.basename(csv_file_path))[0]
+            csv_file_name: str = os.path.splitext(os.path.basename(csv_file_path))[0]
             if __has_twitter_list(api, csv_file_name) == True:
                 return None
 
             # Twitterリスト作成
-            twitter_list = __generate_twitter_list(api, csv_file_name)
+            twitter_list: tweepy.List = __generate_twitter_list(api, csv_file_name)
 
             # CSVファイル読み込み
-            csv_file_obj = open(csv_file_path, 'r', encoding='utf_8', newline='\r\n')
-            csv_file_rdr = csv.reader(csv_file_obj, delimiter=',', doublequote=True, lineterminator='\r\n', quotechar='"', skipinitialspace=False)
+            csv_file_obj: io.TextIOWrapper = open(csv_file_path, 'r', encoding='utf_8', newline='\r\n')
+            csv_file_rdr: csv.reader = csv.reader(csv_file_obj, delimiter=',', doublequote=True, lineterminator='\r\n', quotechar='"', skipinitialspace=False)
 
             # ユーザ追加
-            for row in csv_file_rdr:
-                if len(row) != 0 and len(row) == 2:
-                    __add_user(api, twitter_list, row[0], row[1])
+            for row_list in csv_file_rdr:
+                if len(row_list) != 0 and len(row_list) == 2:
+                    __add_user(api, twitter_list, row_list[0], row_list[1])
     except Exception as e:
         # Twitterリスト削除
         if twitter_list is not None:
@@ -56,7 +57,7 @@ def __has_csv_files(csv_file_paths: str) -> bool:
 def __has_twitter_list(api: tweepy.API, list_name: str) -> bool:
     '''Twitterリスト存在確認'''
 
-    twitter_lists = api.get_lists()
+    twitter_lists: list[tweepy.List] = api.get_lists()
     for twitter_list in twitter_lists:
         if twitter_list.name == list_name:
             print(f'Twitterリストが既に存在します。(リスト名：{twitter_list.name})')
@@ -69,7 +70,7 @@ def __generate_twitter_list(api: tweepy.API, twitter_list_name: str) -> tweepy.L
     '''Twitterリスト作成'''
 
     try:
-        twitter_list = api.create_list(twitter_list_name, mode='private', description='')
+        twitter_list: tweepy.List = api.create_list(twitter_list_name, mode='private', description='')
         print(f'Twitterリスト作成に成功しました。(リスト名：{twitter_list.name})')
     except Exception as e:
         print(f'Twitterリスト作成に失敗しました。')
