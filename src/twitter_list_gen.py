@@ -5,28 +5,33 @@ import os
 import tweepy
 
 
-def main(api: tweepy.API) -> None:
-    '''メイン'''
+def do_logic(api: tweepy.API, csv_file_path: str) -> None:
+    '''ロジック実行'''
 
     try:
-        # 入力フォルダ読み込み
-        input_file_paths = glob.glob('input/*.csv')
-        for input_file_path in input_file_paths:
-            # Twitterリスト(入力ファイル名)存在確認
-            input_file_name = os.path.splitext(os.path.basename(input_file_path))[0]
-            has_twitter_list = __has_twitter_list(api, input_file_name)
-            if has_twitter_list == False:
-                # Twitterリスト作成
-                twitter_list = __generate_twitter_list(api, input_file_name)
+        # CSVファイル存在確認
+        csv_file_paths = glob.glob(csv_file_path)
+        if __has_csv_files(csv_file_paths) == False:
+            return None
+        
+        # TwitterAPI実行
+        for csv_file_path in csv_file_paths:
+            # Twitterリスト存在確認
+            csv_file_name = os.path.splitext(os.path.basename(csv_file_path))[0]
+            if __has_twitter_list(api, csv_file_name) == True:
+                return None
 
-                # 入力ファイル読み込み
-                input_file_obj = open(input_file_path, 'r', encoding='utf_8', newline='\r\n')
-                input_file_rdr = csv.reader(input_file_obj, delimiter=',', doublequote=True, lineterminator='\r\n', quotechar='"', skipinitialspace=False)
+            # Twitterリスト作成
+            twitter_list = __generate_twitter_list(api, csv_file_name)
 
-                # ユーザ追加
-                for input_row in input_file_rdr:
-                    if len(input_row) != 0 and len(input_row) == 2:
-                        __add_user(api, twitter_list, input_row[0], input_row[1])
+            # CSVファイル読み込み
+            csv_file_obj = open(csv_file_path, 'r', encoding='utf_8', newline='\r\n')
+            csv_file_rdr = csv.reader(csv_file_obj, delimiter=',', doublequote=True, lineterminator='\r\n', quotechar='"', skipinitialspace=False)
+
+            # ユーザ追加
+            for row in csv_file_rdr:
+                if len(row) != 0 and len(row) == 2:
+                    __add_user(api, twitter_list, row[0], row[1])
     except Exception as e:
         # Twitterリスト削除
         if twitter_list is not None:
@@ -36,6 +41,16 @@ def main(api: tweepy.API) -> None:
         raise(e)
 
     return None
+
+
+def __has_csv_files(csv_file_paths: str) -> bool:
+    '''CSVファイル存在確認'''
+
+    if len(csv_file_paths) == 0:
+        print(f'CSVファイルの件数が0件です。')
+        return False
+
+    return True
 
 
 def __has_twitter_list(api: tweepy.API, list_name: str) -> bool:

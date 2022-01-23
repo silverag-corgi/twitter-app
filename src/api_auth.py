@@ -4,8 +4,8 @@ from typing import Any, Dict
 import tweepy
 
 
-def main() -> tweepy.API:
-    '''メイン'''
+def do_logic() -> tweepy.API:
+    '''ロジック実行'''
 
     try:
         json_data = __get_api_auth_info_json()
