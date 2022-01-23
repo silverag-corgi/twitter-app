@@ -83,9 +83,9 @@ def __add_user(api: tweepy.API, twitter_list: tweepy.List, user_id: str, user_na
 
     try:
         api.add_list_member(list_id=twitter_list.id, screen_name=user_id)
-        print(f'ユーザ追加に成功しました。(ユーザID：{user_id}、ユーザ名：{user_name})')
+        print(f'ユーザ追加に成功しました。(ユーザID：{user_id: <20}、ユーザ名：{user_name})')
     except Exception as e:
         # ユーザが鍵付きや削除済みなどの場合
-        print(f'ユーザ追加に失敗しました。(ユーザID：{user_id}、ユーザ名：{user_name})')
+        print(f'ユーザ追加に失敗しました。(ユーザID：{user_id: <20}、ユーザ名：{user_name})')
 
     return None
