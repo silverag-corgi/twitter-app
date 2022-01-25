@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-tweepy = "==4.4.0"
+tweepy = "~=4.4.0"
 
 [dev-packages]
 
@@ -12,6 +12,6 @@ tweepy = "==4.4.0"
 python_version = "3.10"
 
 [scripts]
-src = "py -m src"
+list-gen = "py -m src.main.twitter_list_gen"
 freeze = "pip freeze"
 list = "pip list"

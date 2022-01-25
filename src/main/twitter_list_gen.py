@@ -4,7 +4,7 @@ import traceback
 
 import tweepy
 
-from src import api_auth, twitter_list_gen
+from src.logic import api_auth, twitter_list_gen
 
 
 def main():
@@ -54,4 +54,5 @@ def __validate_args(args: argparse.Namespace) -> bool:
     return True
 
 
-sys.exit(main())
+if __name__ == '__main__':
+    sys.exit(main())
