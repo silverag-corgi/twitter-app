@@ -1,13 +1,13 @@
-// デバッグ構成ファイル
+// 起動構成ファイル
 
 {
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Debug",
+            "name": "Python: twitter_list_gen",
             "type": "python",
             "request": "launch",
-            "module": "src",
+            "module": "src.main.twitter_list_gen",
             "args": [
                 "-csv", "input/*.csv"
             ]
