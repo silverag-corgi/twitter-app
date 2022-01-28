@@ -146,7 +146,7 @@ googlemaps,Google Maps
 実行例：
 ```cmd
 > cd twitter-lib-for-me
-> pipenv run py -m src.main.twitter_list_gen -csv "input/*.csv"
+> pipenv run py -m twitter_lib_for_me.main.twitter_list_gen -csv "input/*.csv"
 API認証情報JSON取得に成功しました。
 Twitter認証実行に成功しました。
 Twitterリスト作成に成功しました。(リスト名：Google)
@@ -159,7 +159,7 @@ Twitterリスト作成に成功しました。(リスト名：Google)
 
 実行例：
 ```cmd
-> pipenv run py -m src.main.twitter_list_gen -h
+> pipenv run py -m twitter_lib_for_me.main.twitter_list_gen -h
 usage: twitter_list_gen.py [-h] [-csv CSV_FILE_PATH]
 
 options:
