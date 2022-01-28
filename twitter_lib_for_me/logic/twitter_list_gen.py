@@ -6,7 +6,7 @@ from logging import Logger
 
 import python_lib_for_me
 import tweepy
-from src.util import twitter_list_util
+from twitter_lib_for_me.util import twitter_list_util
 
 
 def do_logic(api: tweepy.API, csv_file_path_with_regex: str) -> None:
