@@ -2,9 +2,10 @@ import csv
 import glob
 import io
 import os
+from logging import Logger
 
+import python_lib_for_me
 import tweepy
-
 from src.util import twitter_list_util
 
 
@@ -12,6 +13,9 @@ def do_logic(api: tweepy.API, csv_file_path_with_regex: str) -> None:
     '''ロジック実行'''
 
     try:
+        # ロガー取得
+        logger: Logger = python_lib_for_me.get_logger(__name__)
+
         # CSVファイル存在確認
         csv_file_paths: list[str] = glob.glob(csv_file_path_with_regex)
         if __has_csv_files(csv_file_paths) == False:
@@ -29,7 +33,9 @@ def do_logic(api: tweepy.API, csv_file_path_with_regex: str) -> None:
 
             # CSVファイル読み込み
             csv_file_obj: io.TextIOWrapper = open(csv_file_path, 'r', encoding='utf_8', newline='\r\n')
-            csv_file_rdr: csv.reader = csv.reader(csv_file_obj, delimiter=',', doublequote=True, lineterminator='\r\n', quotechar='"', skipinitialspace=False)
+            csv_file_rdr: csv.reader = csv.reader(
+                csv_file_obj, delimiter=',', doublequote=True,
+                lineterminator='\r\n', quotechar='"', skipinitialspace=False)
 
             # ユーザ追加
             for row_list in csv_file_rdr:
@@ -39,7 +45,7 @@ def do_logic(api: tweepy.API, csv_file_path_with_regex: str) -> None:
         # Twitterリスト削除
         if twitter_list is not None:
            api.destroy_list(list_id=twitter_list.id)
-           print(f'例外発生により、Twitterリストを削除しました。(リスト名：{twitter_list.name})')
+           logger.info(f'例外発生により、Twitterリストを削除しました。(リスト名：{twitter_list.name})')
 
         raise(e)
 
@@ -49,8 +55,13 @@ def do_logic(api: tweepy.API, csv_file_path_with_regex: str) -> None:
 def __has_csv_files(csv_file_paths: list[str]) -> bool:
     '''CSVファイル存在確認'''
 
-    if len(csv_file_paths) == 0:
-        print(f'CSVファイルの件数が0件です。')
-        return False
+    try:
+        logger: Logger = python_lib_for_me.get_logger(__name__)
+
+        if len(csv_file_paths) == 0:
+            logger.info(f'CSVファイルの件数が0件です。')
+            return False
+    except Exception as e:
+        raise(e)
 
     return True

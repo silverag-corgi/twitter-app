@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "0764953c6ad92366460b08a1fbc173c4165f558a4d176fad9f9b37b0667e9846"
+            "sha256": "377e436918770ab076a0df1b039d08c0606f0baaf687eb09b178a135204fe321"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -46,6 +46,10 @@
             ],
             "markers": "python_version >= '3.6'",
             "version": "==3.1.1"
+        },
+        "python-lib-for-me": {
+            "editable": true,
+            "path": "./../python-lib-for-me"
         },
         "requests": {
             "hashes": [

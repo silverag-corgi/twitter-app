@@ -4,19 +4,17 @@ import src
 
 setup(
     name='twitter-lib-for-me',
-    # author='',
-    # author_email='',
-    # maintainer='',
-    # maintainer_email='',
+    version=src.__version__,
     # description='',
     # long_description='',
-    # license='',
     # url='',
-    version=src.__version__,
-    # download_url='',
-    python_requires='3.10',
-    install_requires=['tweepy~=4.4.0'],
-    # extras_require='',
+    # author='',
+    # author_email='',
+    # license='',
+    # classifiers='',
+    # keywords='',
+    # project_urls={},
     packages=find_packages(),
-    # classifiers=''
+    install_requires=['tweepy~=4.4.0'],
+    python_requires='>=3.10',
 )
