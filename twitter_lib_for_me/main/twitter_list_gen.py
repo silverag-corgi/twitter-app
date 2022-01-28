@@ -4,7 +4,7 @@ from logging import Logger
 
 import python_lib_for_me
 import tweepy
-from src.logic import api_auth, twitter_list_gen
+from twitter_lib_for_me.logic import api_auth, twitter_list_gen
 
 
 def main():

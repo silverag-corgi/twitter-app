@@ -7,7 +7,7 @@
             "name": "Python: twitter_list_gen",
             "type": "python",
             "request": "launch",
-            "module": "src.main.twitter_list_gen",
+            "module": "twitter_lib_for_me.main.twitter_list_gen",
             "args": [
                 "-csv", "input/*.csv"
             ]

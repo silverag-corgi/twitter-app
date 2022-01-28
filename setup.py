@@ -1,10 +1,10 @@
 from setuptools import setup, find_packages
-import src
+import twitter_lib_for_me
 
 
 setup(
     name='twitter-lib-for-me',
-    version=src.__version__,
+    version=twitter_lib_for_me.__version__,
     # description='',
     # long_description='',
     # url='',
