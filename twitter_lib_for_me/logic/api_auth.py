@@ -23,14 +23,15 @@ def __get_api_auth_info_json() -> Dict[Any, Any]:
     '''API認証情報JSON取得'''
 
     try:
-        logger: Logger = python_lib_for_me.get_logger(__name__)
+        lg: Logger = python_lib_for_me.get_logger(__name__)
 
         json_file_obj: io.TextIOWrapper = open('config/api_auth_info.json', 'r')
         json_data_dct: Dict[Any, Any] = json.load(json_file_obj)
 
-        logger.info(f'API認証情報JSON取得に成功しました。')
+        lg.info(f'API認証情報JSON取得に成功しました。')
     except Exception as e:
-        logger.info(f'API認証情報JSON取得に失敗しました。')
+        if lg is not None:
+            lg.info(f'API認証情報JSON取得に失敗しました。')
         raise(e)
 
     return json_data_dct
@@ -40,7 +41,7 @@ def __exec_twitter_auth(json_data_dct: Dict[Any, Any]) -> tweepy.API:
     '''Twitter認証実行'''
 
     try:
-        logger: Logger = python_lib_for_me.get_logger(__name__)
+        lg: Logger = python_lib_for_me.get_logger(__name__)
 
         consumer_key: str = json_data_dct['twitter_auth']['consumer_key']
         consumer_secret: str = json_data_dct['twitter_auth']['consumer_secret']
@@ -53,9 +54,10 @@ def __exec_twitter_auth(json_data_dct: Dict[Any, Any]) -> tweepy.API:
         api: tweepy.API = tweepy.API(auth)
         api.verify_credentials()
 
-        logger.info(f'Twitter認証実行に成功しました。')
+        lg.info(f'Twitter認証実行に成功しました。')
     except Exception as e:
-        logger.info(f'Twitter認証実行に失敗しました。')
+        if lg is not None:
+            lg.info(f'Twitter認証実行に失敗しました。')
         raise(e)
 
     return api
