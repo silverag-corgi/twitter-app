@@ -14,7 +14,7 @@ def do_logic(api: tweepy.API, csv_file_path_with_regex: str) -> None:
 
     try:
         # ロガー取得
-        logger: Logger = python_lib_for_me.get_logger(__name__)
+        lg: Logger = python_lib_for_me.get_logger(__name__)
 
         # CSVファイル存在確認
         csv_file_paths: list[str] = glob.glob(csv_file_path_with_regex)
@@ -45,7 +45,8 @@ def do_logic(api: tweepy.API, csv_file_path_with_regex: str) -> None:
         # Twitterリスト削除
         if twitter_list is not None:
            api.destroy_list(list_id=twitter_list.id)
-           logger.info(f'例外発生により、Twitterリストを削除しました。(リスト名：{twitter_list.name})')
+           if lg is not None:
+               lg.info(f'例外発生により、Twitterリストを削除しました。(リスト名：{twitter_list.name})')
 
         raise(e)
 
@@ -56,10 +57,10 @@ def __has_csv_files(csv_file_paths: list[str]) -> bool:
     '''CSVファイル存在確認'''
 
     try:
-        logger: Logger = python_lib_for_me.get_logger(__name__)
+        lg: Logger = python_lib_for_me.get_logger(__name__)
 
         if len(csv_file_paths) == 0:
-            logger.info(f'CSVファイルの件数が0件です。')
+            lg.info(f'CSVファイルの件数が0件です。')
             return False
     except Exception as e:
         raise(e)
