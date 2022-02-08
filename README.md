@@ -22,7 +22,9 @@
 
 # 1. 概要
 
-自分用のTwitterライブラリ。PyPIには登録しない。
+自分用のPythonライブラリ。
+
+PyPIには登録せずにローカルで使用する。
 
 
 # 2. 機能
@@ -59,12 +61,12 @@
 アプリケーションとライブラリの手順がある。
 本章は前者の手順を示す。
 
-また、PythonとPipenvはインストール済みであることを前提とする。
+また、前提として、PythonとPipenvがインストール済みであること。
 
 
 ## 5.1. 仮想環境の構築
 
-本プロジェクトをクローンもしくはダウンロードした後、以下のコマンドを実行する。
+本リポジトリをクローンもしくはダウンロードした後、以下のコマンドを実行する。
 
 実行例：
 ```cmd
@@ -73,7 +75,7 @@
 > pipenv install
 ```
 
-そして、以下のコマンドを実行して、本プロジェクトのフォルダ配下に`.venv`フォルダが作成されていることを確認する。
+そして、以下のコマンドを実行して、本リポジトリのフォルダ配下に`.venv`フォルダが作成されていることを確認する。
 
 実行例：
 ```cmd
@@ -102,7 +104,38 @@ C:/Git/python/twitter-lib-for-me/.venv
 
 # 6. セットアップ手順 - ライブラリ
 
-準備中。。。
+アプリケーションとライブラリの手順がある。
+本章は後者の手順を示す。
+
+また、前提として、PythonとPipenvがインストール済みであること。
+
+本リポジトリをクローンもしくはダウンロードした後、下記コマンドを実行する。
+
+```cmd
+> cd [application_path]             # ライブラリをインストールしたいアプリケーションのパスに移動する
+> pipenv install -e [library_path]  # ライブラリのパスを指定して編集モードでインストールする
+```
+
+実行例：
+```cmd
+> cd fgo-farm-report-collection
+> pipenv install -e "../twitter-lib-for-me"
+
+Installing -e ../twitter-lib-for-me...
+Adding twitter-lib-for-me to Pipfile's [packages]...
+Installation Succeeded
+Pipfile.lock (e4eef2) out of date, updating to (d53d74)...
+Locking [dev-packages] dependencies...
+Locking [packages] dependencies...
+ Locking...Building requirements...
+Resolving dependencies...
+Success!
+Updated Pipfile.lock (d53d74)!
+Installing dependencies from Pipfile.lock (d53d74)...
+  ================================ 0/0 - 00:00:00
+To activate this project's virtualenv, run pipenv shell.
+Alternatively, run a command inside the virtualenv with pipenv run.
+```
 
 
 # 7. 使い方 - アプリケーション
@@ -171,7 +204,16 @@ options:
 
 # 8. 使い方 - ライブラリ
 
-準備中。。。
+アプリケーションとライブラリの手順がある。
+本章は後者の手順を示す。
+
+下記コードでアプリケーションから機能を呼び出す。
+
+実装例：
+```python
+import twitter_lib_for_me
+twitter_lib_for_me.do_function()
+```
 
 
 # 9. 連絡先
