@@ -66,20 +66,20 @@ PyPIには登録せずにローカルで使用する。
 
 ## 5.1. 仮想環境の構築
 
-本リポジトリをクローンもしくはダウンロードした後、以下のコマンドを実行する。
+本リポジトリをクローンもしくはダウンロードした後、下記コマンドを実行する。
 
 実行例：
 ```cmd
-> cd twitter-lib-for-me
-> set PIPENV_VENV_IN_PROJECT=true
-> pipenv install
+> cd twitter-lib-for-me           # アプリケーションのパスに移動する
+> set PIPENV_VENV_IN_PROJECT=true # 仮想環境のインストール先をアプリケーション配下に設定する
+> pipenv install                  # 仮想環境をインストールする
 ```
 
-そして、以下のコマンドを実行して、本リポジトリのフォルダ配下に`.venv`フォルダが作成されていることを確認する。
+そして、下記コマンドを実行して、アプリケーション配下に`.venv`フォルダが作成されていることを確認する。
 
 実行例：
 ```cmd
-> pipenv --venv
+> pipenv --venv                   # 仮想環境のインストール先を表示する
 C:/Git/python/twitter-lib-for-me/.venv
 ```
 
@@ -111,15 +111,10 @@ C:/Git/python/twitter-lib-for-me/.venv
 
 本リポジトリをクローンもしくはダウンロードした後、下記コマンドを実行する。
 
-```cmd
-> cd [application_path]             # ライブラリをインストールしたいアプリケーションのパスに移動する
-> pipenv install -e [library_path]  # ライブラリのパスを指定して編集モードでインストールする
-```
-
 実行例：
 ```cmd
-> cd fgo-farm-report-collection
-> pipenv install -e "../twitter-lib-for-me"
+> cd fgo-farm-report-collection             # ライブラリをインストールしたいアプリケーションのパスに移動する
+> pipenv install -e "../twitter-lib-for-me" # ライブラリのパスを指定して編集モードでインストールする
 
 Installing -e ../twitter-lib-for-me...
 Adding twitter-lib-for-me to Pipfile's [packages]...
@@ -174,25 +169,25 @@ googlemaps,Google Maps
 
 ### 7.1.2. プログラムの実行
 
-以下のコマンドを実行する。
+下記コマンドを実行する。
 
 実行例：
 ```cmd
 > cd twitter-lib-for-me
-> pipenv run py -m twitter_lib_for_me.main.twitter_list_gen -csv "input/*.csv"
-API認証情報JSON取得に成功しました。
-Twitter認証実行に成功しました。
-Twitterリスト作成に成功しました。(リスト名：Google)
-ユーザ追加に成功しました。(ユーザID：googledocs          、ユーザ名：Google Docs)
-ユーザ追加に成功しました。(ユーザID：googledrive         、ユーザ名：Google Drive)
-ユーザ追加に成功しました。(ユーザID：googlemaps          、ユーザ名：Google Maps)
+> pipenv run list-gen -csv "input/*.csv"
+[2022-02-09 08:46:25.430][INF][api_auth:0033][__get_api_auth_info_json] API認証情報JSON取得に成功しました。
+[2022-02-09 08:46:25.655][INF][api_auth:0061][__exec_twitter_auth] Twitter認証実行に成功しました。
+[2022-02-09 08:46:26.060][INF][twitter_list_util:0038][generate_twitter_list] Twitterリスト作成に成功しました。(リスト名：Google)
+[2022-02-09 08:46:26.345][INF][twitter_list_util:0056][add_user] ユーザ追加に成功しました。(ユーザID：googledocs          、ユーザ名：Google Docs)
+[2022-02-09 08:46:26.587][INF][twitter_list_util:0056][add_user] ユーザ追加に成功しました。(ユーザID：googledrive         、ユーザ名：Google Drive)
+[2022-02-09 08:46:26.972][INF][twitter_list_util:0056][add_user] ユーザ追加に成功しました。(ユーザID：googlemaps          、ユーザ名：Google Maps)
 ```
 
-また、ヘルプを呼び出す時は以下のコマンドを実行する。
+また、ヘルプを呼び出す時は下記コマンドを実行する。
 
 実行例：
 ```cmd
-> pipenv run py -m twitter_lib_for_me.main.twitter_list_gen -h
+> pipenv run list-gen -h
 usage: twitter_list_gen.py [-h] [-csv CSV_FILE_PATH]
 
 options:
