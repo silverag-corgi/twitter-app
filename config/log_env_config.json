@@ -1,8 +1,8 @@
 {
   "version": 1,
-
+  
   "disable_existing_loggers": false,
-
+  
   "root": {
     "level": "DEBUG",
     "handlers": [
@@ -10,7 +10,7 @@
       "fileHandler"
     ]
   },
-
+  
   "handlers": {
     "consoleHandler": {
       "class": "logging.StreamHandler",
