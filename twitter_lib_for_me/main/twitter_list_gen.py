@@ -39,10 +39,18 @@ def __get_args() -> argparse.Namespace:
     '''引数取得'''
     
     try:
-        parser: argparse.ArgumentParser = argparse.ArgumentParser(exit_on_error=False)
-        parser.add_argument('-csv', '--csv_file_path',
-                            default='input/*.csv',
-                            help='csv file path (regex enabled) (default: %(default)s)')
+        parser: argparse.ArgumentParser = argparse.ArgumentParser(
+                formatter_class=argparse.RawTextHelpFormatter,
+                exit_on_error=True
+            )
+        
+        help_msg: str = ''
+        
+        # 必須の引数
+        help_msg = 'csvファイルパス (ワイルドカード可) (default: %(default)s)\n' + \
+                    '必ずシングルコーテーション(\')で囲む。'
+        parser.add_argument('-csv', '--csv_file_path', default='input/*.csv', help=help_msg)
+        
         args: argparse.Namespace = parser.parse_args()
     except Exception as e:
         raise(e)
