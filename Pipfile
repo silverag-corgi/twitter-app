@@ -5,7 +5,7 @@ name = "pypi"
 
 [packages]
 tweepy = "~=4.4.0"
-python-lib-for-me = {editable = true, path = "./../python-lib-for-me"}
+python-lib-for-me = {editable = true, path = "../python-lib-for-me"}
 
 [dev-packages]
 

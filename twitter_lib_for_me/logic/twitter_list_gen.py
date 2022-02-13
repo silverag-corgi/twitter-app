@@ -5,12 +5,12 @@ import os
 from logging import Logger
 from typing import Iterator, Optional
 
-import python_lib_for_me
+import python_lib_for_me as mylib
 import tweepy
 from twitter_lib_for_me.util import twitter_list_util
 
 
-def do_logic(api: tweepy.API, csv_file_path_with_regex: str) -> None:
+def do_logic(api: tweepy.API, twitter_list_file_path_with_wildcard: str) -> None:
     '''ロジック実行'''
     
     lg: Optional[Logger] = None
@@ -18,57 +18,70 @@ def do_logic(api: tweepy.API, csv_file_path_with_regex: str) -> None:
     
     try:
         # ロガー取得
-        lg = python_lib_for_me.get_logger(__name__)
+        lg = mylib.get_logger(__name__)
+        lg.info(f'Twitterリスト生成を開始します。')
         
-        # CSVファイル存在確認
-        csv_file_paths: list[str] = glob.glob(csv_file_path_with_regex)
-        if __has_csv_files(csv_file_paths) == False:
-            return None
+        # Twitterリストファイルパスの取得
+        twitter_list_file_paths: list[str] = glob.glob(twitter_list_file_path_with_wildcard)
         
-        # TwitterAPI実行
-        for csv_file_path in csv_file_paths:
-            # Twitterリスト存在確認
-            csv_file_name: str = os.path.splitext(os.path.basename(csv_file_path))[0]
-            if twitter_list_util.has_twitter_list(api, csv_file_name) == True:
-                return None
-            
-            # Twitterリスト作成
-            twitter_list = twitter_list_util.generate_twitter_list(api, csv_file_name)
-            
-            # CSVファイル読み込み
-            csv_file_obj: io.TextIOWrapper = open(csv_file_path, 'r', encoding='utf_8', newline='\r\n')
-            csv_file_rdr: Iterator = csv.reader(
-                csv_file_obj, delimiter=',', doublequote=True,
-                lineterminator='\r\n', quotechar='"', skipinitialspace=False)
-            
-            # ユーザ追加
-            for row_list in csv_file_rdr:
-                if len(row_list) != 0 and len(row_list) == 2:
-                    twitter_list_util.add_user(api, twitter_list, row_list[0], row_list[1])
+        # 実行要否の判定
+        should_execute: bool = True
+        if len(twitter_list_file_paths) == 0:
+            should_execute = False
+            lg.info(f'Twitterリストファイルの件数が0件です。' +
+                    f'(twitter_list_file_path:{twitter_list_file_path_with_wildcard})')
+        
+        if should_execute == True:
+            # TwitterAPIの実行
+            for twitter_list_file_path in twitter_list_file_paths:
+                # Twitterリスト生成要否の判定
+                should_generate: bool = True
+                twitter_list_name: str = \
+                    os.path.splitext(os.path.basename(twitter_list_file_path))[0]
+                if twitter_list_util.has_twitter_list(api, twitter_list_name) == True:
+                    should_generate = False
+                    lg.info(f'Twitterリストが既に存在します。(twitter_list_name:{twitter_list_name})')
+                
+                if should_generate == True:
+                    # Twitterリストの生成
+                    twitter_list = twitter_list_util.generate_twitter_list(api, twitter_list_name)
+                    
+                    # Twitterリストファイルの読み込み
+                    twitter_list_file_object: io.TextIOWrapper = open(
+                            twitter_list_file_path,
+                            encoding='utf_8',
+                            newline='\r\n'
+                        )
+                    twitter_list_file_lines: Iterator = csv.reader(
+                            twitter_list_file_object,
+                            delimiter=',',
+                            doublequote=True,
+                            lineterminator='\r\n',
+                            quotechar='"',
+                            skipinitialspace=False
+                        )
+                    
+                    # ユーザの追加
+                    lg.info(f'時間がかかるため気長にお待ちください。')
+                    for twitter_list_file_line in twitter_list_file_lines:
+                        if len(twitter_list_file_line) >= 2:
+                            twitter_list_util.add_user(
+                                    api,
+                                    twitter_list,
+                                    twitter_list_file_line[0],
+                                    twitter_list_file_line[1]
+                                )
+                    
+                    # Twitterリストの破棄(ユーザが0人の場合)
+                    if twitter_list_file_lines.line_num == 0:
+                        twitter_list_util.destroy_twitter_list(api, twitter_list)
+        
+        lg.info(f'Twitterリスト生成を終了します。')
     except Exception as e:
-        # Twitterリスト削除
+        # Twitterリストの破棄
         if twitter_list is not None:
-           api.destroy_list(list_id=twitter_list.id)
-           if lg is not None:
-               lg.info(f'例外発生により、Twitterリストを削除しました。(リスト名：{twitter_list.name})')
+            twitter_list_util.destroy_twitter_list(api, twitter_list)
         
         raise(e)
     
     return None
-
-
-def __has_csv_files(csv_file_paths: list[str]) -> bool:
-    '''CSVファイル存在確認'''
-    
-    lg: Optional[Logger] = None
-    
-    try:
-        lg = python_lib_for_me.get_logger(__name__)
-        
-        if len(csv_file_paths) == 0:
-            lg.info(f'CSVファイルの件数が0件です。')
-            return False
-    except Exception as e:
-        raise(e)
-    
-    return True
