@@ -174,7 +174,7 @@ googlemaps,Google Maps
 実行例：
 ```cmd
 > cd twitter-lib-for-me
-> pipenv run list-gen -csv "input/*.csv"
+> pipenv run list-gen -csv 'input/*.csv'
 [2022-02-09 08:46:25.430][INF][api_auth:0033][__get_api_auth_info_json] API認証情報JSON取得に成功しました。
 [2022-02-09 08:46:25.655][INF][api_auth:0061][__exec_twitter_auth] Twitter認証実行に成功しました。
 [2022-02-09 08:46:26.060][INF][twitter_list_util:0038][generate_twitter_list] Twitterリスト作成に成功しました。(リスト名：Google)
