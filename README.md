@@ -174,13 +174,16 @@ googlemaps,Google Maps
 実行例：
 ```cmd
 > cd twitter-lib-for-me
-> pipenv run list-gen -csv 'input/*.csv'
-[2022-02-09 08:46:25.430][INF][api_auth:0033][__get_api_auth_info_json] API認証情報JSON取得に成功しました。
-[2022-02-09 08:46:25.655][INF][api_auth:0061][__exec_twitter_auth] Twitter認証実行に成功しました。
-[2022-02-09 08:46:26.060][INF][twitter_list_util:0038][generate_twitter_list] Twitterリスト作成に成功しました。(リスト名：Google)
-[2022-02-09 08:46:26.345][INF][twitter_list_util:0056][add_user] ユーザ追加に成功しました。(ユーザID：googledocs          、ユーザ名：Google Docs)
-[2022-02-09 08:46:26.587][INF][twitter_list_util:0056][add_user] ユーザ追加に成功しました。(ユーザID：googledrive         、ユーザ名：Google Drive)
-[2022-02-09 08:46:26.972][INF][twitter_list_util:0056][add_user] ユーザ追加に成功しました。(ユーザID：googlemaps          、ユーザ名：Google Maps)
+> pipenv run list-gen -t 'input/*.csv'
+[2022-02-13 20:59:13.452][INF][twitter_list_gen:0040][main] 実行コマンド：['twitter_list_gen.py', '-t', "'input/*.csv'"]
+[2022-02-13 20:59:13.454][INF][api_auth:0017][do_logic] API認証を開始します。
+[2022-02-13 20:59:13.455][INF][api_auth:0040][__get_api_auth_info_json] API認証情報JSON取得に成功しました。
+[2022-02-13 20:59:13.715][INF][api_auth:0068][__authorize_twitter] Twitter認証に成功しました。
+[2022-02-13 20:59:13.715][INF][api_auth:0022][do_logic] API認証を終了します。
+[2022-02-13 20:59:13.720][INF][twitter_list_gen:0022][do_logic] Twitterリスト生成を開始します。
+[2022-02-13 20:59:14.174][INF][twitter_list_util:0038][generate_twitter_list] Twitterリスト作成に成功しました。(twitter_list_name:Google)
+[2022-02-13 20:59:14.175][INF][twitter_list_gen:0065][do_logic] 時間がかかるため気長にお待ちください。
+[2022-02-13 20:59:14.973][INF][twitter_list_gen:0079][do_logic] Twitterリスト生成を終了します。
 ```
 
 また、ヘルプを呼び出す時は下記コマンドを実行する。
@@ -188,12 +191,14 @@ googlemaps,Google Maps
 実行例：
 ```cmd
 > pipenv run list-gen -h
-usage: twitter_list_gen.py [-h] [-csv CSV_FILE_PATH]
+[2022-02-13 20:58:07.376][INF][twitter_list_gen:0040][main] 実行コマンド：['twitter_list_gen.py', '-h']
+usage: twitter_list_gen.py [-h] [-t TWITTER_LIST_FILE_PATH]
 
 options:
   -h, --help            show this help message and exit
-  -csv CSV_FILE_PATH, --csv_file_path CSV_FILE_PATH
-                        csv file path (regex enabled) (default: input/*.csv)
+  -t TWITTER_LIST_FILE_PATH, --twitter_list_file_path TWITTER_LIST_FILE_PATH
+                        Twitterリストファイルパス (ワイルドカード可) (default: input/*.csv)
+                        必ずシングルコーテーション(')で囲む。
 ```
 
 
