@@ -115,21 +115,6 @@ C:/Git/python/twitter-lib-for-me/.venv
 ```cmd
 > cd fgo-farm-report-collection             # ライブラリをインストールしたいアプリケーションのパスに移動する
 > pipenv install -e "../twitter-lib-for-me" # ライブラリのパスを指定して編集モードでインストールする
-
-Installing -e ../twitter-lib-for-me...
-Adding twitter-lib-for-me to Pipfile's [packages]...
-Installation Succeeded
-Pipfile.lock (e4eef2) out of date, updating to (d53d74)...
-Locking [dev-packages] dependencies...
-Locking [packages] dependencies...
- Locking...Building requirements...
-Resolving dependencies...
-Success!
-Updated Pipfile.lock (d53d74)!
-Installing dependencies from Pipfile.lock (d53d74)...
-  ================================ 0/0 - 00:00:00
-To activate this project's virtualenv, run pipenv shell.
-Alternatively, run a command inside the virtualenv with pipenv run.
 ```
 
 
@@ -175,15 +160,6 @@ googlemaps,Google Maps
 ```cmd
 > cd twitter-lib-for-me
 > pipenv run list-gen -t 'input/*.csv'
-[2022-02-13 20:59:13.452][INF][twitter_list_gen:0040][main] 実行コマンド：['twitter_list_gen.py', '-t', "'input/*.csv'"]
-[2022-02-13 20:59:13.454][INF][api_auth:0017][do_logic] API認証を開始します。
-[2022-02-13 20:59:13.455][INF][api_auth:0040][__get_api_auth_info_json] API認証情報JSON取得に成功しました。
-[2022-02-13 20:59:13.715][INF][api_auth:0068][__authorize_twitter] Twitter認証に成功しました。
-[2022-02-13 20:59:13.715][INF][api_auth:0022][do_logic] API認証を終了します。
-[2022-02-13 20:59:13.720][INF][twitter_list_gen:0022][do_logic] Twitterリスト生成を開始します。
-[2022-02-13 20:59:14.174][INF][twitter_list_util:0038][generate_twitter_list] Twitterリスト作成に成功しました。(twitter_list_name:Google)
-[2022-02-13 20:59:14.175][INF][twitter_list_gen:0065][do_logic] 時間がかかるため気長にお待ちください。
-[2022-02-13 20:59:14.973][INF][twitter_list_gen:0079][do_logic] Twitterリスト生成を終了します。
 ```
 
 また、ヘルプを呼び出す時は下記コマンドを実行する。
@@ -191,7 +167,6 @@ googlemaps,Google Maps
 実行例：
 ```cmd
 > pipenv run list-gen -h
-[2022-02-13 20:58:07.376][INF][twitter_list_gen:0040][main] 実行コマンド：['twitter_list_gen.py', '-h']
 usage: twitter_list_gen.py [-h] [-t TWITTER_LIST_FILE_PATH]
 
 options:
