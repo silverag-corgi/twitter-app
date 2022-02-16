@@ -15,11 +15,10 @@ def has_twitter_list(api: tweepy.API, twitter_list_name: str) -> bool:
         
         twitter_lists: Any = api.get_lists()
         
-        if isinstance(twitter_lists, tweepy.List):
-            for twitter_list in twitter_lists:
-                if twitter_list.name == twitter_list_name:
-                    lg.info(f'Twitterリストが既に存在します。(twitter_list_name:{twitter_list_name})')
-                    return True
+        for twitter_list in twitter_lists:
+            if twitter_list.name == twitter_list_name:
+                lg.info(f'Twitterリストが既に存在します。(twitter_list_name:{twitter_list_name})')
+                return True
     except Exception as e:
         raise(e)
     
