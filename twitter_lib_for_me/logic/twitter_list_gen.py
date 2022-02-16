@@ -40,7 +40,6 @@ def do_logic(api: tweepy.API, twitter_list_file_path_with_wildcard: str) -> None
                     os.path.splitext(os.path.basename(twitter_list_file_path))[0]
                 if twitter_list_util.has_twitter_list(api, twitter_list_name) == True:
                     should_generate = False
-                    lg.info(f'Twitterリストが既に存在します。(twitter_list_name:{twitter_list_name})')
                 
                 if should_generate == True:
                     # Twitterリストの生成
