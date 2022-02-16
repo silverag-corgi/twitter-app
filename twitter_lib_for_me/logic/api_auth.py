@@ -62,7 +62,7 @@ def __authorize_twitter(json_data_dct: dict[Any, Any]) -> tweepy.API:
         auth: tweepy.OAuthHandler = tweepy.OAuthHandler(consumer_key, consumer_secret)
         auth.set_access_token(access_token, access_token_secret)
         
-        api: tweepy.API = tweepy.API(auth)
+        api: tweepy.API = tweepy.API(auth, wait_on_rate_limit=True)
         api.verify_credentials()
         
         lg.info(f'Twitter認証に成功しました。')
