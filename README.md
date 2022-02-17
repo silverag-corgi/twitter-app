@@ -12,9 +12,11 @@
   - [5.2. Twitter認証情報の設定](#52-twitter認証情報の設定)
 - [6. セットアップ手順 - ライブラリ](#6-セットアップ手順---ライブラリ)
 - [7. 使い方 - アプリケーション](#7-使い方---アプリケーション)
-  - [7.1. Twitterリスト作成](#71-twitterリスト作成)
+  - [7.1. Twitterリスト生成](#71-twitterリスト生成)
     - [7.1.1. ユーザ一覧CSVファイルの作成](#711-ユーザ一覧csvファイルの作成)
     - [7.1.2. プログラムの実行](#712-プログラムの実行)
+  - [7.2. フォロイーTwitterリスト生成](#72-フォロイーtwitterリスト生成)
+    - [7.2.1. プログラムの実行](#721-プログラムの実行)
 - [8. 使い方 - ライブラリ](#8-使い方---ライブラリ)
 - [9. 連絡先](#9-連絡先)
 - [10. ライセンス](#10-ライセンス)
@@ -31,8 +33,10 @@ PyPIには登録せずにローカルで使用する。
 
 アプリケーションとライブラリの機能がある。
 
-- Twitterリスト作成
-  - ユーザ一覧のCSVファイルを基にTwitterでリストを作成する
+- Twitterリスト生成
+  - ユーザ一覧のCSVファイルを基にTwitterリストを生成する
+- フォロイーTwitterリスト生成
+  - 指定したTwitterユーザのフォロイーのTwitterリストを生成する
 - (今後、追加予定)
 
 
@@ -124,7 +128,7 @@ C:/Git/python/twitter-lib-for-me/.venv
 本章は前者の手順を機能ごとに示す。
 
 
-## 7.1. Twitterリスト作成
+## 7.1. Twitterリスト生成
 
 
 ### 7.1.1. ユーザ一覧CSVファイルの作成
@@ -174,6 +178,35 @@ options:
   -t TWITTER_LIST_FILE_PATH, --twitter_list_file_path TWITTER_LIST_FILE_PATH
                         Twitterリストファイルパス (ワイルドカード可) (default: input/*.csv)
                         必ずシングルコーテーション(')で囲む。
+```
+
+
+## 7.2. フォロイーTwitterリスト生成
+
+
+### 7.2.1. プログラムの実行
+
+下記コマンドを実行する。
+
+実行例：
+```cmd
+> cd twitter-lib-for-me
+> pipenv run followee-gen Google
+```
+
+また、ヘルプを呼び出す時は下記コマンドを実行する。
+
+実行例：
+```cmd
+> pipenv run followee-gen -h
+[2022-02-17 23:46:35.230][INF][followee_twitter_list_gen:0040][main] 実行コマンド：['followee_twitter_list_gen.py', '-h']
+usage: followee_twitter_list_gen.py [-h] user_id
+
+positional arguments:
+  user_id     ユーザID(Twitter)
+
+options:
+  -h, --help  show this help message and exit
 ```
 
 
