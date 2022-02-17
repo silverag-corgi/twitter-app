@@ -34,10 +34,10 @@ def generate_twitter_list(api: tweepy.API, twitter_list_name: str) -> tweepy.Lis
         lg = mylib.get_logger(__name__)
         
         twitter_list: Any = api.create_list(twitter_list_name, mode='private', description='')
-        lg.info(f'Twitterリスト作成に成功しました。(twitter_list_name:{twitter_list_name})')
+        lg.info(f'Twitterリスト生成に成功しました。(twitter_list_name:{twitter_list_name})')
     except Exception as e:
         if lg is not None:
-            lg.warning(f'Twitterリスト作成に失敗しました。(twitter_list_name:{twitter_list_name})')
+            lg.warning(f'Twitterリスト生成に失敗しました。(twitter_list_name:{twitter_list_name})')
         raise(e)
     
     return twitter_list
