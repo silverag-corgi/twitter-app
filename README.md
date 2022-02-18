@@ -199,14 +199,17 @@ options:
 実行例：
 ```cmd
 > pipenv run followee-gen -h
-[2022-02-17 23:46:35.230][INF][followee_twitter_list_gen:0040][main] 実行コマンド：['followee_twitter_list_gen.py', '-h']
-usage: followee_twitter_list_gen.py [-h] user_id
+usage: followee_twitter_list_gen.py [-h] [-f NUM_OF_FOLLOWEES] user_id
 
 positional arguments:
-  user_id     ユーザID(Twitter)
+  user_id               ユーザID(Twitter)
 
 options:
-  -h, --help  show this help message and exit
+  -h, --help            show this help message and exit
+  -f NUM_OF_FOLLOWEES, --num_of_followees NUM_OF_FOLLOWEES
+                        フォロイー数 (default: 3000)
+                        Twitterリストに追加したいフォロイーの人数
+                        3000人を超過した場合はレート制限により3000人ごとに15分の待機時間が発生する
 ```
 
 
