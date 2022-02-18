@@ -23,7 +23,8 @@ def main() -> int:
         -
     
     Args on cmd line:
-        user_id (str)   : [必須] ユーザID(Twitter)
+        user_id (str)           : [必須] ユーザID(Twitter)
+        num_of_followees (int)  : [任意] フォロイー数
     
     Returns:
         int: 終了コード(0：正常、1：異常)
@@ -50,7 +51,8 @@ def main() -> int:
         # フォロイーTwitterリスト生成ロジックの実行
         followee_twitter_list_gen.do_logic(
                 api,
-                args.user_id
+                args.user_id,
+                args.num_of_followees
             )
     except Exception as e:
         if lg is not None:
@@ -72,6 +74,12 @@ def __get_args() -> argparse.Namespace:
         # 必須の引数
         help_msg = 'ユーザID(Twitter)'
         parser.add_argument('user_id', help=help_msg)
+        
+        # 任意の引数
+        help_msg = 'フォロイー数 (default: %(default)s)' + \
+                    '\nTwitterリストに追加したいフォロイーの人数' + \
+                    '\n3000人を超過した場合はレート制限により3000人ごとに15分の待機時間が発生する'
+        parser.add_argument('-f', '--num_of_followees', type=int, default=3000, help=help_msg)
         
         args: argparse.Namespace = parser.parse_args()
     except Exception as e:
