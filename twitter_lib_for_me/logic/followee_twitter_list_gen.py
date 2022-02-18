@@ -28,7 +28,7 @@ def do_logic(api: tweepy.API, user_id: str) -> None:
                 api,
                 user_id,
                 max_num_of_data_per_request=200,
-                num_of_requests_per_15min=15
+                max_num_of_requests=15
             )
         
         # 実行要否の判定
