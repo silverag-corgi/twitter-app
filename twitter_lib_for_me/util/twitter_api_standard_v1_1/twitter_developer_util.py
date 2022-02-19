@@ -33,3 +33,9 @@ def show_rate_limit_of_friends_list(api: tweepy.API) -> None:
     '''レート制限表示(friends/list)'''
     show_rate_limit(api, 'friends', '/friends/list')
     return None
+
+
+def show_rate_limit_of_followers_list(api: tweepy.API) -> None:
+    '''レート制限表示(followers/list)'''
+    show_rate_limit(api, 'followers', '/followers/list')
+    return None

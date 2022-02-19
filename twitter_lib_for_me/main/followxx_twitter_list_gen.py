@@ -6,7 +6,7 @@ from typing import Optional
 
 import python_lib_for_me as mylib
 import tweepy
-from twitter_lib_for_me.logic import api_auth, followee_twitter_list_gen
+from twitter_lib_for_me.logic import api_auth, followxx_twitter_list_gen
 
 
 def main() -> int:
@@ -17,14 +17,16 @@ def main() -> int:
     Summary:
         コマンドラインから実行する。
         
-        引数を検証して問題ない場合、指定したユーザのフォロイーのTwitterリストを生成する。
+        引数を検証して問題ない場合、指定したユーザのフォロイー／フォロワーのTwitterリストを生成する。
     
     Args:
         -
     
     Args on cmd line:
-        user_id (str)           : [必須] ユーザID(Twitter)
-        num_of_followees (int)  : [任意] フォロイー数
+        user_id (str)                   : [必須] ユーザID(Twitter)
+        generate_followee_list (bool)   : [いずれかが必須] フォロイーリスト生成
+        generate_follower_list (bool)   : [いずれかが必須] フォロワーリスト生成
+        num_of_followxxs (int)          : [任意] フォロイー数／フォロワー数
     
     Returns:
         int: 終了コード(0：正常、1：異常)
@@ -48,12 +50,23 @@ def main() -> int:
         # Twitter認証ロジックの実行
         api: tweepy.API = api_auth.do_logic()
         
-        # フォロイーTwitterリスト生成ロジックの実行
-        followee_twitter_list_gen.do_logic(
-                api,
-                args.user_id,
-                args.num_of_followees
-            )
+        # Twitterリスト生成ロジックの実行
+        if bool(args.generate_followee_list) == True:
+            # フォロイーTwitterリスト生成ロジックの実行
+            followxx_twitter_list_gen.do_logic(
+                    api,
+                    args.user_id,
+                    args.num_of_followxxs,
+                    followxx_twitter_list_gen.Pages.followee_list
+                )
+        elif bool(args.generate_follower_list) == True:
+            # フォロワーTwitterリスト生成ロジックの実行
+            followxx_twitter_list_gen.do_logic(
+                    api,
+                    args.user_id,
+                    args.num_of_followxxs,
+                    followxx_twitter_list_gen.Pages.follower_list
+                )
     except Exception as e:
         if lg is not None:
             lg.exception('', exc_info=True)
@@ -75,11 +88,23 @@ def __get_args() -> argparse.Namespace:
         help_msg = 'ユーザID(Twitter)'
         parser.add_argument('user_id', help=help_msg)
         
+        # グループで1つのみ必須の引数
+        group: argparse._MutuallyExclusiveGroup = parser.add_mutually_exclusive_group(required=True)
+        help_msg =  '{0}\n' + \
+                    'グループで1つのみ必須\n' + \
+                    '指定した場合は{1}のTwitterリストを生成する'
+        group.add_argument(
+            '-followee', '--generate_followee_list',
+            help=help_msg.format('フォロイーリスト生成', 'フォロイー'), action='store_true')
+        group.add_argument(
+            '-follower', '--generate_follower_list',
+            help=help_msg.format('フォロワーリスト生成', 'フォロワー'), action='store_true')
+        
         # 任意の引数
-        help_msg = 'フォロイー数 (default: %(default)s)' + \
-                    '\nTwitterリストに追加したいフォロイーの人数' + \
-                    '\n3000人を超過した場合はレート制限により3000人ごとに15分の待機時間が発生する'
-        parser.add_argument('-f', '--num_of_followees', type=int, default=3000, help=help_msg)
+        help_msg =  'フォロイー数／フォロワー数 (default: %(default)s)\n' + \
+                    'Twitterリストに追加したいフォロイー／フォロワーの人数\n' + \
+                    '3000人を超過した場合はレート制限により3000人ごとに15分の待機時間が発生する'
+        parser.add_argument('-f', '--num_of_followxxs', type=int, default=3000, help=help_msg)
         
         args: argparse.Namespace = parser.parse_args()
     except Exception as e:
