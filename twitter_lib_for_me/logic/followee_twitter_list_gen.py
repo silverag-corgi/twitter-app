@@ -22,28 +22,29 @@ def do_logic(api: tweepy.API, user_id: str, num_of_followees: int) -> None:
         lg.info(f'フォロイーTwitterリスト生成を開始します。')
         
         # 処理終了までの予想時間の計算
-        max_num_of_data_per_request: int = 200
-        max_num_of_requests_per_15min: int = 15
-        num_of_data_per_15min: int = max_num_of_data_per_request * max_num_of_requests_per_15min
-        num_of_procs: int = math.ceil(num_of_followees / num_of_data_per_15min)
+        max_num_of_data_per_15min: int = \
+            twitter_users_util.Followee.MAX_NUM_OF_DATA_PER_REQUEST * \
+            twitter_users_util.Followee.MAX_NUM_OF_REQUESTS_PER_15MIN
+        num_of_procs: int = math.ceil(num_of_followees / max_num_of_data_per_15min)
         proc_time: int = num_of_procs * 15
         lg.info(f'処理終了までの予想時間：約{proc_time}分(TwitterAPIのレート制限により処理に時間がかかります)')
         
         # レート制限の表示
         twitter_developer_util.show_rate_limit_of_friends_list(api)
         
-        # フォロイーページの取得
-        followee_pages: list[ResultSet] = twitter_users_util.get_followee_pages(
+        # フォロイーリストページの取得
+        followee_list_pages: list[ResultSet] = twitter_users_util.get_followee_list_pages(
                 api,
                 user_id,
-                max_num_of_requests=math.ceil(num_of_followees / max_num_of_data_per_request)
+                num_of_requests=math.ceil(
+                    num_of_followees / twitter_users_util.Followee.MAX_NUM_OF_DATA_PER_REQUEST)
             )
         
         # 実行要否の判定
         should_execute: bool = True
-        if len(followee_pages) == 0:
+        if len(followee_list_pages) == 0:
             should_execute = False
-            lg.info(f'フォロイーページの件数が0件です。(user_id:{user_id})')
+            lg.info(f'フォロイーリストページの件数が0件です。(user_id:{user_id})')
         
         if should_execute == True:
             # Twitterリスト生成要否の判定
@@ -60,7 +61,7 @@ def do_logic(api: tweepy.API, user_id: str, num_of_followees: int) -> None:
                 
                 # フォロイーの取得・追加
                 count_of_followees: int = 0
-                for page_index, followees_by_page in enumerate(followee_pages, start=1):
+                for page_index, followees_by_page in enumerate(followee_list_pages, start=1):
                     # followee: tweepy.models.User
                     for followee_index, followee in enumerate(followees_by_page, start=1):
                         count_of_followees = count_of_followees + 1
