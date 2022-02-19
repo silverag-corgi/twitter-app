@@ -16,9 +16,10 @@
             "name": "Python: followee_twitter_list_gen",
             "type": "python",
             "request": "launch",
-            "module": "twitter_lib_for_me.main.followee_twitter_list_gen",
+            "module": "twitter_lib_for_me.main.followxx_twitter_list_gen",
             "args": [
-                "silverag_corgi"
+                "silverag_corgi",
+                "-followee"
             ]
         }
     ]

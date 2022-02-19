@@ -14,6 +14,6 @@ python_version = "3.10"
 
 [scripts]
 list-gen        = "py -m twitter_lib_for_me.main.twitter_list_gen"
-followee-gen    = "py -m twitter_lib_for_me.main.followee_twitter_list_gen"
+followxx-gen    = "py -m twitter_lib_for_me.main.followxx_twitter_list_gen"
 freeze          = "pip freeze"
 list            = "pip list"
