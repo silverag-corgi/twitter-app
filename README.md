@@ -15,7 +15,7 @@
   - [7.1. Twitterリスト生成](#71-twitterリスト生成)
     - [7.1.1. ユーザ一覧CSVファイルの作成](#711-ユーザ一覧csvファイルの作成)
     - [7.1.2. プログラムの実行](#712-プログラムの実行)
-  - [7.2. フォロイーTwitterリスト生成](#72-フォロイーtwitterリスト生成)
+  - [7.2. フォロイー／フォロワーTwitterリスト生成](#72-フォロイーフォロワーtwitterリスト生成)
     - [7.2.1. プログラムの実行](#721-プログラムの実行)
 - [8. 使い方 - ライブラリ](#8-使い方---ライブラリ)
 - [9. 連絡先](#9-連絡先)
@@ -35,8 +35,8 @@ PyPIには登録せずにローカルで使用する。
 
 - Twitterリスト生成
   - ユーザ一覧のCSVファイルを基にTwitterリストを生成する
-- フォロイーTwitterリスト生成
-  - 指定したTwitterユーザのフォロイーのTwitterリストを生成する
+- フォロイー／フォロワーTwitterリスト生成
+  - 指定したTwitterユーザのフォロイー／フォロワーのTwitterリストを生成する
 - (今後、追加予定)
 
 
@@ -181,7 +181,7 @@ options:
 ```
 
 
-## 7.2. フォロイーTwitterリスト生成
+## 7.2. フォロイー／フォロワーTwitterリスト生成
 
 
 ### 7.2.1. プログラムの実行
@@ -191,24 +191,32 @@ options:
 実行例：
 ```cmd
 > cd twitter-lib-for-me
-> pipenv run followee-gen Google
+> pipenv run followxx-gen Google -followee
 ```
 
 また、ヘルプを呼び出す時は下記コマンドを実行する。
 
 実行例：
 ```cmd
-> pipenv run followee-gen -h
-usage: followee_twitter_list_gen.py [-h] [-f NUM_OF_FOLLOWEES] user_id
+> pipenv run followxx-gen -h
+usage: followxx_twitter_list_gen.py [-h] (-followee | -follower) [-f NUM_OF_FOLLOWXXS] user_id
 
 positional arguments:
   user_id               ユーザID(Twitter)
 
 options:
   -h, --help            show this help message and exit
-  -f NUM_OF_FOLLOWEES, --num_of_followees NUM_OF_FOLLOWEES
-                        フォロイー数 (default: 3000)
-                        Twitterリストに追加したいフォロイーの人数
+  -followee, --generate_followee_list
+                        フォロイーリスト生成
+                        グループで1つのみ必須
+                        指定した場合はフォロイーのTwitterリストを生成する
+  -follower, --generate_follower_list
+                        フォロワーリスト生成
+                        グループで1つのみ必須
+                        指定した場合はフォロワーのTwitterリストを生成する
+  -f NUM_OF_FOLLOWXXS, --num_of_followxxs NUM_OF_FOLLOWXXS
+                        フォロイー数／フォロワー数 (default: 3000)
+                        Twitterリストに追加したいフォロイー／フォロワーの人数
                         3000人を超過した場合はレート制限により3000人ごとに15分の待機時間が発生する
 ```
 
