@@ -16,8 +16,8 @@ def do_logic() -> tweepy.API:
         lg = mylib.get_logger(__name__)
         lg.info(f'API認証を開始します。')
         
-        json_data: dict[Any, Any] = __get_api_auth_info_json()
-        api: tweepy.API = __authorize_twitter(json_data)
+        api_auth_infos: dict[Any, Any] = __get_api_auth_infos()
+        api: tweepy.API = __authorize_twitter(api_auth_infos)
         
         lg.info(f'API認証を終了します。')
     except Exception as e:
@@ -26,27 +26,27 @@ def do_logic() -> tweepy.API:
     return api
 
 
-def __get_api_auth_info_json() -> dict[Any, Any]:
-    '''API認証情報JSON取得'''
+def __get_api_auth_infos() -> dict[Any, Any]:
+    '''API認証情報取得'''
     
     lg: Optional[Logger] = None
     
     try:
         lg = mylib.get_logger(__name__)
         
-        json_file_obj: io.TextIOWrapper = open('config/api_auth_info.json', 'r')
-        json_data_dct: dict[Any, Any] = json.load(json_file_obj)
+        api_auth_info_file: io.TextIOWrapper = open('config/api_auth_info.json', 'r')
+        api_auth_infos: dict[Any, Any] = json.load(api_auth_info_file)
         
-        lg.info(f'API認証情報JSON取得に成功しました。')
+        lg.info(f'API認証情報取得に成功しました。')
     except Exception as e:
         if lg is not None:
-            lg.info(f'API認証情報JSON取得に失敗しました。')
+            lg.info(f'API認証情報取得に失敗しました。')
         raise(e)
     
-    return json_data_dct
+    return api_auth_infos
 
 
-def __authorize_twitter(json_data_dct: dict[Any, Any]) -> tweepy.API:
+def __authorize_twitter(api_auth_infos: dict[Any, Any]) -> tweepy.API:
     '''Twitter認証'''
     
     lg: Optional[Logger] = None
@@ -54,10 +54,10 @@ def __authorize_twitter(json_data_dct: dict[Any, Any]) -> tweepy.API:
     try:
         lg = mylib.get_logger(__name__)
         
-        consumer_key:        str = json_data_dct['twitter_auth']['consumer_key']
-        consumer_secret:     str = json_data_dct['twitter_auth']['consumer_secret']
-        access_token:        str = json_data_dct['twitter_auth']['access_token']
-        access_token_secret: str = json_data_dct['twitter_auth']['access_token_secret']
+        consumer_key:        str = api_auth_infos['twitter_auth_info']['consumer_key']
+        consumer_secret:     str = api_auth_infos['twitter_auth_info']['consumer_secret']
+        access_token:        str = api_auth_infos['twitter_auth_info']['access_token']
+        access_token_secret: str = api_auth_infos['twitter_auth_info']['access_token_secret']
         
         auth: tweepy.OAuthHandler = tweepy.OAuthHandler(consumer_key, consumer_secret)
         auth.set_access_token(access_token, access_token_secret)
