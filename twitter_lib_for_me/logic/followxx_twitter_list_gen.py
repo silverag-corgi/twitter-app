@@ -1,13 +1,12 @@
+import math
 from enum import IntEnum, auto
 from logging import Logger
-import math
 from typing import Any, Optional
 
 import python_lib_for_me as mylib
 import tweepy
 from tweepy.models import ResultSet
-from twitter_lib_for_me.util import const_util
-from twitter_lib_for_me.util import twitter_api_standard_v1_1
+from twitter_lib_for_me.util import const_util, twitter_api_standard_v1_1
 from twitter_lib_for_me.util.twitter_api_standard_v1_1 import (
     twitter_developer_util, twitter_tweets_util, twitter_users_util)
 
@@ -81,8 +80,9 @@ def do_logic(api: tweepy.API, user_id: str, num_of_followxxs: int, kind_of_pages
         
         if should_execute == True:
             # Twitterリスト名の生成
-            user: Any = api.get_user(screen_name=user_id) # user: tweepy.models.User
-            twitter_list_name: str = twitter_list_name_format.format(user.screen_name, user.name)
+            user_info: Any = twitter_users_util.get_user_info(api, user_id)
+            twitter_list_name: str = \
+                twitter_list_name_format.format(user_info.screen_name, user_info.name)
             
             # Twitterリスト生成要否の判定
             should_generate: bool = True
@@ -95,23 +95,28 @@ def do_logic(api: tweepy.API, user_id: str, num_of_followxxs: int, kind_of_pages
                 
                 # フォロイー／フォロワーの取得・追加
                 count_of_followxxs: int = 0
+                count_of_added_followxxs: int = 0
                 for page_index, followxxs_by_page in enumerate(followxx_list_pages, start=1):
                     # followxx: tweepy.models.User
                     for followxx_index, followxx in enumerate(followxxs_by_page, start=1):
-                        count_of_followxxs = count_of_followxxs + 1
-                        # lg.info(f'{count_of_followxxs:04d}, {page_index:04d}, {followxx_index:04d}, ' +
-                        #         f'{str(followxx.protected): <5}, {followxx.screen_name: <15}, ' +
-                        #         f'{followxx.name}')
-                        twitter_tweets_util.add_user(
+                        # ユーザの追加
+                        add_user_result: bool = twitter_tweets_util.add_user(
                                 api,
                                 twitter_list,
                                 followxx.screen_name,
                                 followxx.name
                             )
-                lg.info(f'フォロイー／フォロワーの取得・追加が完了しました。(count_of_followxxs:{count_of_followxxs})')
+                        
+                        # ユーザのカウント
+                        count_of_followxxs = count_of_followxxs + 1
+                        if add_user_result == True:
+                            count_of_added_followxxs = count_of_added_followxxs + 1
+                        
+                lg.info(f'フォロイー／フォロワーの取得・追加が完了しました。' +
+                        f'(count_of_followxxs:{count_of_added_followxxs}/{count_of_followxxs})')
                 
                 # Twitterリストの破棄(フォロイー／フォロワーが0人の場合)
-                if count_of_followxxs == 0:
+                if count_of_added_followxxs == 0:
                     twitter_tweets_util.destroy_twitter_list(api, twitter_list)
         
         # レート制限の表示

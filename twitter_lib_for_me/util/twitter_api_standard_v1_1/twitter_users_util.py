@@ -1,6 +1,6 @@
 from enum import IntEnum
 from logging import Logger
-from typing import Optional
+from typing import Any, Optional
 
 import python_lib_for_me as mylib
 import tweepy
@@ -126,3 +126,38 @@ def get_follower_list_pages(
         raise(e)
     
     return follower_list_pages
+
+
+def get_user_info(
+        api: tweepy.API,
+        user_id: str
+    ) -> Any:
+    
+    '''
+    ユーザ情報取得
+    
+    Args:
+        api (tweepy.API)    : API
+        user_id (str)       : ユーザID
+    
+    Returns:
+        Any: ユーザ情報 (tweepy.models.User)
+    
+    References:
+        - https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/follow-search-get-users/api-reference/get-users-show
+    '''
+    
+    lg: Optional[Logger] = None
+    
+    try:
+        lg = mylib.get_logger(__name__)
+        
+        user_info: Any = api.get_user(screen_name=user_id)
+        
+        lg.debug(f'ユーザ情報取得に成功しました。')
+    except Exception as e:
+        if lg is not None:
+            lg.warning(f'ユーザ情報取得に失敗しました。')
+        raise(e)
+    
+    return user_info

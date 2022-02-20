@@ -61,7 +61,7 @@ def destroy_twitter_list(api: tweepy.API, twitter_list: tweepy.List) -> None:
     return None
 
 
-def add_user(api: tweepy.API, twitter_list: tweepy.List, user_id: str, user_name: str) -> None:
+def add_user(api: tweepy.API, twitter_list: tweepy.List, user_id: str, user_name: str) -> bool:
     '''ユーザ追加'''
     
     lg: Optional[Logger] = None
@@ -72,8 +72,9 @@ def add_user(api: tweepy.API, twitter_list: tweepy.List, user_id: str, user_name
         api.add_list_member(list_id=twitter_list.id, screen_name=user_id)
         lg.debug(f'ユーザ追加に成功しました。(user_id:{user_id: <15}, user_name:{user_name})')
     except Exception as e:
-        # ユーザが鍵付きや削除済みなどの場合
         if lg is not None:
-            lg.warning(f'ユーザ追加に失敗しました。(user_id:{user_id: <15}, user_name:{user_name})')
+            lg.warning(f'ユーザ追加に失敗しました。鍵付きや削除済みの可能性があります。' +
+                        f'(user_id:{user_id: <15}, user_name:{user_name})')
+        return False
     
-    return None
+    return True
