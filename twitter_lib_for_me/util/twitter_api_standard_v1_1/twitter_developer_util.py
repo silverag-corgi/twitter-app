@@ -24,7 +24,10 @@ def show_rate_limit(
         lg.info(f'リクエスト回数(15分間隔)：{rate_limit["remaining"]}/{rate_limit["limit"]}、' +
                 f'制限リセット時刻：{datetime.fromtimestamp(rate_limit["reset"])}')
     except Exception as e:
-        pass
+        if lg is not None:
+            err_msg: str = str(e).replace('\n',' ')
+            lg.warning(f'レート制限を取得する際にエラーが発生しました。' +
+                f'(resource_family:{resource_family}, endpoint:{endpoint}, err_msg:{err_msg})')
     
     return None
 
