@@ -7,7 +7,8 @@ from typing import Iterator, Optional
 
 import python_lib_for_me as mylib
 import tweepy
-from twitter_lib_for_me.util.twitter_api_standard_v1_1 import twitter_tweets_util
+from twitter_lib_for_me.util.twitter_api_standard_v1_1 import \
+    twitter_tweets_util
 
 
 def do_logic(api: tweepy.API, twitter_list_file_path_with_wildcard: str) -> None:
