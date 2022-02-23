@@ -1,6 +1,29 @@
-[build-system]
-requires = [
-    "setuptools",
-    "wheel",
+[tool.poetry]
+name = "twitter-lib-for-me"
+version = "0.1.0"
+description = "Twitter lib for me"
+authors = ["Rem_"]
+license = "MIT"
+readme = "README.md"
+packages = [
+    {include = "twitter_lib_for_me", from = "src"}
 ]
-build-backend = "setuptools.build_meta"
+
+[tool.poetry.build]
+generate-setup-file = true
+
+[tool.poetry.dependencies]
+python = "^3.10"
+tweepy = "^4.4.0"
+python-lib-for-me = {path = "../python-lib-for-me", develop = true}
+
+[tool.poetry.dev-dependencies]
+
+[tool.poetry.scripts]
+list-gen        = "twitter_lib_for_me.main.twitter_list_gen:main"
+followxx-gen    = "twitter_lib_for_me.main.followxx_twitter_list_gen:main"
+limit-show      = "twitter_lib_for_me.main.rate_limit_show:main"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
