@@ -8,9 +8,12 @@
 - [3. 動作確認済み環境](#3-動作確認済み環境)
 - [4. 事前準備 - Twitter認証情報の発行](#4-事前準備---twitter認証情報の発行)
 - [5. セットアップ手順 - アプリケーション](#5-セットアップ手順---アプリケーション)
-  - [5.1. 仮想環境の構築](#51-仮想環境の構築)
-  - [5.2. Twitter認証情報の設定](#52-twitter認証情報の設定)
+  - [5.1. リポジトリのクローン](#51-リポジトリのクローン)
+  - [5.2. 仮想環境の構築](#52-仮想環境の構築)
+  - [5.3. Twitter認証情報の設定](#53-twitter認証情報の設定)
 - [6. セットアップ手順 - ライブラリ](#6-セットアップ手順---ライブラリ)
+  - [6.1. リポジトリのクローン](#61-リポジトリのクローン)
+  - [6.2. 依存関係の追加](#62-依存関係の追加)
 - [7. 使い方 - アプリケーション](#7-使い方---アプリケーション)
   - [7.1. Twitterリスト生成](#71-twitterリスト生成)
     - [7.1.1. ユーザ一覧CSVファイルの作成](#711-ユーザ一覧csvファイルの作成)
@@ -44,7 +47,7 @@ PyPIには登録せずにローカルで使用する。
 
 - Windows 10 Pro
 - Python 3.10.1
-- Pipenv 2022.1.8
+- Poetry 1.1.12
 - Tweepy 4.4.0
 
 
@@ -65,30 +68,38 @@ PyPIには登録せずにローカルで使用する。
 アプリケーションとライブラリの手順がある。
 本章は前者の手順を示す。
 
-また、前提として、PythonとPipenvがインストール済みであること。
+また、前提として、PythonとPoetryがインストール済みであること。
 
 
-## 5.1. 仮想環境の構築
+## 5.1. リポジトリのクローン
 
-本リポジトリをクローンもしくはダウンロードした後、下記コマンドを実行する。
+下記リポジトリをクローンもしくはダウンロードする。
 
-実行例：
+- twitter-lib-for-me
+  - 本リポジトリ
+- python-lib-for-me
+  - 自分用のPythonライブラリ
+
+
+## 5.2. 仮想環境の構築
+
+下記コマンドを実行する。
+
 ```cmd
-> cd twitter-lib-for-me           # アプリケーションのパスに移動する
-> set PIPENV_VENV_IN_PROJECT=true # 仮想環境のインストール先をアプリケーション配下に設定する
-> pipenv install                  # 仮想環境をインストールする
+> cd twitter-lib-for-me                     # アプリケーションのパスに移動する
+> poetry config virtualenvs.in-project true # 仮想環境のインストール先をプロジェクト配下に設定する
+> poetry install                            # pyproject.tomlを基に仮想環境をインストールする
 ```
 
 そして、下記コマンドを実行して、アプリケーション配下に`.venv`フォルダが作成されていることを確認する。
 
-実行例：
 ```cmd
-> pipenv --venv                   # 仮想環境のインストール先を表示する
-C:/Git/python/twitter-lib-for-me/.venv
+> poetry env info --path                    # 仮想環境のインストール先を表示する
+C:\Git\python\twitter-lib-for-me\.venv
 ```
 
 
-## 5.2. Twitter認証情報の設定
+## 5.3. Twitter認証情報の設定
 
 `config/api_auth_info.json.sample`をコピペし、拡張子`.sample`を削除し、発行した認証情報を保存する。
 
@@ -111,14 +122,37 @@ C:/Git/python/twitter-lib-for-me/.venv
 アプリケーションとライブラリの手順がある。
 本章は後者の手順を示す。
 
-また、前提として、PythonとPipenvがインストール済みであること。
+また、前提として、PythonとPoetryがインストール済みであること。
 
-本リポジトリをクローンもしくはダウンロードした後、下記コマンドを実行する。
 
-実行例：
+## 6.1. リポジトリのクローン
+
+下記リポジトリをクローンもしくはダウンロードする。
+
+- twitter-lib-for-me
+  - 本リポジトリ
+- python-lib-for-me
+  - 自分用のPythonライブラリ
+
+
+## 6.2. 依存関係の追加
+
 ```cmd
-> cd fgo-farm-report-collection             # ライブラリをインストールしたいアプリケーションのパスに移動する
-> pipenv install -e "../twitter-lib-for-me" # ライブラリのパスを指定して編集モードでインストールする
+> cd [app_path]                             # ライブラリをインストールしたいアプリケーションのパスに移動する
+> poetry add "../twitter-lib-for-me"        # 仮想環境にライブラリを追加する
+```
+
+もし、ライブラリを編集可能モードで追加する場合は、`pyproject.toml`ファイルに`develop = true`を追記する。
+
+```toml
+[tool.poetry.dependencies]
+twitter-lib-for-me = {path = "../twitter-lib-for-me", develop = true}
+```
+
+下記コマンドを実行する。
+
+```cmd
+> poetry update                             # pyproject.tomlを基に仮想環境をアップデートする
 ```
 
 
@@ -163,14 +197,13 @@ googlemaps,Google Maps
 実行例：
 ```cmd
 > cd twitter-lib-for-me
-> pipenv run list-gen -t 'input/*.csv'
+> poetry run list-gen -t 'input/*.csv'
 ```
 
 また、ヘルプを呼び出す時は下記コマンドを実行する。
 
-実行例：
 ```cmd
-> pipenv run list-gen -h
+> poetry run list-gen -h
 usage: twitter_list_gen.py [-h] [-t TWITTER_LIST_FILE_PATH]
 
 options:
@@ -191,14 +224,13 @@ options:
 実行例：
 ```cmd
 > cd twitter-lib-for-me
-> pipenv run followxx-gen Google -followee
+> poetry run followxx-gen Google -followee
 ```
 
 また、ヘルプを呼び出す時は下記コマンドを実行する。
 
-実行例：
 ```cmd
-> pipenv run followxx-gen -h
+> poetry run followxx-gen -h
 usage: followxx_twitter_list_gen.py [-h] (-followee | -follower) [-f NUM_OF_FOLLOWXXS] user_id
 
 positional arguments:
