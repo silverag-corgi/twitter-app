@@ -4,11 +4,11 @@ import sys
 from logging import Logger
 from typing import Optional
 
-import python_lib_for_me as mylib
+import python_lib_for_me as pyl
 import tweepy
+
 from twitter_lib_for_me.logic import api_auth
-from twitter_lib_for_me.util.twitter_api_standard_v1_1 import \
-    twitter_developer_util
+from twitter_lib_for_me.util.twitter_api_standard_v1_1 import twitter_developer_util
 
 
 def main() -> int:
@@ -36,11 +36,11 @@ def main() -> int:
     
     try:
         # ロガー取得
-        lg = mylib.get_logger(__name__)
+        lg = pyl.get_logger(__name__)
         
         # 実行コマンド表示
         sys.argv[0] = os.path.basename(sys.argv[0])
-        lg.info(f'実行コマンド：{sys.argv}')
+        pyl.log_inf(lg, f'実行コマンド：{sys.argv}')
         
         # 引数取得＆検証
         args: argparse.Namespace = __get_args()
@@ -54,7 +54,7 @@ def main() -> int:
         twitter_developer_util.show_rate_limit(api, args.resource_family, args.endpoint)
     except Exception as e:
         if lg is not None:
-            lg.exception('', exc_info=True)
+            pyl.log_exc(lg, '')
         return 1
     
     return 0
@@ -93,7 +93,7 @@ def __validate_args(args: argparse.Namespace) -> bool:
     
     try:
         # ロガー取得
-        lg = mylib.get_logger(__name__)
+        lg = pyl.get_logger(__name__)
         
         # 検証：なし
     except Exception as e:

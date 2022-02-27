@@ -2,7 +2,7 @@ from enum import IntEnum
 from logging import Logger
 from typing import Any, Optional
 
-import python_lib_for_me as mylib
+import python_lib_for_me as pyl
 import tweepy
 from tweepy.models import ResultSet
 
@@ -41,29 +41,29 @@ def get_followee_list_pages(
     
     References:
         - https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/follow-search-get-users/api-reference/get-friends-list
-    '''
+    '''  # noqa: E501
     
     lg: Optional[Logger] = None
     
     try:
-        lg = mylib.get_logger(__name__)
+        lg = pyl.get_logger(__name__)
         
         followee_list_pages: list[ResultSet] = []
         
-        lg.info(f'時間がかかるため気長にお待ちください。')
+        pyl.log_inf(lg, f'時間がかかるため気長にお待ちください。')
         try:
             followee_pagination: tweepy.Cursor = tweepy.Cursor(
                     api.get_friends,
                     screen_name=user_id,
-                    count=num_of_data_per_request \
-                        if num_of_data_per_request <= Followee.MAX_NUM_OF_DATA_PER_REQUEST
-                        else Followee.MAX_NUM_OF_DATA_PER_REQUEST
+                    count=num_of_data_per_request
+                    if num_of_data_per_request <= Followee.MAX_NUM_OF_DATA_PER_REQUEST
+                    else Followee.MAX_NUM_OF_DATA_PER_REQUEST
                 )
             followee_list_pages = list(followee_pagination.pages(num_of_requests))
         except Exception as e:
-            err_msg: str = str(e).replace('\n',' ')
-            lg.warning(f'指定したユーザIDのフォロイーを取得する際にエラーが発生しました。' +
-                        f'(user_id:{user_id}, err_msg:{err_msg})')
+            err_msg: str = str(e).replace('\n', ' ')
+            pyl.log_war(lg, f'指定したユーザIDのフォロイーを取得する際にエラーが発生しました。' +
+                            f'(user_id:{user_id}, err_msg:{err_msg})')
     except Exception as e:
         raise(e)
     
@@ -99,29 +99,29 @@ def get_follower_list_pages(
     
     References:
         - https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/follow-search-get-users/api-reference/get-followers-list
-    '''
+    '''  # noqa: E501
     
     lg: Optional[Logger] = None
     
     try:
-        lg = mylib.get_logger(__name__)
+        lg = pyl.get_logger(__name__)
         
         follower_list_pages: list[ResultSet] = []
         
-        lg.info(f'時間がかかるため気長にお待ちください。')
+        pyl.log_inf(lg, f'時間がかかるため気長にお待ちください。')
         try:
             follower_pagination: tweepy.Cursor = tweepy.Cursor(
                     api.get_followers,
                     screen_name=user_id,
-                    count=num_of_data_per_request \
-                        if num_of_data_per_request <= Follower.MAX_NUM_OF_DATA_PER_REQUEST
-                        else Follower.MAX_NUM_OF_DATA_PER_REQUEST
+                    count=num_of_data_per_request
+                    if num_of_data_per_request <= Follower.MAX_NUM_OF_DATA_PER_REQUEST
+                    else Follower.MAX_NUM_OF_DATA_PER_REQUEST
                 )
             follower_list_pages = list(follower_pagination.pages(num_of_requests))
         except Exception as e:
-            err_msg: str = str(e).replace('\n',' ')
-            lg.warning(f'指定したユーザIDのフォロワーを取得する際にエラーが発生しました。' +
-                        f'(user_id:{user_id}, err_msg:{err_msg})')
+            err_msg: str = str(e).replace('\n', ' ')
+            pyl.log_war(lg, f'指定したユーザIDのフォロワーを取得する際にエラーが発生しました。' +
+                            f'(user_id:{user_id}, err_msg:{err_msg})')
     except Exception as e:
         raise(e)
     
@@ -145,19 +145,19 @@ def get_user_info(
     
     References:
         - https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/follow-search-get-users/api-reference/get-users-show
-    '''
+    '''  # noqa: E501
     
     lg: Optional[Logger] = None
     
     try:
-        lg = mylib.get_logger(__name__)
+        lg = pyl.get_logger(__name__)
         
         user_info: Any = api.get_user(screen_name=user_id)
         
-        lg.debug(f'ユーザ情報取得に成功しました。')
+        pyl.log_deb(lg, f'ユーザ情報取得に成功しました。')
     except Exception as e:
         if lg is not None:
-            lg.warning(f'ユーザ情報取得に失敗しました。')
+            pyl.log_war(lg, f'ユーザ情報取得に失敗しました。')
         raise(e)
     
     return user_info

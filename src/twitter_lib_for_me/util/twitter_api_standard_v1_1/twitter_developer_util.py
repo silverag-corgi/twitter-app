@@ -1,8 +1,9 @@
+import json
 from datetime import datetime
 from logging import Logger
 from typing import Any, Optional
 
-import python_lib_for_me as mylib
+import python_lib_for_me as pyl
 import tweepy
 
 
@@ -17,17 +18,22 @@ def show_rate_limit(
     lg: Optional[Logger] = None
     
     try:
-        lg = mylib.get_logger(__name__)
+        lg = pyl.get_logger(__name__)
         
         rate_limits: Any = api.rate_limit_status()
-        rate_limit: dict = rate_limits['resources'][resource_family][endpoint]
-        lg.info(f'リクエスト回数(15分間隔)：{rate_limit["remaining"]}/{rate_limit["limit"]}、' +
-                f'制限リセット時刻：{datetime.fromtimestamp(rate_limit["reset"])}')
+        if resource_family != '' and endpoint != '':
+            rate_limit: dict = rate_limits['resources'][resource_family][endpoint]
+            pyl.log_inf(lg, f'リクエスト回数(15分間隔)：{rate_limit["remaining"]}/{rate_limit["limit"]}、' +
+                            f'制限リセット時刻：{datetime.fromtimestamp(rate_limit["reset"])}')
+        else:
+            pyl.log_inf(lg, f'レート制限：\n{json.dumps(rate_limits, indent=4)}')
     except Exception as e:
         if lg is not None:
-            err_msg: str = str(e).replace('\n',' ')
-            lg.warning(f'レート制限を取得する際にエラーが発生しました。' +
-                f'(resource_family:{resource_family}, endpoint:{endpoint}, err_msg:{err_msg})')
+            err_msg: str = str(e).replace('\n', ' ')
+            pyl.log_war(lg, f'レート制限を取得する際にエラーが発生しました。' +
+                            f'(resource_family:{resource_family}, ' +
+                            f'endpoint:{endpoint}, ' +
+                            f'err_msg:{err_msg})')
     
     return None
 
