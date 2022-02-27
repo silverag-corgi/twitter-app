@@ -1,9 +1,8 @@
-import io
 import json
 from logging import Logger
-from typing import Any, Optional
+from typing import Any, Optional, TextIO
 
-import python_lib_for_me as mylib
+import python_lib_for_me as pyl
 import tweepy
 
 
@@ -13,13 +12,13 @@ def do_logic() -> tweepy.API:
     lg: Optional[Logger] = None
     
     try:
-        lg = mylib.get_logger(__name__)
-        lg.info(f'API認証を開始します。')
+        lg = pyl.get_logger(__name__)
+        pyl.log_inf(lg, f'API認証を開始します。')
         
         api_auth_infos: dict[Any, Any] = __get_api_auth_infos()
         api: tweepy.API = __authorize_twitter(api_auth_infos)
         
-        lg.info(f'API認証を終了します。')
+        pyl.log_inf(lg, f'API認証を終了します。')
     except Exception as e:
         raise(e)
         
@@ -32,15 +31,15 @@ def __get_api_auth_infos() -> dict[Any, Any]:
     lg: Optional[Logger] = None
     
     try:
-        lg = mylib.get_logger(__name__)
+        lg = pyl.get_logger(__name__)
         
-        api_auth_info_file: io.TextIOWrapper = open('config/api_auth_info.json', 'r')
+        api_auth_info_file: TextIO = open('config/api_auth_info.json', 'r')
         api_auth_infos: dict[Any, Any] = json.load(api_auth_info_file)
         
-        lg.info(f'API認証情報取得に成功しました。')
+        pyl.log_inf(lg, f'API認証情報取得に成功しました。')
     except Exception as e:
         if lg is not None:
-            lg.info(f'API認証情報取得に失敗しました。')
+            pyl.log_inf(lg, f'API認証情報取得に失敗しました。')
         raise(e)
     
     return api_auth_infos
@@ -52,7 +51,7 @@ def __authorize_twitter(api_auth_infos: dict[Any, Any]) -> tweepy.API:
     lg: Optional[Logger] = None
     
     try:
-        lg = mylib.get_logger(__name__)
+        lg = pyl.get_logger(__name__)
         
         consumer_key:        str = api_auth_infos['twitter_auth_info']['consumer_key']
         consumer_secret:     str = api_auth_infos['twitter_auth_info']['consumer_secret']
@@ -65,10 +64,10 @@ def __authorize_twitter(api_auth_infos: dict[Any, Any]) -> tweepy.API:
         api: tweepy.API = tweepy.API(auth, wait_on_rate_limit=True)
         api.verify_credentials()
         
-        lg.info(f'Twitter認証に成功しました。')
+        pyl.log_inf(lg, f'Twitter認証に成功しました。')
     except Exception as e:
         if lg is not None:
-            lg.info(f'Twitter認証に失敗しました。')
+            pyl.log_inf(lg, f'Twitter認証に失敗しました。')
         raise(e)
     
     return api
