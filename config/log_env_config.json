@@ -30,11 +30,11 @@
   
   "formatters": {
     "consoleFormatter": {
-      "format": "[%(asctime)s.%(msecs)03d][%(levelname).3s][%(module)s:%(lineno)04d][%(funcName)s] %(message)s",
+      "format": "[%(asctime)s.%(msecs)03d][%(levelname).3s][%(filename)40s:%(lineno)04d][%(funcName)40s] %(message)s",
       "datefmt" : "%Y-%m-%d %H:%M:%S"
     },
     "fileFormatter": {
-      "format": "[%(asctime)s.%(msecs)03d][%(levelname).3s][%(module)s:%(lineno)04d][%(funcName)s] %(message)s",
+      "format": "[%(asctime)s.%(msecs)03d][%(levelname).3s][%(filename)40s:%(lineno)04d][%(funcName)40s] %(message)s",
       "datefmt" : "%Y-%m-%d %H:%M:%S"
     }
   }
