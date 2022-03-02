@@ -1,6 +1,6 @@
 help:
 	@echo set target to run "make" command
-	@echo target: install, update, lint, format
+	@echo target: install, update, lint, format, clean
 
 install:
 	@echo -------------------- install packages ----------------------------------------------------
@@ -21,3 +21,7 @@ lint:
 format:
 	@echo -------------------- run isort to format import statement --------------------------------
 	@poetry run isort .
+
+clean:
+	@echo -------------------- clean package -------------------------------------------------------
+	@rmdir /s /q .mypy_cache .pytest_cache .venv
