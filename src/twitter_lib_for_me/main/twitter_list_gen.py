@@ -73,12 +73,10 @@ def __get_args() -> argparse.Namespace:
         help_msg: str = ''
         
         # 必須の引数
-        help_msg = 'Twitterリストファイルパス (ワイルドカード可) (default: %(default)s)\n' + \
-                    '必ずシングルコーテーション(\')で囲む。'
+        help_msg = 'Twitterリストファイルパス (ワイルドカード可) (default: %(default)s)'
         parser.add_argument('-t', '--twitter_list_file_path', default='input/*.csv', help=help_msg)
         
         args: argparse.Namespace = parser.parse_args()
-        args.twitter_list_file_path = args.twitter_list_file_path.replace('\'', '')
     except Exception as e:
         raise(e)
     
