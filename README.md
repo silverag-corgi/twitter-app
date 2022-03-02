@@ -137,6 +137,8 @@ C:\Git\python\twitter-lib-for-me\.venv
 
 ## 6.2. 依存関係の追加
 
+下記コマンドを実行する。
+
 ```cmd
 > cd [app_path]                             # ライブラリをインストールしたいアプリケーションのパスに移動する
 > poetry add "../twitter-lib-for-me"        # 仮想環境にライブラリを追加する
@@ -197,7 +199,7 @@ googlemaps,Google Maps
 実行例：
 ```cmd
 > cd twitter-lib-for-me
-> poetry run list-gen -t 'input/*.csv'
+> poetry run list-gen -t input/*.csv
 ```
 
 また、ヘルプを呼び出す時は下記コマンドを実行する。
@@ -210,7 +212,6 @@ options:
   -h, --help            show this help message and exit
   -t TWITTER_LIST_FILE_PATH, --twitter_list_file_path TWITTER_LIST_FILE_PATH
                         Twitterリストファイルパス (ワイルドカード可) (default: input/*.csv)
-                        必ずシングルコーテーション(')で囲む。
 ```
 
 
