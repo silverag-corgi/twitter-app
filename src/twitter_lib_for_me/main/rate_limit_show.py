@@ -7,7 +7,7 @@ from typing import Optional
 import python_lib_for_me as pyl
 import tweepy
 
-from twitter_lib_for_me.logic import api_auth
+from twitter_lib_for_me.logic import twitter_api_auth
 from twitter_lib_for_me.util.twitter_api_standard_v1_1 import twitter_developer_util
 
 
@@ -48,7 +48,7 @@ def main() -> int:
             return 1
         
         # Twitter認証ロジックの実行
-        api: tweepy.API = api_auth.do_logic()
+        api: tweepy.API = twitter_api_auth.do_logic_of_api()
         
         # レート制限の表示
         twitter_developer_util.show_rate_limit(api, args.resource_family, args.endpoint)
