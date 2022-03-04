@@ -7,7 +7,7 @@ from typing import Optional
 import python_lib_for_me as pyl
 import tweepy
 
-from twitter_lib_for_me.logic import api_auth, twitter_list_gen
+from twitter_lib_for_me.logic import twitter_api_auth, twitter_list_gen
 
 
 def main() -> int:
@@ -46,7 +46,7 @@ def main() -> int:
             return 1
         
         # Twitter認証ロジックの実行
-        api: tweepy.API = api_auth.do_logic()
+        api: tweepy.API = twitter_api_auth.do_logic_of_api()
         
         # Twitterリスト生成ロジックの実行
         twitter_list_gen.do_logic(
