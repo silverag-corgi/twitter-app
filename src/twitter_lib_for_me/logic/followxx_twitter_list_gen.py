@@ -7,7 +7,8 @@ import python_lib_for_me as pyl
 import tweepy
 from tweepy.models import ResultSet
 
-from twitter_lib_for_me.util import const_util, twitter_api_standard_v1_1
+from twitter_lib_for_me import util
+from twitter_lib_for_me.util import const_util
 from twitter_lib_for_me.util.twitter_api_standard_v1_1 import (
     twitter_developer_util,
     twitter_tweets_util,
@@ -36,7 +37,7 @@ def do_logic(api: tweepy.API, user_id: str, num_of_followxxs: int, kind_of_pages
         twitter_list_name_format: str = ''
         if kind_of_pages == Pages.followee_list:
             # 想定処理時間の表示
-            twitter_api_standard_v1_1.show_estimated_proc_time(
+            util.show_estimated_proc_time(
                     twitter_users_util.Followee.MAX_NUM_OF_DATA_PER_REQUEST,
                     twitter_users_util.Followee.MAX_NUM_OF_REQUESTS_PER_15MIN,
                     num_of_followxxs
@@ -57,7 +58,7 @@ def do_logic(api: tweepy.API, user_id: str, num_of_followxxs: int, kind_of_pages
             twitter_list_name_format = const_util.FOLLOWEE_TWITTER_LIST_NAME
         elif kind_of_pages == Pages.follower_list:
             # 想定処理時間の表示
-            twitter_api_standard_v1_1.show_estimated_proc_time(
+            util.show_estimated_proc_time(
                     twitter_users_util.Follower.MAX_NUM_OF_DATA_PER_REQUEST,
                     twitter_users_util.Follower.MAX_NUM_OF_REQUESTS_PER_15MIN,
                     num_of_followxxs
