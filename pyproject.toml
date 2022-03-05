@@ -18,6 +18,7 @@ generate-setup-file = true
 [tool.poetry.dependencies]
 python = "^3.10"
 tweepy = "^4.4.0"
+pandas = "^1.4.0"
 python-lib-for-me = {path = "../python-lib-for-me", develop = true}
 
 [tool.poetry.dev-dependencies]
@@ -29,6 +30,7 @@ mypy = "^0.931"
 list-gen        = "twitter_lib_for_me.main.twitter_list_gen:main"
 followxx-gen    = "twitter_lib_for_me.main.followxx_twitter_list_gen:main"
 limit-show      = "twitter_lib_for_me.main.rate_limit_show:main"
+tweet-search    = "twitter_lib_for_me.main.twitter_tweet_search:main"
 
 ####################################################################################################
 # build system
