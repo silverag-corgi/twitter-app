@@ -20,6 +20,8 @@
     - [7.1.2. プログラムの実行](#712-プログラムの実行)
   - [7.2. フォロイー／フォロワーTwitterリスト生成](#72-フォロイーフォロワーtwitterリスト生成)
     - [7.2.1. プログラムの実行](#721-プログラムの実行)
+  - [7.3. Twitterツイート検索](#73-twitterツイート検索)
+    - [7.3.1. プログラムの実行](#731-プログラムの実行)
 - [8. 使い方 - ライブラリ](#8-使い方---ライブラリ)
 - [9. 連絡先](#9-連絡先)
 - [10. ライセンス](#10-ライセンス)
@@ -40,6 +42,8 @@ PyPIには登録せずにローカルで使用する。
   - ユーザ一覧のCSVファイルを基にTwitterリストを生成する
 - フォロイー／フォロワーTwitterリスト生成
   - 指定したTwitterユーザのフォロイー／フォロワーのTwitterリストを生成する
+- Twitterツイート検索
+  - 指定したクエリでツイートを検索し、ツイート検索結果ファイルを生成する
 - (今後、追加予定)
 
 
@@ -53,14 +57,18 @@ PyPIには登録せずにローカルで使用する。
 
 # 4. 事前準備 - Twitter認証情報の発行
 
-[Twitter Developers](https://developer.twitter.com/en/portal/dashboard)
+[Twitter Developer Portal](https://developer.twitter.com/en/apply-for-access)
 で認証情報を発行する。
 発行手順は長くなる上に頻繁に仕様が変更されるため
-[ググる](https://www.google.com/search?q=TwitterAPI+利用申請)
+[ググる](https://www.google.com/search?q=TwitterAPI+申請)
 こと。
 
-アクセスレベルはElevatedで発行する。
-参考までにEssential＜Elevated＜AcademicResearch。
+`TwitterAPI Standard v1.1`を使用するため、アクセスレベルを`Elevated`で発行する。
+
+参考までに`Essential`、`Elevated`、`AcademicResearch`の順で高くなる。
+各アクセスレベルで何ができるかは
+[V2 Access Levels | Twitter API Documentation | Twitter Developer Platform](https://developer.twitter.com/en/docs/twitter-api)
+を確認すること。
 
 
 # 5. セットアップ手順 - アプリケーション
@@ -101,18 +109,16 @@ C:\Git\python\twitter-lib-for-me\.venv
 
 ## 5.3. Twitter認証情報の設定
 
-`config/api_auth_info.json.sample`をコピペし、拡張子`.sample`を削除し、発行した認証情報を保存する。
+`config/twitter_api_auth_info.json.sample`をコピペし、拡張子`.sample`を削除し、発行した認証情報を保存する。
 
 認証情報の保存例：
 ```cmd
-> type config\api_auth_info.json
+> type config\twitter_api_auth_info.json.sample
 {
-  "twitter_auth": {
-    "consumer_key"        : "xxxxxxxxxxxxxxxxxxxxxxxxx",
-    "consumer_secret"     : "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-    "access_token"        : "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-    "access_token_secret" : "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-  }
+  "consumer_key"        : "xxxxx",
+  "consumer_secret"     : "xxxxx",
+  "access_token"        : "xxxxx",
+  "access_token_secret" : "xxxxx"
 }
 ```
 
@@ -251,6 +257,38 @@ options:
                         フォロイー数／フォロワー数 (default: 3000)
                         Twitterリストに追加したいフォロイー／フォロワーの人数
                         3000人を超過した場合はレート制限により3000人ごとに15分の待機時間が発生する
+```
+
+
+## 7.3. Twitterツイート検索
+
+
+### 7.3.1. プログラムの実行
+
+下記コマンドを実行する。
+
+実行例：
+```cmd
+> cd twitter-lib-for-me
+> poetry run tweet-search #FGO
+```
+
+また、ヘルプを呼び出す時は下記コマンドを実行する。
+
+```cmd
+> poetry run tweet-search -h
+usage: tweet-search [-h] [-t NUM_OF_TWEETS] query
+
+positional arguments:
+  query                 クエリ
+                        RTと返信はデフォルトで除外する
+
+options:
+  -h, --help            show this help message and exit
+  -t NUM_OF_TWEETS, --num_of_tweets NUM_OF_TWEETS
+                        ツイート数 (default: 100)
+                        表示したいツイートの数
+                        18000件を超過した場合はレート制限により18000件ごとに15分の待機時間が発生する
 ```
 
 
