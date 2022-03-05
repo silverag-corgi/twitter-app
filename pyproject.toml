@@ -19,6 +19,7 @@ generate-setup-file = true
 python = "^3.10"
 tweepy = "^4.4.0"
 pandas = "^1.4.0"
+tzdata = "^2021.5"
 python-lib-for-me = {path = "../python-lib-for-me", develop = true}
 
 [tool.poetry.dev-dependencies]
