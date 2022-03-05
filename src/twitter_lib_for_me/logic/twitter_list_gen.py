@@ -7,7 +7,7 @@ from typing import Any, Optional, TextIO
 import python_lib_for_me as pyl
 import tweepy
 
-from twitter_lib_for_me.util.twitter_api_standard_v1_1 import twitter_tweets_util
+from twitter_lib_for_me.util.twitter_api_standard_v1_1 import twitter_users_util
 
 
 def do_logic(api: tweepy.API, twitter_list_file_path_with_wildcard: str) -> None:
@@ -34,9 +34,9 @@ def do_logic(api: tweepy.API, twitter_list_file_path_with_wildcard: str) -> None
                 # Twitterリストが存在しない場合
                 twitter_list_name: str = \
                     os.path.splitext(os.path.basename(twitter_list_file_path))[0]
-                if twitter_tweets_util.has_twitter_list(api, twitter_list_name) == False:
+                if twitter_users_util.has_twitter_list(api, twitter_list_name) == False:
                     # Twitterリストの生成
-                    twitter_list = twitter_tweets_util.generate_twitter_list(api, twitter_list_name)
+                    twitter_list = twitter_users_util.generate_twitter_list(api, twitter_list_name)
                     
                     # Twitterリストファイルの読み込み
                     twitter_list_file_object: TextIO = open(
@@ -57,7 +57,7 @@ def do_logic(api: tweepy.API, twitter_list_file_path_with_wildcard: str) -> None
                     pyl.log_inf(lg, f'時間がかかるため気長にお待ちください。')
                     for twitter_list_file_line in twitter_list_file_lines:
                         if len(twitter_list_file_line) >= 2:
-                            twitter_tweets_util.add_user(
+                            twitter_users_util.add_user(
                                     api,
                                     twitter_list,
                                     twitter_list_file_line[0],
@@ -66,13 +66,13 @@ def do_logic(api: tweepy.API, twitter_list_file_path_with_wildcard: str) -> None
                     
                     # Twitterリストの破棄(ユーザが0人の場合)
                     if twitter_list_file_lines.line_num == 0:
-                        twitter_tweets_util.destroy_twitter_list(api, twitter_list)
+                        twitter_users_util.destroy_twitter_list(api, twitter_list)
         
         pyl.log_inf(lg, f'Twitterリスト生成を終了します。')
     except Exception as e:
         # Twitterリストの破棄
         if twitter_list is not None:
-            twitter_tweets_util.destroy_twitter_list(api, twitter_list)
+            twitter_users_util.destroy_twitter_list(api, twitter_list)
         
         raise(e)
     
