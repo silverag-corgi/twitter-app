@@ -11,7 +11,6 @@ from twitter_lib_for_me import util
 from twitter_lib_for_me.util import const_util
 from twitter_lib_for_me.util.twitter_api_standard_v1_1 import (
     twitter_developer_util,
-    twitter_tweets_util,
     twitter_users_util,
 )
 
@@ -88,18 +87,18 @@ def do_logic(api: tweepy.API, user_id: str, num_of_followxxs: int, kind_of_pages
                 twitter_list_name_format.format(user_info.screen_name, user_info.name)
             
             # Twitterリストが存在しない場合
-            if twitter_tweets_util.has_twitter_list(api, twitter_list_name) == False:
+            if twitter_users_util.has_twitter_list(api, twitter_list_name) == False:
                 # Twitterリストの生成
-                twitter_list = twitter_tweets_util.generate_twitter_list(api, twitter_list_name)
+                twitter_list = twitter_users_util.generate_twitter_list(api, twitter_list_name)
                 
                 # フォロイー／フォロワーの取得・追加
                 count_of_followxxs: int = 0
                 count_of_added_followxxs: int = 0
-                for page_index, followxxs_by_page in enumerate(followxx_list_pages, start=1):
+                for followxxs_by_page in followxx_list_pages:
                     # followxx: tweepy.models.User
-                    for followxx_index, followxx in enumerate(followxxs_by_page, start=1):
+                    for followxx in followxxs_by_page:
                         # ユーザの追加
-                        add_user_result: bool = twitter_tweets_util.add_user(
+                        add_user_result: bool = twitter_users_util.add_user(
                                 api,
                                 twitter_list,
                                 followxx.screen_name,
@@ -116,7 +115,7 @@ def do_logic(api: tweepy.API, user_id: str, num_of_followxxs: int, kind_of_pages
                 
                 # Twitterリストの破棄(フォロイー／フォロワーが0人の場合)
                 if count_of_added_followxxs == 0:
-                    twitter_tweets_util.destroy_twitter_list(api, twitter_list)
+                    twitter_users_util.destroy_twitter_list(api, twitter_list)
         
         # レート制限の表示
         if kind_of_pages == Pages.followee_list:
@@ -128,7 +127,7 @@ def do_logic(api: tweepy.API, user_id: str, num_of_followxxs: int, kind_of_pages
     except Exception as e:
         # Twitterリストの破棄
         if twitter_list is not None:
-            twitter_tweets_util.destroy_twitter_list(api, twitter_list)
+            twitter_users_util.destroy_twitter_list(api, twitter_list)
         
         raise(e)
     
