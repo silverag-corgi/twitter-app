@@ -95,7 +95,7 @@ def __validate_args(args: argparse.Namespace) -> bool:
         # 検証：TwitterリストファイルパスがCSVファイルのパスであること
         twitter_list_file_path: tuple[str, str] = os.path.splitext(args.twitter_list_file_path)
         if twitter_list_file_path[1] != '.csv':
-            pyl.log_inf(lg, f'TwitterリストファイルパスがCSVファイルのパスではありません。' +
+            pyl.log_war(lg, f'TwitterリストファイルパスがCSVファイルのパスではありません。' +
                             f'(twitter_list_file_path:{args.twitter_list_file_path})')
             return False
     except Exception as e:

@@ -76,7 +76,8 @@ def __get_args() -> argparse.Namespace:
                     '例：application'
         parser.add_argument('resource_family', help=help_msg)
         help_msg =  'エンドポイント\n' + \
-                    '例：/application/rate_limit_status'
+                    '例：/application/rate_limit_status\n' + \
+                    '両方とも空文字の場合は全てのレート制限を表示します'
         parser.add_argument('endpoint', help=help_msg)
         
         args: argparse.Namespace = parser.parse_args()

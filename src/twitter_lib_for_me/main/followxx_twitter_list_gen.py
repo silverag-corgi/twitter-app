@@ -123,7 +123,16 @@ def __validate_args(args: argparse.Namespace) -> bool:
         # ロガー取得
         lg = pyl.get_logger(__name__)
         
-        # 検証：なし
+        # 検証：ユーザIDが4文字以上であること
+        if len(args.user_id) < 4:
+            pyl.log_war(lg, f'ユーザIDが4文字以上ではありません。(user_id:{args.user_id})')
+            return False
+        
+        # 検証：フォロイー数／フォロワー数が1人以上であること
+        if int(args.num_of_followxxs) < 1:
+            pyl.log_war(lg, f'フォロイー数／フォロワー数が1人以上ではありません。' +
+                            f'(num_of_followxxs:{args.num_of_followxxs})')
+            return False
     except Exception as e:
         raise(e)
     
