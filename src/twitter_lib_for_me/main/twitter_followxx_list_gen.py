@@ -7,7 +7,7 @@ from typing import Optional
 import python_lib_for_me as pyl
 import tweepy
 
-from twitter_lib_for_me.logic import followxx_twitter_list_gen, twitter_api_auth
+from twitter_lib_for_me.logic import twitter_api_auth, twitter_followxx_list_gen
 
 
 def main() -> int:
@@ -18,7 +18,7 @@ def main() -> int:
     Summary:
         コマンドラインから実行する。
         
-        引数を検証して問題ない場合、指定したユーザのフォロイー／フォロワーのTwitterリストを生成する。
+        引数を検証して問題ない場合、指定したユーザのフォロイー(フォロワー)のTwitterリストを生成する。
     
     Args:
         -
@@ -27,7 +27,7 @@ def main() -> int:
         user_id (str)                   : [必須] ユーザID(Twitter)
         generate_followee_list (bool)   : [いずれかが必須] フォロイーリスト生成
         generate_follower_list (bool)   : [いずれかが必須] フォロワーリスト生成
-        num_of_followxxs (int)          : [任意] フォロイー数／フォロワー数
+        num_of_followxxs (int)          : [任意] フォロイー(フォロワー)数
     
     Returns:
         int: 終了コード(0：正常、1：異常)
@@ -48,25 +48,25 @@ def main() -> int:
         if __validate_args(args) == False:
             return 1
         
-        # Twitter認証ロジックの実行
+        # TwitterAPI認証ロジックの実行
         api: tweepy.API = twitter_api_auth.do_logic_of_api()
         
         # Twitterリスト生成ロジックの実行
         if bool(args.generate_followee_list) == True:
-            # フォロイーTwitterリスト生成ロジックの実行
-            followxx_twitter_list_gen.do_logic(
+            # Twitterフォロイーリスト生成ロジックの実行
+            twitter_followxx_list_gen.do_logic(
                     api,
                     args.user_id,
                     args.num_of_followxxs,
-                    followxx_twitter_list_gen.Pages.followee_list
+                    twitter_followxx_list_gen.Pages.FOLLOWEE_LIST
                 )
         elif bool(args.generate_follower_list) == True:
-            # フォロワーTwitterリスト生成ロジックの実行
-            followxx_twitter_list_gen.do_logic(
+            # Twitterフォロワーリスト生成ロジックの実行
+            twitter_followxx_list_gen.do_logic(
                     api,
                     args.user_id,
                     args.num_of_followxxs,
-                    followxx_twitter_list_gen.Pages.follower_list
+                    twitter_followxx_list_gen.Pages.FOLLOWER_LIST
                 )
     except Exception as e:
         if lg is not None:
@@ -102,8 +102,8 @@ def __get_args() -> argparse.Namespace:
             help=help_msg.format('フォロワーリスト生成', 'フォロワー'), action='store_true')
         
         # 任意の引数
-        help_msg =  'フォロイー数／フォロワー数 (default: %(default)s)\n' + \
-                    'Twitterリストに追加したいフォロイー／フォロワーの人数\n' + \
+        help_msg =  'フォロイー(フォロワー)数 (default: %(default)s)\n' + \
+                    'Twitterリストに追加したいフォロイー(フォロワー)の人数\n' + \
                     '3000人を超過した場合はレート制限により3000人ごとに15分の待機時間が発生する'
         parser.add_argument('-f', '--num_of_followxxs', type=int, default=3000, help=help_msg)
         
@@ -128,9 +128,9 @@ def __validate_args(args: argparse.Namespace) -> bool:
             pyl.log_war(lg, f'ユーザIDが4文字以上ではありません。(user_id:{args.user_id})')
             return False
         
-        # 検証：フォロイー数／フォロワー数が1人以上であること
+        # 検証：フォロイー(フォロワー)数が1人以上であること
         if int(args.num_of_followxxs) < 1:
-            pyl.log_war(lg, f'フォロイー数／フォロワー数が1人以上ではありません。' +
+            pyl.log_war(lg, f'フォロイー(フォロワー)数が1人以上ではありません。' +
                             f'(num_of_followxxs:{args.num_of_followxxs})')
             return False
     except Exception as e:
