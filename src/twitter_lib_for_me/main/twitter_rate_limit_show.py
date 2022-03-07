@@ -47,7 +47,7 @@ def main() -> int:
         if __validate_args(args) == False:
             return 1
         
-        # Twitter認証ロジックの実行
+        # TwitterAPI認証ロジックの実行
         api: tweepy.API = twitter_api_auth.do_logic_of_api()
         
         # レート制限の表示

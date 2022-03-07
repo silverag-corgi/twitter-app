@@ -28,9 +28,9 @@ isort = "^5.10.1"
 mypy = "^0.931"
 
 [tool.poetry.scripts]
+followxx-gen    = "twitter_lib_for_me.main.twitter_followxx_list_gen:main"
 list-gen        = "twitter_lib_for_me.main.twitter_list_gen:main"
-followxx-gen    = "twitter_lib_for_me.main.followxx_twitter_list_gen:main"
-limit-show      = "twitter_lib_for_me.main.rate_limit_show:main"
+limit-show      = "twitter_lib_for_me.main.twitter_rate_limit_show:main"
 tweet-search    = "twitter_lib_for_me.main.twitter_tweet_search:main"
 
 ####################################################################################################
