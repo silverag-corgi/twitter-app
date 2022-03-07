@@ -48,7 +48,7 @@ def main() -> int:
             return 1
         
         # TwitterAPI認証ロジックの実行
-        api: tweepy.API = twitter_api_auth.do_logic_of_api()
+        api: tweepy.API = twitter_api_auth.do_logic_of_api_by_oauth_1_user()
         
         # レート制限の表示
         twitter_developer_util.show_rate_limit(api, args.resource_family, args.endpoint)

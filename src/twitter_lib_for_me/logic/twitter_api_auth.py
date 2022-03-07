@@ -5,27 +5,31 @@ from typing import Any, Optional, TextIO
 import python_lib_for_me as pyl
 import tweepy
 
+from twitter_lib_for_me.util import twitter_api_auth_util
 
-def do_logic_of_api() -> tweepy.API:
-    '''ロジック実行(API)'''
+
+def do_logic_of_api_by_oauth_1_user() -> tweepy.API:
+    '''ロジック実行(API生成(OAuth 1.0a User Context))'''
     
     lg: Optional[Logger] = None
     
     try:
         lg = pyl.get_logger(__name__)
-        pyl.log_inf(lg, f'TwitterAPI認証(API)を開始します。')
+        pyl.log_inf(lg, f'TwitterAPI認証(API生成(OAuth 1.0a User Context))を開始します。')
         
-        twitter_api_auth_info: dict[Any, Any] = __get_twitter_api_auth_info()
-        api: tweepy.API = __generate_api(twitter_api_auth_info)
+        twitter_api_auth_info: twitter_api_auth_util.TwitterApiAuthInfo = \
+            __get_twitter_api_auth_info()
+        api: tweepy.API = \
+            twitter_api_auth_util.generate_api_by_oauth_1_user(twitter_api_auth_info, True)
         
-        pyl.log_inf(lg, f'TwitterAPI認証(API)を終了します。')
+        pyl.log_inf(lg, f'TwitterAPI認証(API生成(OAuth 1.0a User Context))を終了します。')
     except Exception as e:
         raise(e)
     
     return api
 
 
-def __get_twitter_api_auth_info() -> dict[Any, Any]:
+def __get_twitter_api_auth_info() -> twitter_api_auth_util.TwitterApiAuthInfo:
     '''TwitterAPI認証情報取得'''
     
     lg: Optional[Logger] = None
@@ -33,8 +37,30 @@ def __get_twitter_api_auth_info() -> dict[Any, Any]:
     try:
         lg = pyl.get_logger(__name__)
         
+        # TwitterAPI認証情報ファイルの読み込み
         twitter_api_auth_info_file: TextIO = open('config/twitter_api_auth_info.json', 'r')
-        twitter_api_auth_info: dict[Any, Any] = json.load(twitter_api_auth_info_file)
+        twitter_api_auth_info_dict: dict[Any, Any] = json.load(twitter_api_auth_info_file)
+        
+        # コンシューマーキーの取得
+        consumer_keys: dict[Any, Any] = twitter_api_auth_info_dict['consumer_keys']
+        api_key:    str = consumer_keys['api_key']
+        api_secret: str = consumer_keys['api_secret']
+        
+        # 認証トークンの取得
+        authentication_tokens: dict[Any, Any] = twitter_api_auth_info_dict['authentication_tokens']
+        bearer_token:        str = authentication_tokens['bearer_token']
+        access_token:        str = authentication_tokens['access_token']
+        access_token_secret: str = authentication_tokens['access_token_secret']
+        
+        # TwitterAPI認証情報の格納
+        twitter_api_auth_info: twitter_api_auth_util.TwitterApiAuthInfo = \
+            twitter_api_auth_util.TwitterApiAuthInfo(
+                    api_key,
+                    api_secret,
+                    bearer_token,
+                    access_token,
+                    access_token_secret
+                )
         
         pyl.log_inf(lg, f'TwitterAPI認証情報取得に成功しました。')
     except Exception as e:
@@ -43,31 +69,3 @@ def __get_twitter_api_auth_info() -> dict[Any, Any]:
         raise(e)
     
     return twitter_api_auth_info
-
-
-def __generate_api(twitter_api_auth_info: dict[Any, Any]) -> tweepy.API:
-    '''API生成'''
-    
-    lg: Optional[Logger] = None
-    
-    try:
-        lg = pyl.get_logger(__name__)
-        
-        consumer_key:        str = twitter_api_auth_info['consumer_key']
-        consumer_secret:     str = twitter_api_auth_info['consumer_secret']
-        access_token:        str = twitter_api_auth_info['access_token']
-        access_token_secret: str = twitter_api_auth_info['access_token_secret']
-        
-        auth: tweepy.OAuthHandler = tweepy.OAuthHandler(consumer_key, consumer_secret)
-        auth.set_access_token(access_token, access_token_secret)
-        
-        api: tweepy.API = tweepy.API(auth, wait_on_rate_limit=True)
-        api.verify_credentials()
-        
-        pyl.log_inf(lg, f'API生成に成功しました。')
-    except Exception as e:
-        if lg is not None:
-            pyl.log_inf(lg, f'API生成に失敗しました。')
-        raise(e)
-    
-    return api

@@ -50,7 +50,7 @@ def main() -> int:
             return 1
         
         # TwitterAPI認証ロジックの実行
-        api: tweepy.API = twitter_api_auth.do_logic_of_api()
+        api: tweepy.API = twitter_api_auth.do_logic_of_api_by_oauth_1_user()
         
         # Twitterツイート検索ロジックの実行
         twitter_tweet_search.do_logic(api, args.query, args.num_of_tweets)
