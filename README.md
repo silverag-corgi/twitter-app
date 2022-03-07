@@ -18,7 +18,7 @@
   - [7.1. Twitterリスト生成](#71-twitterリスト生成)
     - [7.1.1. ユーザ一覧CSVファイルの作成](#711-ユーザ一覧csvファイルの作成)
     - [7.1.2. プログラムの実行](#712-プログラムの実行)
-  - [7.2. フォロイー／フォロワーTwitterリスト生成](#72-フォロイーフォロワーtwitterリスト生成)
+  - [7.2. Twitterフォロイー(フォロワー)リスト生成](#72-twitterフォロイーフォロワーリスト生成)
     - [7.2.1. プログラムの実行](#721-プログラムの実行)
   - [7.3. Twitterツイート検索](#73-twitterツイート検索)
     - [7.3.1. プログラムの実行](#731-プログラムの実行)
@@ -40,8 +40,8 @@ PyPIには登録せずにローカルで使用する。
 
 - Twitterリスト生成
   - ユーザ一覧のCSVファイルを基にTwitterリストを生成する
-- フォロイー／フォロワーTwitterリスト生成
-  - 指定したTwitterユーザのフォロイー／フォロワーのTwitterリストを生成する
+- Twitterフォロイー(フォロワー)リスト生成
+  - 指定したTwitterユーザのフォロイー(フォロワー)のTwitterリストを生成する
 - Twitterツイート検索
   - 指定したクエリでツイートを検索し、ツイート検索結果ファイルを生成する
 - (今後、追加予定)
@@ -212,7 +212,7 @@ googlemaps,Google Maps
 
 ```cmd
 > poetry run list-gen -h
-usage: twitter_list_gen.py [-h] [-t TWITTER_LIST_FILE_PATH]
+usage: list-gen [-h] [-t TWITTER_LIST_FILE_PATH]
 
 options:
   -h, --help            show this help message and exit
@@ -221,7 +221,7 @@ options:
 ```
 
 
-## 7.2. フォロイー／フォロワーTwitterリスト生成
+## 7.2. Twitterフォロイー(フォロワー)リスト生成
 
 
 ### 7.2.1. プログラムの実行
@@ -238,7 +238,7 @@ options:
 
 ```cmd
 > poetry run followxx-gen -h
-usage: followxx_twitter_list_gen.py [-h] (-followee | -follower) [-f NUM_OF_FOLLOWXXS] user_id
+usage: followxx-gen [-h] (-followee | -follower) [-f NUM_OF_FOLLOWXXS] user_id
 
 positional arguments:
   user_id               ユーザID(Twitter)
@@ -254,8 +254,8 @@ options:
                         グループで1つのみ必須
                         指定した場合はフォロワーのTwitterリストを生成する
   -f NUM_OF_FOLLOWXXS, --num_of_followxxs NUM_OF_FOLLOWXXS
-                        フォロイー数／フォロワー数 (default: 3000)
-                        Twitterリストに追加したいフォロイー／フォロワーの人数
+                        フォロイー(フォロワー)数 (default: 3000)
+                        Twitterリストに追加したいフォロイー(フォロワー)の人数
                         3000人を超過した場合はレート制限により3000人ごとに15分の待機時間が発生する
 ```
 
