@@ -22,6 +22,8 @@
     - [7.2.1. プログラムの実行](#721-プログラムの実行)
   - [7.3. Twitterツイート検索](#73-twitterツイート検索)
     - [7.3.1. プログラムの実行](#731-プログラムの実行)
+  - [7.4. レート制限表示](#74-レート制限表示)
+    - [7.4.1. プログラムの実行](#741-プログラムの実行)
 - [8. 使い方 - ライブラリ](#8-使い方---ライブラリ)
 - [9. 連絡先](#9-連絡先)
 - [10. ライセンス](#10-ライセンス)
@@ -44,6 +46,8 @@ PyPIには登録せずにローカルで使用する。
   - 指定したTwitterユーザのフォロイー(フォロワー)のTwitterリストを生成する
 - Twitterツイート検索
   - 指定したクエリでツイートを検索し、ツイート検索結果ファイルを生成する
+- レート制限表示
+  - 指定したリソース群とエンドポイントのレート制限を表示する
 - (今後、追加予定)
 
 
@@ -113,12 +117,17 @@ C:\Git\python\twitter-lib-for-me\.venv
 
 認証情報の保存例：
 ```cmd
-> type config\twitter_api_auth_info.json.sample
+> type config\twitter_api_auth_info.json 
 {
-  "consumer_key"        : "xxxxx",
-  "consumer_secret"     : "xxxxx",
-  "access_token"        : "xxxxx",
-  "access_token_secret" : "xxxxx"
+  "consumer_keys": {
+    "api_key"             : "xxxxx",
+    "api_secret"          : "xxxxx"
+  },
+  "authentication_tokens": {
+    "bearer_token"        : "xxxxx",
+    "access_token"        : "xxxxx",
+    "access_token_secret" : "xxxxx"
+  }
 }
 ```
 
@@ -289,6 +298,37 @@ options:
                         ツイート数 (default: 100)
                         表示したいツイートの数
                         18000件を超過した場合はレート制限により18000件ごとに15分の待機時間が発生する
+```
+
+
+## 7.4. レート制限表示
+
+
+### 7.4.1. プログラムの実行
+
+下記コマンドを実行する。
+
+実行例：
+```cmd
+> cd twitter-lib-for-me
+> poetry run limit-show "friends" "/friends/list"
+```
+
+また、ヘルプを呼び出す時は下記コマンドを実行する。
+
+```cmd
+> poetry run limit-show -h
+usage: limit-show [-h] resource_family endpoint
+
+positional arguments:
+  resource_family  リソース群
+                   例：application
+  endpoint         エンドポイント
+                   例：/application/rate_limit_status
+                   両方とも空文字の場合は全てのレート制限を表示します
+
+options:
+  -h, --help       show this help message and exit
 ```
 
 
