@@ -29,6 +29,27 @@ def do_logic_of_api_by_oauth_1_user() -> tweepy.API:
     return api
 
 
+def do_logic_of_api_by_oauth_2_app() -> tweepy.API:
+    '''ロジック実行(API生成(OAuth 2.0 App Only))'''
+    
+    lg: Optional[Logger] = None
+    
+    try:
+        lg = pyl.get_logger(__name__)
+        pyl.log_inf(lg, f'TwitterAPI認証(API生成(OAuth 2.0 App Only))を開始します。')
+        
+        twitter_api_auth_info: twitter_api_auth_util.TwitterApiAuthInfo = \
+            __get_twitter_api_auth_info()
+        api: tweepy.API = \
+            twitter_api_auth_util.generate_api_by_oauth_2_app(twitter_api_auth_info, True)
+        
+        pyl.log_inf(lg, f'TwitterAPI認証(API生成(OAuth 2.0 App Only))を終了します。')
+    except Exception as e:
+        raise(e)
+    
+    return api
+
+
 def __get_twitter_api_auth_info() -> twitter_api_auth_util.TwitterApiAuthInfo:
     '''TwitterAPI認証情報取得'''
     
