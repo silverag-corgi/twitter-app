@@ -35,8 +35,8 @@ def do_logic(
         
         # 想定処理時間の表示
         util.show_estimated_proc_time(
-                twitter_tweets_util.TWEETS_IN_PAST_7DAY.MAX_NUM_OF_DATA_PER_REQUEST,
-                twitter_tweets_util.TWEETS_IN_PAST_7DAY.MAX_NUM_OF_REQUESTS_PER_15MIN,
+                twitter_tweets_util.TWEETS_IN_PAST_7DAY.MAX_NUM_OF_DATA_PER_REQUEST.value,
+                twitter_tweets_util.TWEETS_IN_PAST_7DAY.MAX_NUM_OF_REQUESTS_PER_15MIN.value,
                 num_of_tweets
             )
         
@@ -51,7 +51,7 @@ def do_logic(
                 twitter_tweets_util.SEARCH_RESULT_TYPE.RECENT,
                 num_of_requests=math.ceil(
                     num_of_tweets /
-                    twitter_tweets_util.TWEETS_IN_PAST_7DAY.MAX_NUM_OF_DATA_PER_REQUEST)
+                    twitter_tweets_util.TWEETS_IN_PAST_7DAY.MAX_NUM_OF_DATA_PER_REQUEST.value)
             )
         
         # ツイート検索結果ページの件数が0件の場合

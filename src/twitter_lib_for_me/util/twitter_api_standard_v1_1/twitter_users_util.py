@@ -15,8 +15,8 @@ class Followee(IntEnum):
 def get_followee_list_pages(
         api: tweepy.API,
         user_id: str,
-        num_of_data_per_request: int = int(Followee.MAX_NUM_OF_DATA_PER_REQUEST),
-        num_of_requests: int = int(Followee.MAX_NUM_OF_REQUESTS_PER_15MIN)
+        num_of_data_per_request: int = Followee.MAX_NUM_OF_DATA_PER_REQUEST.value,
+        num_of_requests: int = Followee.MAX_NUM_OF_REQUESTS_PER_15MIN.value
     ) -> list[ResultSet]:
     
     '''
@@ -56,8 +56,8 @@ def get_followee_list_pages(
                     api.get_friends,
                     screen_name=user_id,
                     count=num_of_data_per_request
-                    if num_of_data_per_request <= int(Followee.MAX_NUM_OF_DATA_PER_REQUEST)
-                    else int(Followee.MAX_NUM_OF_DATA_PER_REQUEST)
+                    if num_of_data_per_request <= Followee.MAX_NUM_OF_DATA_PER_REQUEST.value
+                    else Followee.MAX_NUM_OF_DATA_PER_REQUEST.value
                 )
             followee_list_pages = list(followee_pagination.pages(num_of_requests))
         except Exception as e:
@@ -78,8 +78,8 @@ class Follower(IntEnum):
 def get_follower_list_pages(
         api: tweepy.API,
         user_id: str,
-        num_of_data_per_request: int = int(Follower.MAX_NUM_OF_DATA_PER_REQUEST),
-        num_of_requests: int = int(Follower.MAX_NUM_OF_REQUESTS_PER_15MIN)
+        num_of_data_per_request: int = Follower.MAX_NUM_OF_DATA_PER_REQUEST.value,
+        num_of_requests: int = Follower.MAX_NUM_OF_REQUESTS_PER_15MIN.value
     ) -> list[ResultSet]:
     
     '''
@@ -114,8 +114,8 @@ def get_follower_list_pages(
                     api.get_followers,
                     screen_name=user_id,
                     count=num_of_data_per_request
-                    if num_of_data_per_request <= int(Follower.MAX_NUM_OF_DATA_PER_REQUEST)
-                    else int(Follower.MAX_NUM_OF_DATA_PER_REQUEST)
+                    if num_of_data_per_request <= Follower.MAX_NUM_OF_DATA_PER_REQUEST.value
+                    else Follower.MAX_NUM_OF_DATA_PER_REQUEST.value
                 )
             follower_list_pages = list(follower_pagination.pages(num_of_requests))
         except Exception as e:
