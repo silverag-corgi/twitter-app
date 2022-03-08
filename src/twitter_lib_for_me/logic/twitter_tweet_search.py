@@ -33,6 +33,9 @@ def do_logic(
         lg = pyl.get_logger(__name__)
         pyl.log_inf(lg, f'Twitterツイート検索を開始します。')
         
+        # Pandasオプション設定
+        pd.set_option('display.unicode.east_asian_width', True)
+        
         # 想定処理時間の表示
         util.show_estimated_proc_time(
                 twitter_tweets_util.TWEETS_IN_PAST_7DAY.MAX_NUM_OF_DATA_PER_REQUEST.value,

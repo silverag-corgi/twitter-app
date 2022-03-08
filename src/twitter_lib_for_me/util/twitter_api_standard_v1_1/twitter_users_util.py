@@ -44,28 +44,26 @@ def get_followee_list_pages(
     '''  # noqa: E501
     
     lg: Optional[Logger] = None
+    followee_list_pages: list[ResultSet] = []
     
     try:
         lg = pyl.get_logger(__name__)
         
-        followee_list_pages: list[ResultSet] = []
-        
         pyl.log_inf(lg, f'時間がかかるため気長にお待ちください。')
-        try:
-            followee_pagination: tweepy.Cursor = tweepy.Cursor(
-                    api.get_friends,
-                    screen_name=user_id,
-                    count=num_of_data_per_request
-                    if num_of_data_per_request <= Followee.MAX_NUM_OF_DATA_PER_REQUEST.value
-                    else Followee.MAX_NUM_OF_DATA_PER_REQUEST.value
-                )
-            followee_list_pages = list(followee_pagination.pages(num_of_requests))
-        except Exception as e:
+        
+        followee_pagination: tweepy.Cursor = tweepy.Cursor(
+                api.get_friends,
+                screen_name=user_id,
+                count=num_of_data_per_request
+                if num_of_data_per_request <= Followee.MAX_NUM_OF_DATA_PER_REQUEST.value
+                else Followee.MAX_NUM_OF_DATA_PER_REQUEST.value
+            )
+        followee_list_pages = list(followee_pagination.pages(num_of_requests))
+    except Exception as e:
+        if lg is not None:
             err_msg: str = str(e).replace('\n', ' ')
             pyl.log_war(lg, f'指定したユーザIDのフォロイーを取得する際にエラーが発生しました。' +
                             f'(user_id:{user_id}, err_msg:{err_msg})')
-    except Exception as e:
-        raise(e)
     
     return followee_list_pages
 
@@ -102,28 +100,26 @@ def get_follower_list_pages(
     '''  # noqa: E501
     
     lg: Optional[Logger] = None
+    follower_list_pages: list[ResultSet] = []
     
     try:
         lg = pyl.get_logger(__name__)
         
-        follower_list_pages: list[ResultSet] = []
-        
         pyl.log_inf(lg, f'時間がかかるため気長にお待ちください。')
-        try:
-            follower_pagination: tweepy.Cursor = tweepy.Cursor(
-                    api.get_followers,
-                    screen_name=user_id,
-                    count=num_of_data_per_request
-                    if num_of_data_per_request <= Follower.MAX_NUM_OF_DATA_PER_REQUEST.value
-                    else Follower.MAX_NUM_OF_DATA_PER_REQUEST.value
-                )
-            follower_list_pages = list(follower_pagination.pages(num_of_requests))
-        except Exception as e:
+        
+        follower_pagination: tweepy.Cursor = tweepy.Cursor(
+                api.get_followers,
+                screen_name=user_id,
+                count=num_of_data_per_request
+                if num_of_data_per_request <= Follower.MAX_NUM_OF_DATA_PER_REQUEST.value
+                else Follower.MAX_NUM_OF_DATA_PER_REQUEST.value
+            )
+        follower_list_pages = list(follower_pagination.pages(num_of_requests))
+    except Exception as e:
+        if lg is not None:
             err_msg: str = str(e).replace('\n', ' ')
             pyl.log_war(lg, f'指定したユーザIDのフォロワーを取得する際にエラーが発生しました。' +
                             f'(user_id:{user_id}, err_msg:{err_msg})')
-    except Exception as e:
-        raise(e)
     
     return follower_list_pages
 
@@ -157,7 +153,7 @@ def get_user_info(
         pyl.log_deb(lg, f'ユーザ情報取得に成功しました。')
     except Exception as e:
         if lg is not None:
-            pyl.log_war(lg, f'ユーザ情報取得に失敗しました。')
+            pyl.log_err(lg, f'ユーザ情報取得に失敗しました。')
         raise(e)
     
     return user_info
@@ -167,6 +163,7 @@ def has_twitter_list(api: tweepy.API, twitter_list_name: str) -> bool:
     '''Twitterリスト存在有無確認'''
     
     lg: Optional[Logger] = None
+    result: bool = False
     
     try:
         lg = pyl.get_logger(__name__)
@@ -176,11 +173,15 @@ def has_twitter_list(api: tweepy.API, twitter_list_name: str) -> bool:
         for twitter_list in twitter_lists:
             if twitter_list.name == twitter_list_name:
                 pyl.log_inf(lg, f'Twitterリストが既に存在します。(twitter_list_name:{twitter_list_name})')
-                return True
+                result = True
+                break
     except Exception as e:
-        raise(e)
+        if lg is not None:
+            err_msg: str = str(e).replace('\n', ' ')
+            pyl.log_war(lg, f'Twitterリスト存在有無確認に失敗しました。' +
+                            f'(twitter_list_name:{twitter_list_name}, err_msg:{err_msg})')
     
-    return False
+    return result
 
 
 def generate_twitter_list(api: tweepy.API, twitter_list_name: str) -> tweepy.List:
@@ -195,7 +196,9 @@ def generate_twitter_list(api: tweepy.API, twitter_list_name: str) -> tweepy.Lis
         pyl.log_inf(lg, f'Twitterリスト生成に成功しました。(twitter_list_name:{twitter_list_name})')
     except Exception as e:
         if lg is not None:
-            pyl.log_war(lg, f'Twitterリスト生成に失敗しました。(twitter_list_name:{twitter_list_name})')
+            err_msg: str = str(e).replace('\n', ' ')
+            pyl.log_war(lg, f'Twitterリスト生成に失敗しました。' +
+                            f'(twitter_list_name:{twitter_list_name}, err_msg:{err_msg})')
         raise(e)
     
     return twitter_list
@@ -213,7 +216,9 @@ def destroy_twitter_list(api: tweepy.API, twitter_list: tweepy.List) -> None:
         pyl.log_inf(lg, f'Twitterリスト破棄に成功しました。(twitter_list:{twitter_list.name})')
     except Exception as e:
         if lg is not None:
-            pyl.log_war(lg, f'Twitterリスト破棄に失敗しました。(twitter_list:{twitter_list.name})')
+            err_msg: str = str(e).replace('\n', ' ')
+            pyl.log_war(lg, f'Twitterリスト破棄に失敗しました。' +
+                            f'(twitter_list:{twitter_list.name}, err_msg:{err_msg})')
         raise(e)
     
     return None
@@ -223,16 +228,19 @@ def add_user(api: tweepy.API, twitter_list: tweepy.List, user_id: str, user_name
     '''ユーザ追加'''
     
     lg: Optional[Logger] = None
+    result: bool = False
     
     try:
         lg = pyl.get_logger(__name__)
         
         api.add_list_member(list_id=twitter_list.id, screen_name=user_id)
         pyl.log_deb(lg, f'ユーザ追加に成功しました。(user_id:{user_id: <15}, user_name:{user_name})')
+        
+        result = True
     except Exception as e:
         if lg is not None:
+            err_msg: str = str(e).replace('\n', ' ')
             pyl.log_war(lg, f'ユーザ追加に失敗しました。鍵付きや削除済みの可能性があります。' +
-                            f'(user_id:{user_id: <15}, user_name:{user_name})')
-        return False
+                            f'(user_id:{user_id: <15}, user_name:{user_name}, err_msg:{err_msg})')
     
-    return True
+    return result

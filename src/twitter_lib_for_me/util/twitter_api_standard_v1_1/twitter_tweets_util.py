@@ -54,29 +54,27 @@ def search_tweets_in_past_7day(
     '''  # noqa: E501
     
     lg: Optional[Logger] = None
+    tweet_search_result_pages: list[ResultSet] = []
     
     try:
         lg = pyl.get_logger(__name__)
         
-        tweet_search_result_pages: list[ResultSet] = []
-        
         pyl.log_inf(lg, f'時間がかかるため気長にお待ちください。')
-        try:
-            tweet_search_result_pagination: tweepy.Cursor = tweepy.Cursor(
-                    api.search_tweets,
-                    q=query,
-                    result_type=search_result_type,
-                    count=num_of_data_per_request
-                    if (num_of_data_per_request <=
-                        TWEETS_IN_PAST_7DAY.MAX_NUM_OF_DATA_PER_REQUEST.value)
-                    else TWEETS_IN_PAST_7DAY.MAX_NUM_OF_DATA_PER_REQUEST.value
-                )
-            tweet_search_result_pages = list(tweet_search_result_pagination.pages(num_of_requests))
-        except Exception as e:
+        
+        tweet_search_result_pagination: tweepy.Cursor = tweepy.Cursor(
+                api.search_tweets,
+                q=query,
+                result_type=search_result_type,
+                count=num_of_data_per_request
+                if (num_of_data_per_request <=
+                    TWEETS_IN_PAST_7DAY.MAX_NUM_OF_DATA_PER_REQUEST.value)
+                else TWEETS_IN_PAST_7DAY.MAX_NUM_OF_DATA_PER_REQUEST.value
+            )
+        tweet_search_result_pages = list(tweet_search_result_pagination.pages(num_of_requests))
+    except Exception as e:
+        if lg is not None:
             err_msg: str = str(e).replace('\n', ' ')
             pyl.log_war(lg, f'検索する際にエラーが発生しました。' +
                             f'(query:{query}, err_msg:{err_msg})')
-    except Exception as e:
-        raise(e)
     
     return tweet_search_result_pages
