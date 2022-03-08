@@ -37,8 +37,8 @@ def do_logic(api: tweepy.API, user_id: str, num_of_followxxs: int, kind_of_pages
         if kind_of_pages == Pages.FOLLOWEE_LIST:
             # 想定処理時間の表示
             util.show_estimated_proc_time(
-                    twitter_users_util.Followee.MAX_NUM_OF_DATA_PER_REQUEST,
-                    twitter_users_util.Followee.MAX_NUM_OF_REQUESTS_PER_15MIN,
+                    twitter_users_util.Followee.MAX_NUM_OF_DATA_PER_REQUEST.value,
+                    twitter_users_util.Followee.MAX_NUM_OF_REQUESTS_PER_15MIN.value,
                     num_of_followxxs
                 )
             
@@ -50,7 +50,8 @@ def do_logic(api: tweepy.API, user_id: str, num_of_followxxs: int, kind_of_pages
                     api,
                     user_id,
                     num_of_requests=math.ceil(
-                        num_of_followxxs / twitter_users_util.Followee.MAX_NUM_OF_DATA_PER_REQUEST)
+                        num_of_followxxs /
+                        twitter_users_util.Followee.MAX_NUM_OF_DATA_PER_REQUEST.value)
                 )
             
             # Twitterリスト名フォーマットの決定
@@ -58,8 +59,8 @@ def do_logic(api: tweepy.API, user_id: str, num_of_followxxs: int, kind_of_pages
         elif kind_of_pages == Pages.FOLLOWER_LIST:
             # 想定処理時間の表示
             util.show_estimated_proc_time(
-                    twitter_users_util.Follower.MAX_NUM_OF_DATA_PER_REQUEST,
-                    twitter_users_util.Follower.MAX_NUM_OF_REQUESTS_PER_15MIN,
+                    twitter_users_util.Follower.MAX_NUM_OF_DATA_PER_REQUEST.value,
+                    twitter_users_util.Follower.MAX_NUM_OF_REQUESTS_PER_15MIN.value,
                     num_of_followxxs
                 )
             
@@ -71,7 +72,8 @@ def do_logic(api: tweepy.API, user_id: str, num_of_followxxs: int, kind_of_pages
                     api,
                     user_id,
                     num_of_requests=math.ceil(
-                        num_of_followxxs / twitter_users_util.Follower.MAX_NUM_OF_DATA_PER_REQUEST)
+                        num_of_followxxs /
+                        twitter_users_util.Follower.MAX_NUM_OF_DATA_PER_REQUEST.value)
                 )
             
             # Twitterリスト名フォーマットの決定

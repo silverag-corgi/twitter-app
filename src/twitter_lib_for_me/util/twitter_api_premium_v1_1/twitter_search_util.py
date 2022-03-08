@@ -29,8 +29,8 @@ def search_tweets(
         end_date: Optional[str] = None,
         search_api: SEARCH_API = SEARCH_API.WITHIN_LAST_30DAY,
         env_label: ENV_LABEL = ENV_LABEL.WITHIN_LAST_30DAY,
-        num_of_data_per_request: int = int(TWEETS.MAX_NUM_OF_DATA_PER_REQUEST),
-        num_of_requests: int = int(TWEETS.MAX_NUM_OF_REQUESTS_PER_MIN)
+        num_of_data_per_request: int = TWEETS.MAX_NUM_OF_DATA_PER_REQUEST.value,
+        num_of_requests: int = TWEETS.MAX_NUM_OF_REQUESTS_PER_MIN.value
     ) -> list[ResultSet]:
     
     '''
@@ -99,14 +99,14 @@ def search_tweets(
         try:
             tweet_search_result_pagination: tweepy.Cursor = tweepy.Cursor(
                     search_api_function,
-                    label=env_label,
+                    label=env_label.value,
                     query=query,
                     fromDate=start_date_utc,
                     toDate=end_date_utc,
                     maxResults=num_of_data_per_request
-                    if num_of_data_per_request <= int(
-                        TWEETS.MAX_NUM_OF_DATA_PER_REQUEST)
-                    else int(TWEETS.MAX_NUM_OF_DATA_PER_REQUEST)
+                    if (num_of_data_per_request <=
+                        TWEETS.MAX_NUM_OF_DATA_PER_REQUEST.value)
+                    else TWEETS.MAX_NUM_OF_DATA_PER_REQUEST.value
                 )
             tweet_search_result_pages = list(tweet_search_result_pagination.pages(num_of_requests))
         except Exception as e:

@@ -22,8 +22,8 @@ def search_tweets_in_past_7day(
         api: tweepy.API,
         query: str,
         search_result_type: SEARCH_RESULT_TYPE,
-        num_of_data_per_request: int = int(TWEETS_IN_PAST_7DAY.MAX_NUM_OF_DATA_PER_REQUEST),
-        num_of_requests: int = int(TWEETS_IN_PAST_7DAY.MAX_NUM_OF_REQUESTS_PER_15MIN)
+        num_of_data_per_request: int = TWEETS_IN_PAST_7DAY.MAX_NUM_OF_DATA_PER_REQUEST.value,
+        num_of_requests: int = TWEETS_IN_PAST_7DAY.MAX_NUM_OF_REQUESTS_PER_15MIN.value
     ) -> list[ResultSet]:
     
     '''
@@ -67,9 +67,9 @@ def search_tweets_in_past_7day(
                     q=query,
                     result_type=search_result_type,
                     count=num_of_data_per_request
-                    if num_of_data_per_request <= int(
-                        TWEETS_IN_PAST_7DAY.MAX_NUM_OF_DATA_PER_REQUEST)
-                    else int(TWEETS_IN_PAST_7DAY.MAX_NUM_OF_DATA_PER_REQUEST)
+                    if (num_of_data_per_request <=
+                        TWEETS_IN_PAST_7DAY.MAX_NUM_OF_DATA_PER_REQUEST.value)
+                    else TWEETS_IN_PAST_7DAY.MAX_NUM_OF_DATA_PER_REQUEST.value
                 )
             tweet_search_result_pages = list(tweet_search_result_pagination.pages(num_of_requests))
         except Exception as e:
