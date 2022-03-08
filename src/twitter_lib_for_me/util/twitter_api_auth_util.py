@@ -76,7 +76,7 @@ def generate_api_by_oauth_1_user(
         wait_on_rate_limit (bool)                   : レート制限時待機有無
     
     Returns:
-        ApiByOAuth1User: API(OAuth 1.0a User)
+        tweepy.API: API
     
     Notes:
         - Twitter API v1.1 を OAuth 1.0a の権限で実行する場合に使用する
@@ -107,6 +107,51 @@ def generate_api_by_oauth_1_user(
     except Exception as e:
         if lg is not None:
             pyl.log_inf(lg, f'API生成(OAuth 1.0a User Context)に失敗しました。')
+        raise(e)
+    
+    return api
+
+
+def generate_api_by_oauth_2_app(
+        twitter_api_auth_info: TwitterApiAuthInfo,
+        wait_on_rate_limit: bool
+    ) -> tweepy.API:
+    
+    '''
+    API生成(OAuth 2.0 App Only)
+    
+    Args:
+        twitter_api_auth_info (TwitterApiAuthInfo)  : TwitterAPI認証情報
+        wait_on_rate_limit (bool)                   : レート制限時待機有無
+    
+    Returns:
+        tweepy.API: API
+    
+    Notes:
+        - Twitter API v1.1 を OAuth 2.0 の権限で実行する場合に使用する
+        - OAuth 2.0 はTwitter開発者向けアプリが以下を行うことを許可する
+            - Twitterで公開されている情報に読み取り専用でアクセスする
+    
+    References:
+        - https://developer.twitter.com/en/docs/authentication/overview
+        - https://developer.twitter.com/en/docs/authentication/oauth-2-0
+    '''
+    
+    lg: Optional[Logger] = None
+    
+    try:
+        lg = pyl.get_logger(__name__)
+        
+        auth: tweepy.OAuth2AppHandler = tweepy.OAuth2AppHandler(
+                twitter_api_auth_info.api_key,
+                twitter_api_auth_info.api_secret
+            )
+        api: tweepy.API = tweepy.API(auth, wait_on_rate_limit=wait_on_rate_limit)
+        
+        pyl.log_inf(lg, f'API生成(OAuth 2.0 App Only)に成功しました。')
+    except Exception as e:
+        if lg is not None:
+            pyl.log_inf(lg, f'API生成(OAuth 2.0 App Only)に失敗しました。')
         raise(e)
     
     return api
