@@ -197,7 +197,7 @@ def generate_twitter_list(api: tweepy.API, twitter_list_name: str) -> tweepy.Lis
     except Exception as e:
         if lg is not None:
             err_msg: str = str(e).replace('\n', ' ')
-            pyl.log_war(lg, f'Twitterリスト生成に失敗しました。' +
+            pyl.log_err(lg, f'Twitterリスト生成に失敗しました。' +
                             f'(twitter_list_name:{twitter_list_name}, err_msg:{err_msg})')
         raise(e)
     
@@ -219,7 +219,6 @@ def destroy_twitter_list(api: tweepy.API, twitter_list: tweepy.List) -> None:
             err_msg: str = str(e).replace('\n', ' ')
             pyl.log_war(lg, f'Twitterリスト破棄に失敗しました。' +
                             f'(twitter_list:{twitter_list.name}, err_msg:{err_msg})')
-        raise(e)
     
     return None
 
