@@ -1,5 +1,7 @@
 from typing import Final
 
+TWITTER_API_AUTH_INFO_PATH: Final[str] = 'config/twitter_api_auth_info.json'
+
 FOLLOWEE_TWITTER_LIST_NAME: Final[str] = 'followee_{0}_{1}'
 FOLLOWER_TWITTER_LIST_NAME: Final[str] = 'follower_{0}_{1}'
 
