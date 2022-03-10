@@ -109,15 +109,16 @@ def generate_api_by_oauth_1_user(
         tweepy.API: API
     
     Notes:
-        - Twitter API v1.1 を OAuth 1.0a の権限で実行する場合に使用する
-        - OAuth 1.0a は認証されたTwitter開発者アプリがTwitterアカウントの代わりに以下を行うことを許可する
+        - ユーザ認証(OAuth 1.0a)を使用して Twitter API v1.1 を実行する場合に使用する
+        - ユーザ認証(OAuth 1.0a)は認証されたTwitter開発者アプリがTwitterアカウントの代わりに以下を行うことを許可する
             - プライベートなアカウント情報へアクセスする
             - Twitterのアクションを実行する
     
     References:
-        - https://developer.twitter.com/en/docs/authentication/overview
-        - https://developer.twitter.com/en/docs/authentication/oauth-1-0a
-    '''
+        - エンドポイント
+            - https://developer.twitter.com/en/docs/authentication/overview
+            - https://developer.twitter.com/en/docs/authentication/oauth-1-0a
+    '''  # noqa: E501
     
     lg: Optional[Logger] = None
     
@@ -158,15 +159,16 @@ def generate_api_by_oauth_1_user_using_pin(
         tuple[tweepy.API, TwitterApiAuthInfo]: API, TwitterAPI認証情報
     
     Notes:
-        - Twitter API v1.1 を OAuth 1.0a の権限で実行する場合に使用する
-        - OAuth 1.0a は認証されたTwitter開発者アプリがTwitterアカウントの代わりに以下を行うことを許可する
+        - ユーザ認証(OAuth 1.0a)を使用して Twitter API v1.1 を実行する場合に使用する
+        - ユーザ認証(OAuth 1.0a)は認証されたTwitter開発者アプリがTwitterアカウントの代わりに以下を行うことを許可する
             - プライベートなアカウント情報へアクセスする
             - Twitterのアクションを実行する
     
     References:
-        - https://developer.twitter.com/en/docs/authentication/overview
-        - https://developer.twitter.com/en/docs/authentication/oauth-1-0a/pin-based-oauth
-    '''
+        - エンドポイント
+            - https://developer.twitter.com/en/docs/authentication/overview
+            - https://developer.twitter.com/en/docs/authentication/oauth-1-0a/pin-based-oauth
+    '''  # noqa: E501
     
     lg: Optional[Logger] = None
     
@@ -221,14 +223,15 @@ def generate_api_by_oauth_2_app(
         tweepy.API: API
     
     Notes:
-        - Twitter API v1.1 を OAuth 2.0 の権限で実行する場合に使用する
-        - OAuth 2.0 はTwitter開発者向けアプリが以下を行うことを許可する
-            - Twitterで公開されている情報に読み取り専用でアクセスする
+        - アプリ認証(OAuth 2.0)を使用して Twitter API v1.1 を実行する場合に使用する
+        - アプリ認証(OAuth 2.0)はTwitter開発者向けアプリが以下を行うことを許可する
+            - Twitterで公開されている情報に読み取り専用(Getメソッド)でアクセスする
     
     References:
-        - https://developer.twitter.com/en/docs/authentication/overview
-        - https://developer.twitter.com/en/docs/authentication/oauth-2-0
-    '''
+        - エンドポイント
+            - https://developer.twitter.com/en/docs/authentication/overview
+            - https://developer.twitter.com/en/docs/authentication/oauth-2-0
+    '''  # noqa: E501
     
     lg: Optional[Logger] = None
     

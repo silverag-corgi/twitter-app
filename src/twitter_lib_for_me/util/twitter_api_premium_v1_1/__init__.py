@@ -1,5 +1,5 @@
 '''
-TwitterAPI(Premium v1.1)共通パッケージ
+Twitter API Premium v1.1 共通パッケージ
 https://developer.twitter.com/en/docs/api-reference-index#twitter-api-premium
 '''
 

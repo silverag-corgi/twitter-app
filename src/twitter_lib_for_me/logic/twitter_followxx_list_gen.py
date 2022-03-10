@@ -100,7 +100,7 @@ def do_logic(api: tweepy.API, user_id: str, num_of_followxxs: int, kind_of_pages
                     # followxx: tweepy.models.User
                     for followxx in followxxs_by_page:
                         # ユーザの追加
-                        add_user_result: bool = twitter_users_util.add_user(
+                        add_user_result: bool = twitter_users_util.add_user_to_twitter_list(
                                 api,
                                 twitter_list,
                                 followxx.screen_name,

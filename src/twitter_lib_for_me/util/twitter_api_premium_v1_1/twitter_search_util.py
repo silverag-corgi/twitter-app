@@ -50,6 +50,9 @@ def search_tweets(
         list[ResultSet] : ツイートページ (list[list[tweepy.models.Status]])
     
     Notes:
+        - 使用するエンドポイントはPOSTメソッドである
+        - 検索日付の大小関係は以下の通りである
+            - 検索開始日付 <= 検索期間 < 検索終了日付
         - 引数「リクエストごとのデータ数」は上限が100データ
             - 超過して指定した場合は上限で上書きする
         - 引数「リクエスト数」は1分ごとに最大30リクエスト
@@ -57,12 +60,14 @@ def search_tweets(
             - 1秒ごとに最大10リクエスト、1ヶ月に250リクエスト、1ヶ月に2.5万ツイート
         - 1分で最大3000データを取得できる
             - 100 data/req * 30 req/min = 3000 data/min
-        - 検索開始日付 <= 検索期間 < 検索終了日付
     
     References:
-        - https://developer.twitter.com/en/docs/twitter-api/premium/search-api/api-reference/premium-search
-        - https://developer.twitter.com/en/docs/twitter-api/premium/rules-and-filtering/operators-by-product
-        - https://developer.twitter.com/en/docs/twitter-api/premium/data-dictionary/object-model/tweet
+        - エンドポイント
+            - https://developer.twitter.com/en/docs/twitter-api/premium/search-api/overview
+            - https://developer.twitter.com/en/docs/twitter-api/premium/search-api/api-reference/premium-search
+            - https://developer.twitter.com/en/docs/twitter-api/premium/rules-and-filtering/operators-by-product
+        - オブジェクトモデル
+            - https://developer.twitter.com/en/docs/twitter-api/premium/data-dictionary/object-model/tweet
     '''  # noqa: E501
     
     lg: Optional[Logger] = None

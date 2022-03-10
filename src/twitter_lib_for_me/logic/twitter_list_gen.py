@@ -57,7 +57,7 @@ def do_logic(api: tweepy.API, twitter_list_file_path_with_wildcard: str) -> None
                     pyl.log_inf(lg, f'時間がかかるため気長にお待ちください。')
                     for twitter_list_file_line in twitter_list_file_lines:
                         if len(twitter_list_file_line) >= 2:
-                            twitter_users_util.add_user(
+                            twitter_users_util.add_user_to_twitter_list(
                                     api,
                                     twitter_list,
                                     twitter_list_file_line[0],
