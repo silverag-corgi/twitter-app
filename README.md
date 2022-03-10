@@ -8,6 +8,8 @@
 - [3. 動作確認済み環境](#3-動作確認済み環境)
 - [4. 事前準備](#4-事前準備)
   - [4.1. TwitterAPI認証情報の発行](#41-twitterapi認証情報の発行)
+    - [A. Twitter開発者ポータルサイトで申請する手順](#a-twitter開発者ポータルサイトで申請する手順)
+    - [B. Twitter社が公開しているコンシューマーキーとPINコードにより発行する手順](#b-twitter社が公開しているコンシューマーキーとpinコードにより発行する手順)
 - [5. セットアップ手順](#5-セットアップ手順)
   - [5.1. リポジトリのクローン](#51-リポジトリのクローン)
   - [5.2. 仮想環境の構築](#52-仮想環境の構築)
@@ -62,6 +64,23 @@ TwitterAPIを利用したアプリケーション。
 
 ## 4.1. TwitterAPI認証情報の発行
 
+認証情報を発行する手順は、以下の通り2種類ある。
+
+- (A)Twitter開発者ポータルサイトで申請する手順
+- (B)Twitter社が公開しているコンシューマーキーとPINコードにより発行する手順
+
+Bの手順は5分程度で完了するが、Twitter社が突然公開を停止する可能性があるため、
+いつの間にか認証できなくなるということが起こり得る。
+そのため、試しに手早く動かしてみたい方向けである。
+
+それに対してAの手順は2～3時間＋申請待ち時間を必要とするが、
+ポータルサイトで発行するため自身で認証情報を破棄しない限り、
+認証できなくなるということは起こり得ない。
+そのため、開発者などの長期的に使用する方向けである。
+
+
+### A. Twitter開発者ポータルサイトで申請する手順
+
 [Twitter Developer Portal](https://developer.twitter.com/en/apply-for-access)
 で認証情報を発行する。
 発行手順は長くなる上に頻繁に仕様が変更されるため
@@ -76,13 +95,30 @@ TwitterAPIを利用したアプリケーション。
 |   02 | User authentication settings - App permissions | Read and write and Direct message |      |
 |   03 | Consumer Keys - API Key                        | (自動生成値)                      |      |
 |   04 | Consumer Keys - API Secret                     | (自動生成値)                      |      |
-|   05 | Authentication Tokens - Access Token           | (自動生成値)                      | ※1   |
+|   05 | Authentication Tokens - Access Token           | (自動生成値)                      | (*1) |
 |   06 | Authentication Tokens - Access Token Secret    | (自動生成値)                      |      |
-|   07 | Access levels                                  | Elevated                          | ※2   |
+|   07 | Access levels                                  | Elevated                          | (*2) |
 
-※1：`App permissions`を変更した場合は再生成する必要がある
+(*1)`App permissions`を変更した場合は再生成する必要がある
 
-※2：`Twitter API v1.1`を使用するため、`Essential`からアップグレードする必要がある
+(*2)`Twitter API v1.1`を使用するため、`Essential`からのアップグレードを申請する必要がある
+
+
+### B. Twitter社が公開しているコンシューマーキーとPINコードにより発行する手順
+
+[Twitter Official/unOfficial Credentials - Twitter for Mac](https://gist.github.com/shobotch/5160017#twitter-for-mac)
+に掲載されている下記項目を利用する。
+
+- Consumer Key = API Key
+- Consumer Secret = API Secret
+
+ここで本項は一旦保留する。
+[5.2. 仮想環境の構築](#52-仮想環境の構築)
+まで完了した後に
+[5.3. TwitterAPI認証情報の設定](#53-twitterapi認証情報の設定)
+及び
+[6.5. TwitterPIN認証](#65-twitterpin認証)
+を実行する。
 
 
 # 5. セットアップ手順
