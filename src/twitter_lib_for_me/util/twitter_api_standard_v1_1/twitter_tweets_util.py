@@ -40,6 +40,7 @@ def search_tweets_in_past_7day(
         list[ResultSet] : ツイート検索結果ページ (list[list[tweepy.models.SearchResults]])
     
     Notes:
+        - 使用するエンドポイントはGETメソッドである
         - 引数「リクエストごとのデータ数」は上限が100データ
             - 超過して指定した場合は上限で上書きする
         - 引数「リクエスト数」は15分ごとに最大180リクエスト
@@ -48,9 +49,12 @@ def search_tweets_in_past_7day(
             - 100 data/req * 180 req/15-min = 18000 data/15-min
     
     References:
-        - https://developer.twitter.com/en/docs/twitter-api/v1/tweets/search/api-reference/get-search-tweets
-        - https://developer.twitter.com/en/docs/twitter-api/v1/tweets/search/guides/standard-operators
-        - https://developer.twitter.com/en/docs/twitter-api/v1/data-dictionary/object-model/tweet
+        - エンドポイント
+            - https://developer.twitter.com/en/docs/twitter-api/v1/tweets/search/overview
+            - https://developer.twitter.com/en/docs/twitter-api/v1/tweets/search/api-reference/get-search-tweets
+            - https://developer.twitter.com/en/docs/twitter-api/v1/tweets/search/guides/standard-operators
+        - オブジェクトモデル
+            - https://developer.twitter.com/en/docs/twitter-api/v1/data-dictionary/object-model/tweet
     '''  # noqa: E501
     
     lg: Optional[Logger] = None
