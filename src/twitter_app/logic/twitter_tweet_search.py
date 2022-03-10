@@ -9,12 +9,9 @@ import python_lib_for_me as pyl
 import tweepy
 from tweepy.models import ResultSet
 
-from twitter_lib_for_me import util
-from twitter_lib_for_me.util import const_util, pandas_util
-from twitter_lib_for_me.util.twitter_api_standard_v1_1 import (
-    twitter_developer_util,
-    twitter_tweets_util,
-)
+from twitter_app import util
+from twitter_app.util import const_util, pandas_util
+from twitter_app.util.twitter_api_standard_v1_1 import twitter_developer_util, twitter_tweets_util
 
 
 def do_logic(

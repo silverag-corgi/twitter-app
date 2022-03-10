@@ -7,7 +7,7 @@ from typing import Any, Optional, TextIO
 import python_lib_for_me as pyl
 import tweepy
 
-from twitter_lib_for_me.util.twitter_api_standard_v1_1 import twitter_users_util
+from twitter_app.util.twitter_api_standard_v1_1 import twitter_users_util
 
 
 def do_logic(api: tweepy.API, twitter_list_file_path_with_wildcard: str) -> None:

@@ -2,18 +2,18 @@
 # package management tool
 ####################################################################################################
 [tool.poetry]
-name = "twitter-lib-for-me"
+name = "twitter-app"
 version = "0.1.0"
-description = "Twitter lib for me"
+description = "Twitter app"
 authors = ["Rem_"]
 license = "MIT"
 readme = "README.md"
 packages = [
-    {include = "twitter_lib_for_me", from = "src"}
+    {include = "twitter_app", from = "src"}
 ]
 
 [tool.poetry.build]
-generate-setup-file = true
+generate-setup-file = false
 
 [tool.poetry.dependencies]
 python = "^3.10"
@@ -28,11 +28,11 @@ isort = "^5.10.1"
 mypy = "^0.931"
 
 [tool.poetry.scripts]
-followxx-gen    = "twitter_lib_for_me.main.twitter_followxx_list_gen:main"
-list-gen        = "twitter_lib_for_me.main.twitter_list_gen:main"
-pin-auth        = "twitter_lib_for_me.main.twitter_pin_auth:main"
-limit-show      = "twitter_lib_for_me.main.twitter_rate_limit_show:main"
-tweet-search    = "twitter_lib_for_me.main.twitter_tweet_search:main"
+followxx-gen    = "twitter_app.main.twitter_followxx_list_gen:main"
+list-gen        = "twitter_app.main.twitter_list_gen:main"
+pin-auth        = "twitter_app.main.twitter_pin_auth:main"
+limit-show      = "twitter_app.main.twitter_rate_limit_show:main"
+tweet-search    = "twitter_app.main.twitter_tweet_search:main"
 
 ####################################################################################################
 # build system

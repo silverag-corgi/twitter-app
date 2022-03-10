@@ -1,6 +1,6 @@
 import pandas as pd
 
-from twitter_lib_for_me.util import const_util
+from twitter_app.util import const_util
 
 
 def save_tweet_search_result_df(

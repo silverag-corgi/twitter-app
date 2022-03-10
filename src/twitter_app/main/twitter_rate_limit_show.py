@@ -7,7 +7,8 @@ from typing import Optional
 import python_lib_for_me as pyl
 import tweepy
 
-from twitter_lib_for_me.logic import twitter_api_auth, twitter_list_gen
+from twitter_app.logic import twitter_api_auth
+from twitter_app.util.twitter_api_standard_v1_1 import twitter_developer_util
 
 
 def main() -> int:
@@ -18,13 +19,14 @@ def main() -> int:
     Summary:
         コマンドラインから実行する。
         
-        引数を検証して問題ない場合、Twitterリストを生成する。
+        引数を検証して問題ない場合、レート制限を表示する。
     
     Args:
         -
     
     Args on cmd line:
-        twitter_list_file_path (str) : [任意] Twitterリストファイルパス
+        resource_family (str)   : [必須] リソース群
+        endpoint (str)          : [必須] エンドポイント
     
     Returns:
         int: 終了コード(0：正常、1：異常)
@@ -48,11 +50,8 @@ def main() -> int:
         # TwitterAPI認証ロジックの実行
         api: tweepy.API = twitter_api_auth.do_logic_of_api_by_oauth_1_user()
         
-        # Twitterリスト生成ロジックの実行
-        twitter_list_gen.do_logic(
-                api,
-                args.twitter_list_file_path
-            )
+        # レート制限の表示
+        twitter_developer_util.show_rate_limit(api, args.resource_family, args.endpoint)
     except Exception as e:
         if lg is not None:
             pyl.log_exc(lg, '')
@@ -73,8 +72,13 @@ def __get_args() -> argparse.Namespace:
         help_msg: str = ''
         
         # 必須の引数
-        help_msg = 'Twitterリストファイルパス (ワイルドカード可) (default: %(default)s)'
-        parser.add_argument('-t', '--twitter_list_file_path', default='input/*.csv', help=help_msg)
+        help_msg =  'リソース群\n' + \
+                    '例：application'
+        parser.add_argument('resource_family', help=help_msg)
+        help_msg =  'エンドポイント\n' + \
+                    '例：/application/rate_limit_status\n' + \
+                    '両方とも空文字の場合は全てのレート制限を表示します'
+        parser.add_argument('endpoint', help=help_msg)
         
         args: argparse.Namespace = parser.parse_args()
     except Exception as e:
@@ -92,12 +96,7 @@ def __validate_args(args: argparse.Namespace) -> bool:
         # ロガー取得
         lg = pyl.get_logger(__name__)
         
-        # 検証：TwitterリストファイルパスがCSVファイルのパスであること
-        twitter_list_file_path: tuple[str, str] = os.path.splitext(args.twitter_list_file_path)
-        if twitter_list_file_path[1] != '.csv':
-            pyl.log_war(lg, f'TwitterリストファイルパスがCSVファイルのパスではありません。' +
-                            f'(twitter_list_file_path:{args.twitter_list_file_path})')
-            return False
+        # 検証：なし
     except Exception as e:
         raise(e)
     
