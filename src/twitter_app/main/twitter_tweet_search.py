@@ -7,7 +7,7 @@ from typing import Optional
 import python_lib_for_me as pyl
 import tweepy
 
-from twitter_lib_for_me.logic import twitter_api_auth, twitter_tweet_search
+from twitter_app.logic import twitter_api_auth, twitter_tweet_search
 
 
 def main() -> int:

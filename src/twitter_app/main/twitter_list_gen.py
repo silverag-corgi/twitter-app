@@ -5,8 +5,9 @@ from logging import Logger
 from typing import Optional
 
 import python_lib_for_me as pyl
+import tweepy
 
-from twitter_lib_for_me.logic import twitter_api_auth
+from twitter_app.logic import twitter_api_auth, twitter_list_gen
 
 
 def main() -> int:
@@ -17,13 +18,13 @@ def main() -> int:
     Summary:
         コマンドラインから実行する。
         
-        コンシューマーキーとPINコードを基にアクセストークンを生成し、認証情報ファイルに保存する。
+        引数を検証して問題ない場合、Twitterリストを生成する。
     
     Args:
         -
     
     Args on cmd line:
-        -
+        twitter_list_file_path (str) : [任意] Twitterリストファイルパス
     
     Returns:
         int: 終了コード(0：正常、1：異常)
@@ -45,7 +46,13 @@ def main() -> int:
             return 1
         
         # TwitterAPI認証ロジックの実行
-        twitter_api_auth.do_logic_of_api_by_oauth_1_user_using_pin()
+        api: tweepy.API = twitter_api_auth.do_logic_of_api_by_oauth_1_user()
+        
+        # Twitterリスト生成ロジックの実行
+        twitter_list_gen.do_logic(
+                api,
+                args.twitter_list_file_path
+            )
     except Exception as e:
         if lg is not None:
             pyl.log_exc(lg, '')
@@ -63,6 +70,12 @@ def __get_args() -> argparse.Namespace:
                 exit_on_error=True
             )
         
+        help_msg: str = ''
+        
+        # 必須の引数
+        help_msg = 'Twitterリストファイルパス (ワイルドカード可) (default: %(default)s)'
+        parser.add_argument('-t', '--twitter_list_file_path', default='input/*.csv', help=help_msg)
+        
         args: argparse.Namespace = parser.parse_args()
     except Exception as e:
         raise(e)
@@ -79,7 +92,12 @@ def __validate_args(args: argparse.Namespace) -> bool:
         # ロガー取得
         lg = pyl.get_logger(__name__)
         
-        # 検証：なし
+        # 検証：TwitterリストファイルパスがCSVファイルのパスであること
+        twitter_list_file_path: tuple[str, str] = os.path.splitext(args.twitter_list_file_path)
+        if twitter_list_file_path[1] != '.csv':
+            pyl.log_war(lg, f'TwitterリストファイルパスがCSVファイルのパスではありません。' +
+                            f'(twitter_list_file_path:{args.twitter_list_file_path})')
+            return False
     except Exception as e:
         raise(e)
     
