@@ -113,8 +113,9 @@ Bの手順は5分程度で完了するが、Twitter社が突然公開を停止�
 - Consumer Secret = API Secret
 
 ここで本項は一旦保留する。
+
 [5.2. 仮想環境の構築](#52-仮想環境の構築)
-まで完了した後に
+まで完了した後に、上記項目を用いて
 [5.3. TwitterAPI認証情報の設定](#53-twitterapi認証情報の設定)
 及び
 [6.5. TwitterPIN認証](#65-twitterpin認証)
@@ -222,12 +223,16 @@ googlemaps,Google Maps
 
 ```cmd
 > poetry run list-gen -h
-usage: list-gen [-h] [-t TWITTER_LIST_FILE_PATH]
+usage: list-gen [-h] [-t TWITTER_LIST_FILE_PATH] [-hd HEADER_LINE_NUM]       
 
 options:
   -h, --help            show this help message and exit
-  -t TWITTER_LIST_FILE_PATH, --twitter_list_file_path TWITTER_LIST_FILE_PATH
-                        Twitterリストファイルパス (ワイルドカード可) (default: input/*.csv)
+  -t TWITTER_LIST_FILE_PATH, --twitter_list_file_path TWITTER_LIST_FILE_PATH 
+                        Twitterリストファイルパス(csv) (default: input/*.csv)
+                        ワイルドカード可
+  -hd HEADER_LINE_NUM, --header_line_num HEADER_LINE_NUM
+                        ヘッダ行番号 (default: 1)
+                        0：ヘッダなし、1~：ヘッダとなるファイルの行番号
 ```
 
 
