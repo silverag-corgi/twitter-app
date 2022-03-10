@@ -10,7 +10,12 @@ import tweepy
 from twitter_app.util.twitter_api_standard_v1_1 import twitter_users_util
 
 
-def do_logic(api: tweepy.API, twitter_list_file_path_with_wildcard: str) -> None:
+def do_logic(
+        api: tweepy.API,
+        twitter_list_file_path_with_wildcard: str,
+        header_line_num: int
+    ) -> None:
+    
     '''ロジック実行'''
     
     lg: Optional[Logger] = None
@@ -52,6 +57,10 @@ def do_logic(api: tweepy.API, twitter_list_file_path_with_wildcard: str) -> None
                             quotechar='"',
                             skipinitialspace=False
                         )
+                    
+                    # ヘッダのスキップ
+                    for _ in range(header_line_num):
+                        next(twitter_list_file_lines)
                     
                     # ユーザの追加
                     pyl.log_inf(lg, f'時間がかかるため気長にお待ちください。')

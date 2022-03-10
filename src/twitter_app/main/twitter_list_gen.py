@@ -24,7 +24,8 @@ def main() -> int:
         -
     
     Args on cmd line:
-        twitter_list_file_path (str) : [任意] Twitterリストファイルパス
+        twitter_list_file_path (str)    : [任意] Twitterリストファイルパス
+        header_line_num (int)           : [任意] ヘッダ行番号
     
     Returns:
         int: 終了コード(0：正常、1：異常)
@@ -51,7 +52,8 @@ def main() -> int:
         # Twitterリスト生成ロジックの実行
         twitter_list_gen.do_logic(
                 api,
-                args.twitter_list_file_path
+                args.twitter_list_file_path,
+                int(args.header_line_num)
             )
     except Exception as e:
         if lg is not None:
@@ -72,9 +74,13 @@ def __get_args() -> argparse.Namespace:
         
         help_msg: str = ''
         
-        # 必須の引数
-        help_msg = 'Twitterリストファイルパス (ワイルドカード可) (default: %(default)s)'
+        # 任意の引数
+        help_msg =  'Twitterリストファイルパス(csv) (default: %(default)s)\n' + \
+                    'ワイルドカード可'
         parser.add_argument('-t', '--twitter_list_file_path', default='input/*.csv', help=help_msg)
+        help_msg =  'ヘッダ行番号 (default: %(default)s)\n' + \
+                    '0：ヘッダなし、1~：ヘッダとなるファイルの行番号'
+        parser.add_argument('-hd', '--header_line_num', type=int, default='1', help=help_msg)
         
         args: argparse.Namespace = parser.parse_args()
     except Exception as e:
@@ -97,6 +103,12 @@ def __validate_args(args: argparse.Namespace) -> bool:
         if twitter_list_file_path[1] != '.csv':
             pyl.log_war(lg, f'TwitterリストファイルパスがCSVファイルのパスではありません。' +
                             f'(twitter_list_file_path:{args.twitter_list_file_path})')
+            return False
+        
+        # 検証：ヘッダ行番号が0以上であること
+        if int(args.header_line_num) < 0:
+            pyl.log_war(lg, f'ヘッダ行番号が0以上ではありません。' +
+                            f'(header_line_num:{args.header_line_num})')
             return False
     except Exception as e:
         raise(e)
