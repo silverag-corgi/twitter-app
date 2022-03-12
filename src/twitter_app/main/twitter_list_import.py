@@ -34,22 +34,22 @@ def main() -> int:
     lg: Optional[Logger] = None
     
     try:
-        # ロガー取得
+        # ロガーの取得
         lg = pyl.get_logger(__name__)
         
-        # 実行コマンド表示
+        # 実行コマンドの表示
         sys.argv[0] = os.path.basename(sys.argv[0])
         pyl.log_inf(lg, f'実行コマンド：{sys.argv}')
         
-        # 引数取得＆検証
+        # 引数の取得・検証
         args: argparse.Namespace = __get_args()
         if __validate_args(args) == False:
             return 1
         
-        # TwitterAPI認証ロジックの実行
+        # ロジック(TwitterAPI認証)の実行
         api: tweepy.API = twitter_api_auth.do_logic_of_api_by_oauth_1_user()
         
-        # Twitterリストインポートロジックの実行
+        # ロジック(Twitterリストインポート)の実行
         twitter_list_import.do_logic(
                 api,
                 args.twitter_list_file_path,
@@ -95,7 +95,7 @@ def __validate_args(args: argparse.Namespace) -> bool:
     lg: Optional[Logger] = None
     
     try:
-        # ロガー取得
+        # ロガーの取得
         lg = pyl.get_logger(__name__)
         
         # 検証：TwitterリストファイルパスがCSVファイルのパスであること

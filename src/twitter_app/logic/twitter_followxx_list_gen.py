@@ -27,7 +27,7 @@ def do_logic(api: tweepy.API, user_id: str, num_of_followxxs: int, kind_of_pages
     twitter_list: Optional[tweepy.List] = None
     
     try:
-        # ロガー取得
+        # ロガーの取得
         lg = pyl.get_logger(__name__)
         pyl.log_inf(lg, f'Twitterフォロイー(フォロワー)リスト生成を開始します。')
         

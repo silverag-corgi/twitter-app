@@ -23,7 +23,7 @@ def do_logic(
     twitter_list: Optional[tweepy.List] = None
     
     try:
-        # ロガー取得
+        # ロガーの取得
         lg = pyl.get_logger(__name__)
         pyl.log_inf(lg, f'Twitterリストインポートを開始します。')
         

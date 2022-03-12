@@ -26,7 +26,7 @@ def do_logic(
     tweet_search_result_path: str = ""
     
     try:
-        # ロガー取得
+        # ロガーの取得
         lg = pyl.get_logger(__name__)
         pyl.log_inf(lg, f'Twitterツイート検索を開始します。')
         
