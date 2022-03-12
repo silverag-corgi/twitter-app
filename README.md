@@ -16,7 +16,7 @@
   - [5.3. TwitterAPI認証情報の設定](#53-twitterapi認証情報の設定)
 - [6. 使い方](#6-使い方)
   - [6.1. Twitterリストインポート](#61-twitterリストインポート)
-    - [6.1.1. ユーザ一覧CSVファイルの作成](#611-ユーザ一覧csvファイルの作成)
+    - [6.1.1. TwitterリストCSVファイルの作成](#611-twitterリストcsvファイルの作成)
     - [6.1.2. プログラムの実行](#612-プログラムの実行)
   - [6.2. Twitterフォロイー(フォロワー)リスト生成](#62-twitterフォロイーフォロワーリスト生成)
     - [6.2.1. プログラムの実行](#621-プログラムの実行)
@@ -40,7 +40,7 @@ TwitterAPIを利用したアプリケーション。
 アプリケーションとしてコマンドラインから実行できる。
 
 - Twitterリストインポート
-  - ユーザ一覧のCSVファイルを基にTwitterリストをインポートする
+  - 指定したCSVファイルをTwitterリストとしてTwitterにインポートする
 - Twitterフォロイー(フォロワー)リスト生成
   - 指定したTwitterユーザのフォロイー(フォロワー)のTwitterリストを生成する
 - Twitterツイート検索
@@ -184,7 +184,7 @@ C:\Git\python\twitter-app\.venv
 ## 6.1. Twitterリストインポート
 
 
-### 6.1.1. ユーザ一覧CSVファイルの作成
+### 6.1.1. TwitterリストCSVファイルの作成
 
 `input/twitter_list_name.csv.sample`をコピペし、拡張子`.sample`を削除し、作成したいリスト名にリネームする。
 
@@ -223,12 +223,12 @@ googlemaps,Google Maps
 
 ```cmd
 > poetry run list-import -h 
-usage: list-import [-h] [-t TWITTER_LIST_FILE_PATH] [-hd HEADER_LINE_NUM]
+usage: list-import [-h] [-t TWITTER_LIST_CSV_FILE_PATH] [-hd HEADER_LINE_NUM]
 
 options:
   -h, --help            show this help message and exit
-  -t TWITTER_LIST_FILE_PATH, --twitter_list_file_path TWITTER_LIST_FILE_PATH
-                        Twitterリストファイルパス(csv) (default: input/*.csv)
+  -t TWITTER_LIST_CSV_FILE_PATH, --twitter_list_csv_file_path TWITTER_LIST_CSV_FILE_PATH
+                        TwitterリストCSVファイルパス(csv) (default: input/*.csv)
                         ワイルドカード可
   -hd HEADER_LINE_NUM, --header_line_num HEADER_LINE_NUM
                         ヘッダ行番号 (default: 1)
