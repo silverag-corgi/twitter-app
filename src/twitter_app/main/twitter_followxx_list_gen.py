@@ -36,24 +36,24 @@ def main() -> int:
     lg: Optional[Logger] = None
     
     try:
-        # ロガー取得
+        # ロガーの取得
         lg = pyl.get_logger(__name__)
         
-        # 実行コマンド表示
+        # 実行コマンドの表示
         sys.argv[0] = os.path.basename(sys.argv[0])
         pyl.log_inf(lg, f'実行コマンド：{sys.argv}')
         
-        # 引数取得＆検証
+        # 引数の取得・検証
         args: argparse.Namespace = __get_args()
         if __validate_args(args) == False:
             return 1
         
-        # TwitterAPI認証ロジックの実行
+        # ロジック(TwitterAPI認証)の実行
         api: tweepy.API = twitter_api_auth.do_logic_of_api_by_oauth_1_user()
         
-        # Twitterリスト生成ロジックの実行
+        # ロジック(Twitterリスト生成)の実行
         if bool(args.generate_followee_list) == True:
-            # Twitterフォロイーリスト生成ロジックの実行
+            # ロジック(Twitterフォロイーリスト生成)の実行
             twitter_followxx_list_gen.do_logic(
                     api,
                     args.user_id,
@@ -61,7 +61,7 @@ def main() -> int:
                     twitter_followxx_list_gen.Pages.FOLLOWEE_LIST
                 )
         elif bool(args.generate_follower_list) == True:
-            # Twitterフォロワーリスト生成ロジックの実行
+            # ロジック(Twitterフォロワーリスト生成)の実行
             twitter_followxx_list_gen.do_logic(
                     api,
                     args.user_id,
@@ -120,7 +120,7 @@ def __validate_args(args: argparse.Namespace) -> bool:
     lg: Optional[Logger] = None
     
     try:
-        # ロガー取得
+        # ロガーの取得
         lg = pyl.get_logger(__name__)
         
         # 検証：ユーザIDが4文字以上であること
