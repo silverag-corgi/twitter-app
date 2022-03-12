@@ -7,13 +7,13 @@ import pandas as pd
 import python_lib_for_me as pyl
 import tweepy
 
-from twitter_app.util import const_util
+from twitter_app.util import const_util, pandas_util
 from twitter_app.util.twitter_api_standard_v1_1 import twitter_users_util
 
 
 def do_logic(
         api: tweepy.API,
-        twitter_list_file_path_with_wildcard: str,
+        twitter_list_csv_file_path_with_wildcard: str,
         header_line_num: int
     ) -> None:
     
@@ -27,33 +27,27 @@ def do_logic(
         lg = pyl.get_logger(__name__)
         pyl.log_inf(lg, f'Twitterリストインポートを開始します。')
         
-        # Twitterリストファイルパスの取得
-        twitter_list_file_paths: list[str] = glob.glob(twitter_list_file_path_with_wildcard)
+        # TwitterリストCSVファイルパスの取得
+        twitter_list_csv_file_paths: list[str] = glob.glob(twitter_list_csv_file_path_with_wildcard)
         
-        # Twitterリストファイルの件数が0件の場合
-        if len(twitter_list_file_paths) == 0:
-            pyl.log_inf(lg, f'Twitterリストファイルの件数が0件です。' +
-                            f'(twitter_list_file_path:{twitter_list_file_path_with_wildcard})')
+        # TwitterリストCSVファイルの件数が0件の場合
+        if len(twitter_list_csv_file_paths) == 0:
+            pyl.log_inf(lg, f'TwitterリストCSVファイルの件数が0件です。' +
+                            f'(twitter_list_csv_file_path:' +
+                            f'{twitter_list_csv_file_path_with_wildcard})')
         else:
             # TwitterAPIの実行
-            for twitter_list_file_path in twitter_list_file_paths:
+            for twitter_list_csv_file_path in twitter_list_csv_file_paths:
                 # Twitterリストが存在しない場合
                 twitter_list_name: str = \
-                    os.path.splitext(os.path.basename(twitter_list_file_path))[0]
+                    os.path.splitext(os.path.basename(twitter_list_csv_file_path))[0]
                 if twitter_users_util.has_twitter_list(api, twitter_list_name) == False:
                     # Twitterリストの生成
                     twitter_list = twitter_users_util.generate_twitter_list(api, twitter_list_name)
                     
-                    # Twitterリストデータフレームの取得(Twitterリストファイルの読み込み)
-                    twitter_list_df: pd.DataFrame = pd.read_csv(
-                            twitter_list_file_path,
-                            header=None,
-                            names=const_util.TWITTER_LIST_FILE_HEADER,
-                            index_col=None,
-                            usecols=[0, 1],
-                            skiprows=1,
-                            encoding=const_util.ENCODING
-                        )
+                    # Twitterリストデータフレームの取得(TwitterリストCSVファイルの読み込み)
+                    twitter_list_df: pd.DataFrame = \
+                        pandas_util.read_twitter_list_file(twitter_list_csv_file_path)
                     
                     # ユーザの追加
                     pyl.log_inf(lg, f'時間がかかるため気長にお待ちください。')
