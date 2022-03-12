@@ -7,7 +7,7 @@ from typing import Optional
 import python_lib_for_me as pyl
 import tweepy
 
-from twitter_app.logic import twitter_api_auth, twitter_list_gen
+from twitter_app.logic import twitter_api_auth, twitter_list_import
 
 
 def main() -> int:
@@ -18,7 +18,7 @@ def main() -> int:
     Summary:
         コマンドラインから実行する。
         
-        引数を検証して問題ない場合、Twitterリストを生成する。
+        引数を検証して問題ない場合、Twitterリストをインポートする。
     
     Args:
         -
@@ -49,8 +49,8 @@ def main() -> int:
         # TwitterAPI認証ロジックの実行
         api: tweepy.API = twitter_api_auth.do_logic_of_api_by_oauth_1_user()
         
-        # Twitterリスト生成ロジックの実行
-        twitter_list_gen.do_logic(
+        # Twitterリストインポートロジックの実行
+        twitter_list_import.do_logic(
                 api,
                 args.twitter_list_file_path,
                 int(args.header_line_num)
