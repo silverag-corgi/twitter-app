@@ -4,10 +4,10 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python: twitter_list_gen",
+            "name": "Python: twitter_list_import",
             "type": "python",
             "request": "launch",
-            "module": "twitter_app.main.twitter_list_gen",
+            "module": "twitter_app.main.twitter_list_import",
             "args": [
                 "-t", "input/*.csv"
             ]

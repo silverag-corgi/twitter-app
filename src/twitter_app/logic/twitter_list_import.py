@@ -1,12 +1,13 @@
-import csv
 import glob
 import os
 from logging import Logger
-from typing import Any, Optional, TextIO
+from typing import Optional
 
+import pandas as pd
 import python_lib_for_me as pyl
 import tweepy
 
+from twitter_app.util import const_util
 from twitter_app.util.twitter_api_standard_v1_1 import twitter_users_util
 
 
@@ -24,7 +25,7 @@ def do_logic(
     try:
         # ロガー取得
         lg = pyl.get_logger(__name__)
-        pyl.log_inf(lg, f'Twitterリスト生成を開始します。')
+        pyl.log_inf(lg, f'Twitterリストインポートを開始します。')
         
         # Twitterリストファイルパスの取得
         twitter_list_file_paths: list[str] = glob.glob(twitter_list_file_path_with_wildcard)
@@ -43,41 +44,33 @@ def do_logic(
                     # Twitterリストの生成
                     twitter_list = twitter_users_util.generate_twitter_list(api, twitter_list_name)
                     
-                    # Twitterリストファイルの読み込み
-                    twitter_list_file_object: TextIO = open(
+                    # Twitterリストデータフレームの取得(Twitterリストファイルの読み込み)
+                    twitter_list_df: pd.DataFrame = pd.read_csv(
                             twitter_list_file_path,
-                            encoding='utf_8',
-                            newline='\r\n'
+                            header=None,
+                            names=const_util.TWITTER_LIST_FILE_HEADER,
+                            index_col=None,
+                            usecols=[0, 1],
+                            skiprows=1,
+                            encoding=const_util.ENCODING
                         )
-                    twitter_list_file_lines: Any = csv.reader(
-                            twitter_list_file_object,
-                            delimiter=',',
-                            doublequote=True,
-                            lineterminator='\r\n',
-                            quotechar='"',
-                            skipinitialspace=False
-                        )
-                    
-                    # ヘッダのスキップ
-                    for _ in range(header_line_num):
-                        next(twitter_list_file_lines)
                     
                     # ユーザの追加
                     pyl.log_inf(lg, f'時間がかかるため気長にお待ちください。')
-                    for twitter_list_file_line in twitter_list_file_lines:
-                        if len(twitter_list_file_line) >= 2:
+                    for _, twitter_list_row in twitter_list_df.iterrows():
+                        if len(twitter_list_row) >= 2:
                             twitter_users_util.add_user_to_twitter_list(
                                     api,
                                     twitter_list,
-                                    twitter_list_file_line[0],
-                                    twitter_list_file_line[1]
+                                    str(twitter_list_row[const_util.TWITTER_LIST_FILE_HEADER[0]]),
+                                    str(twitter_list_row[const_util.TWITTER_LIST_FILE_HEADER[1]])
                                 )
                     
                     # Twitterリストの破棄(ユーザが0人の場合)
-                    if twitter_list_file_lines.line_num == 0:
+                    if len(twitter_list_df) == 0:
                         twitter_users_util.destroy_twitter_list(api, twitter_list)
         
-        pyl.log_inf(lg, f'Twitterリスト生成を終了します。')
+        pyl.log_inf(lg, f'Twitterリストインポートを終了します。')
     except Exception as e:
         # Twitterリストの破棄
         if twitter_list is not None:
