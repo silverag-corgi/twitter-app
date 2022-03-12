@@ -9,10 +9,7 @@ from tweepy.models import ResultSet
 
 from twitter_app import util
 from twitter_app.util import const_util
-from twitter_app.util.twitter_api_standard_v1_1 import (
-    twitter_developer_util,
-    twitter_users_util,
-)
+from twitter_app.util.twitter_api_standard_v1_1 import twitter_developer_util, twitter_users_util
 
 
 class Pages(IntEnum):
@@ -88,36 +85,38 @@ def do_logic(api: tweepy.API, user_id: str, num_of_followxxs: int, kind_of_pages
             twitter_list_name: str = \
                 twitter_list_name_format.format(user_info.screen_name, user_info.name)
             
-            # Twitterリストが存在しない場合
-            if twitter_users_util.has_twitter_list(api, twitter_list_name) == False:
-                # Twitterリストの生成
-                twitter_list = twitter_users_util.generate_twitter_list(api, twitter_list_name)
-                
-                # フォロイー(フォロワー)の取得・追加
-                count_of_followxxs: int = 0
-                count_of_added_followxxs: int = 0
-                for followxxs_by_page in followxx_list_pages:
-                    # followxx: tweepy.models.User
-                    for followxx in followxxs_by_page:
-                        # ユーザの追加
-                        add_user_result: bool = twitter_users_util.add_user_to_twitter_list(
-                                api,
-                                twitter_list,
-                                followxx.screen_name,
-                                followxx.name
-                            )
-                        
-                        # ユーザのカウント
-                        count_of_followxxs = count_of_followxxs + 1
-                        if add_user_result == True:
-                            count_of_added_followxxs = count_of_added_followxxs + 1
-                
-                pyl.log_inf(lg, f'フォロイー(フォロワー)の取得・追加が完了しました。' +
-                            f'(count_of_followxxs:{count_of_added_followxxs}/{count_of_followxxs})')
-                
-                # Twitterリストの破棄(フォロイー(フォロワー)が0人の場合)
-                if count_of_added_followxxs == 0:
-                    twitter_users_util.destroy_twitter_list(api, twitter_list)
+            # Twitterリストが存在する場合
+            if twitter_users_util.has_twitter_list(api, twitter_list_name) == True:
+                twitter_users_util.destroy_twitter_list(api, twitter_list_name)
+            
+            # Twitterリストの生成
+            twitter_list = twitter_users_util.generate_twitter_list(api, twitter_list_name)
+            
+            # フォロイー(フォロワー)の取得・追加
+            count_of_followxxs: int = 0
+            count_of_added_followxxs: int = 0
+            for followxxs_by_page in followxx_list_pages:
+                # followxx: tweepy.models.User
+                for followxx in followxxs_by_page:
+                    # ユーザの追加
+                    add_user_result: bool = twitter_users_util.add_user_to_twitter_list(
+                            api,
+                            twitter_list,
+                            followxx.screen_name,
+                            followxx.name
+                        )
+                    
+                    # ユーザのカウント
+                    count_of_followxxs = count_of_followxxs + 1
+                    if add_user_result == True:
+                        count_of_added_followxxs = count_of_added_followxxs + 1
+            
+            pyl.log_inf(lg, f'フォロイー(フォロワー)の取得・追加が完了しました。' +
+                        f'(count_of_followxxs:{count_of_added_followxxs}/{count_of_followxxs})')
+            
+            # Twitterリストの破棄(フォロイー(フォロワー)が0人の場合)
+            if count_of_added_followxxs == 0:
+                twitter_users_util.destroy_twitter_list(api, twitter_list_name)
         
         # レート制限の表示
         if kind_of_pages == Pages.FOLLOWEE_LIST:
@@ -129,7 +128,7 @@ def do_logic(api: tweepy.API, user_id: str, num_of_followxxs: int, kind_of_pages
     except Exception as e:
         # Twitterリストの破棄
         if twitter_list is not None:
-            twitter_users_util.destroy_twitter_list(api, twitter_list)
+            twitter_users_util.destroy_twitter_list(api, twitter_list.name)
         
         raise(e)
     

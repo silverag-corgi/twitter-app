@@ -6,6 +6,10 @@ import python_lib_for_me as pyl
 import tweepy
 from tweepy.models import ResultSet
 
+####################################################################################################
+# Follow, search, and get users
+####################################################################################################
+
 
 class Followee(IntEnum):
     MAX_NUM_OF_DATA_PER_REQUEST = 200
@@ -175,6 +179,11 @@ def get_user_info(
     return user_info
 
 
+####################################################################################################
+# Create and manage lists
+####################################################################################################
+
+
 def has_twitter_list(
         api: tweepy.API,
         twitter_list_name: str
@@ -271,15 +280,15 @@ def generate_twitter_list(
 
 def destroy_twitter_list(
         api: tweepy.API,
-        twitter_list: tweepy.List
+        twitter_list_name: str
     ) -> bool:
     
     '''
     Twitterリスト破棄
     
     Args:
-        api (tweepy.API)            : API
-        twitter_list (tweepy.List)  : Twitterリスト
+        api (tweepy.API)        : API
+        twitter_list_name (str) : Twitterリスト名
     
     Returns:
         bool: 実行結果 (True：成功、False：失敗)
@@ -302,14 +311,20 @@ def destroy_twitter_list(
     try:
         lg = pyl.get_logger(__name__)
         
-        api.destroy_list(list_id=twitter_list.id)
-        pyl.log_inf(lg, f'Twitterリスト破棄に成功しました。(twitter_list:{twitter_list.name})')
-        result = True
+        twitter_lists: Any = api.get_lists()
+        
+        for twitter_list in twitter_lists:
+            if twitter_list.name == twitter_list_name:
+                api.destroy_list(list_id=twitter_list.id)
+                pyl.log_inf(lg, f'Twitterリスト破棄に成功しました。' +
+                                f'(twitter_list_name:{twitter_list_name})')
+                result = True
+                break
     except Exception as e:
         if lg is not None:
             err_msg: str = str(e).replace('\n', ' ')
             pyl.log_war(lg, f'Twitterリスト破棄に失敗しました。' +
-                            f'(twitter_list:{twitter_list.name}, err_msg:{err_msg})')
+                            f'(twitter_list_name:{twitter_list_name}, err_msg:{err_msg})')
     
     return result
 
@@ -362,3 +377,50 @@ def add_user_to_twitter_list(
                             f'(user_id:{user_id: <15}, user_name:{user_name}, err_msg:{err_msg})')
     
     return result
+
+
+####################################################################################################
+# Manage account settings and profile
+####################################################################################################
+
+def get_auth_user_info(
+        api: tweepy.API,
+    ) -> Any:
+    
+    '''
+    認証ユーザ情報取得
+    
+    Args:
+        api (tweepy.API) : API
+    
+    Returns:
+        Any: 認証ユーザ情報 (tweepy.models.User)
+    
+    Notes:
+        - 使用するエンドポイントはGETメソッドである
+    
+    References:
+        - エンドポイント
+            - https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/manage-account-settings/overview
+            - https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/manage-account-settings/api-reference/get-account-verify_credentials
+        - オブジェクトモデル
+            - https://developer.twitter.com/en/docs/twitter-api/v1/data-dictionary/object-model/user
+    '''  # noqa: E501
+    
+    lg: Optional[Logger] = None
+    
+    try:
+        lg = pyl.get_logger(__name__)
+        
+        auth_user_info : Any = api.verify_credentials()
+        
+        pyl.log_inf(lg, f'認証ユーザ情報取得に成功しました。' +
+                        f'(user_id:{auth_user_info.screen_name: <15}, ' +
+                        f'user_name:{auth_user_info.name})')
+    except Exception as e:
+        if lg is not None:
+            err_msg: str = str(e).replace('\n', ' ')
+            pyl.log_err(lg, f'認証ユーザ情報取得に失敗しました。')
+        raise(e)
+    
+    return auth_user_info
