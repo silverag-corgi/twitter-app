@@ -51,7 +51,7 @@ def do_logic(
                 
                 # Twitterリストデータフレームの取得(TwitterリストCSVファイルの読み込み)
                 twitter_list_df: pd.DataFrame = \
-                    pandas_util.read_twitter_list_file(twitter_list_csv_file_path)
+                    pandas_util.read_twitter_list_file(twitter_list_csv_file_path, header_line_num)
                 
                 # ユーザの追加
                 pyl.log_inf(lg, f'時間がかかるため気長にお待ちください。')
