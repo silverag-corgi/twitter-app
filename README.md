@@ -8,8 +8,8 @@
 - [3. 動作確認済み環境](#3-動作確認済み環境)
 - [4. 事前準備](#4-事前準備)
   - [4.1. TwitterAPI認証情報の発行](#41-twitterapi認証情報の発行)
-    - [A. Twitter開発者ポータルサイトで申請する手順](#a-twitter開発者ポータルサイトで申請する手順)
-    - [B. Twitter社が公開しているコンシューマーキーとPINコードにより発行する手順](#b-twitter社が公開しているコンシューマーキーとpinコードにより発行する手順)
+    - [4.1.1. (A)Twitter開発者ポータルサイトで申請する手順](#411-atwitter開発者ポータルサイトで申請する手順)
+    - [4.1.2. (B)Twitter社が公開しているコンシューマーキーとPINコードにより発行する手順](#412-btwitter社が公開しているコンシューマーキーとpinコードにより発行する手順)
 - [5. セットアップ手順](#5-セットアップ手順)
   - [5.1. リポジトリのクローン](#51-リポジトリのクローン)
   - [5.2. 仮想環境の構築](#52-仮想環境の構築)
@@ -18,14 +18,16 @@
   - [6.1. Twitterリストインポート](#61-twitterリストインポート)
     - [6.1.1. TwitterリストCSVファイルの作成](#611-twitterリストcsvファイルの作成)
     - [6.1.2. プログラムの実行](#612-プログラムの実行)
-  - [6.2. Twitterフォロイー(フォロワー)リスト生成](#62-twitterフォロイーフォロワーリスト生成)
+  - [6.2. Twitterリストエクスポート](#62-twitterリストエクスポート)
     - [6.2.1. プログラムの実行](#621-プログラムの実行)
-  - [6.3. Twitterツイート検索](#63-twitterツイート検索)
+  - [6.3. Twitterフォロイー(フォロワー)リスト生成](#63-twitterフォロイーフォロワーリスト生成)
     - [6.3.1. プログラムの実行](#631-プログラムの実行)
-  - [6.4. Twitterレート制限表示](#64-twitterレート制限表示)
+  - [6.4. Twitterツイート検索](#64-twitterツイート検索)
     - [6.4.1. プログラムの実行](#641-プログラムの実行)
-  - [6.5. TwitterPIN認証](#65-twitterpin認証)
+  - [6.5. Twitterレート制限表示](#65-twitterレート制限表示)
     - [6.5.1. プログラムの実行](#651-プログラムの実行)
+  - [6.6. TwitterPIN認証](#66-twitterpin認証)
+    - [6.6.1. プログラムの実行](#661-プログラムの実行)
 - [7. 連絡先](#7-連絡先)
 - [8. ライセンス](#8-ライセンス)
 
@@ -41,6 +43,8 @@ TwitterAPIを利用したアプリケーション。
 
 - Twitterリストインポート
   - 指定したCSVファイルをTwitterリストとしてTwitterにインポートする
+- Twitterリストエクスポート
+  - 指定したTwitterリストをTwitterからエクスポートする
 - Twitterフォロイー(フォロワー)リスト生成
   - 指定したTwitterユーザのフォロイー(フォロワー)のTwitterリストを生成する
 - Twitterツイート検索
@@ -79,7 +83,7 @@ Bの手順は5分程度で完了するが、Twitter社が突然公開を停止�
 そのため、開発者などの長期的に使用する方向けである。
 
 
-### A. Twitter開発者ポータルサイトで申請する手順
+### 4.1.1. (A)Twitter開発者ポータルサイトで申請する手順
 
 [Twitter Developer Portal](https://developer.twitter.com/en/apply-for-access)
 で認証情報を発行する。
@@ -89,22 +93,26 @@ Bの手順は5分程度で完了するが、Twitter社が突然公開を停止�
 
 また、以下の通り設定する。
 
-|   No | 設定項目                                       | 設定値                            | 備考 |
-| ---: | ---------------------------------------------- | --------------------------------- | ---- |
-|   01 | User authentication settings - Methods         | OAuth 1.0a                        |      |
-|   02 | User authentication settings - App permissions | Read and write and Direct message |      |
-|   03 | Consumer Keys - API Key                        | (自動生成値)                      |      |
-|   04 | Consumer Keys - API Secret                     | (自動生成値)                      |      |
-|   05 | Authentication Tokens - Access Token           | (自動生成値)                      | (*1) |
-|   06 | Authentication Tokens - Access Token Secret    | (自動生成値)                      |      |
-|   07 | Access levels                                  | Elevated                          | (*2) |
+|   No | 設定項目                                       | 設定値                            | 備考   |
+| ---: | ---------------------------------------------- | --------------------------------- | ------ |
+|   01 | User authentication settings - Methods         | OAuth 1.0a                        |        |
+|   02 | User authentication settings - App permissions | Read and write and Direct message |        |
+|   03 | Consumer Keys - API Key                        | (自動生成値)                      | (1)    |
+|   04 | Consumer Keys - API Secret                     | (自動生成値)                      | (1)    |
+|   05 | Authentication Tokens - Access Token           | (自動生成値)                      | (2)(3) |
+|   06 | Authentication Tokens - Access Token Secret    | (自動生成値)                      | (2)(3) |
+|   07 | Access levels                                  | Elevated                          | (4)    |
 
-(*1)`App permissions`を変更した場合は再生成する必要がある
+(1)アプリの認証情報。アプリとは、Twitterクライアント(TweetDeckなど)やTwitter管理ツール(SocialDogなど)のこと。
 
-(*2)`Twitter API v1.1`を使用するため、`Essential`からのアップグレードを申請する必要がある
+(2)ユーザの認証情報。ユーザとは、Twitterアカウントのこと。
+
+(3)`App permissions`を変更した場合は再生成する必要がある。
+
+(4)`Twitter API v1.1`を使用するため、`Essential`からのアップグレードを申請する必要がある。
 
 
-### B. Twitter社が公開しているコンシューマーキーとPINコードにより発行する手順
+### 4.1.2. (B)Twitter社が公開しているコンシューマーキーとPINコードにより発行する手順
 
 [Twitter Official/unOfficial Credentials - Twitter for Mac](https://gist.github.com/shobotch/5160017#twitter-for-mac)
 に掲載されている下記項目を利用する。
@@ -142,7 +150,7 @@ Bの手順は5分程度で完了するが、Twitter社が突然公開を停止�
 下記コマンドを実行する。
 
 ```cmd
-> cd twitter-app                     # アプリケーションのパスに移動する
+> cd twitter-app                            # アプリケーションのパスに移動する
 > poetry config virtualenvs.in-project true # 仮想環境のインストール先をプロジェクト配下に設定する
 > poetry install                            # pyproject.tomlを基に仮想環境をインストールする
 ```
@@ -236,10 +244,59 @@ options:
 ```
 
 
-## 6.2. Twitterフォロイー(フォロワー)リスト生成
+## 6.2. Twitterリストエクスポート
 
 
 ### 6.2.1. プログラムの実行
+
+下記コマンドを実行する。
+
+実行例：
+```cmd
+> cd twitter-app
+> poetry run list-exp -s -name "Google関連アカウント, Microsoft関連アカウント"
+```
+
+また、ヘルプを呼び出す時は下記コマンドを実行する。
+
+```cmd
+> poetry run list-exp -h
+usage: list-exp [-h] (-s | -e) (-all | -id TWITTER_LIST_ID | -name TWITTER_LIST_NAME)
+
+Twitterリストエクスポート
+指定したTwitterリストをTwitterからエクスポートする
+
+options:
+  -h, --help            show this help message and exit
+
+グループA:
+  実行する処理を選択する
+
+  -s, --show_twitter_list
+                        [1つのみ必須] Twitterリスト表示要否
+                        指定した場合はTwitterリストを表示する
+  -e, --export_twitter_list
+                        [1つのみ必須] Twitterリストエクスポート要否
+                        指定した場合はTwitterリストをエクスポートする
+
+グループB:
+  処理対象のTwitterリストを選択する
+
+  -all, --all_twitter_list
+                        [1つのみ必須] 全てのTwitterリスト
+  -id TWITTER_LIST_ID, --twitter_list_id TWITTER_LIST_ID
+                        [1つのみ必須] TwitterリストID (csv形式)
+                        例："0123456789111111111, 0123456789222222222"
+  -name TWITTER_LIST_NAME, --twitter_list_name TWITTER_LIST_NAME
+                        [1つのみ必須] Twitterリスト名 (csv形式)
+                        例："Google関連アカウント, Microsoft関連アカウント"
+```
+
+
+## 6.3. Twitterフォロイー(フォロワー)リスト生成
+
+
+### 6.3.1. プログラムの実行
 
 下記コマンドを実行する。
 
@@ -275,10 +332,10 @@ options:
 ```
 
 
-## 6.3. Twitterツイート検索
+## 6.4. Twitterツイート検索
 
 
-### 6.3.1. プログラムの実行
+### 6.4.1. プログラムの実行
 
 下記コマンドを実行する。
 
@@ -307,10 +364,10 @@ options:
 ```
 
 
-## 6.4. Twitterレート制限表示
+## 6.5. Twitterレート制限表示
 
 
-### 6.4.1. プログラムの実行
+### 6.5.1. プログラムの実行
 
 下記コマンドを実行する。
 
@@ -338,10 +395,10 @@ options:
 ```
 
 
-## 6.5. TwitterPIN認証
+## 6.6. TwitterPIN認証
 
 
-### 6.5.1. プログラムの実行
+### 6.6.1. プログラムの実行
 
 下記コマンドを実行する。
 
