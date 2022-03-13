@@ -217,7 +217,7 @@ def has_twitter_list(
     try:
         lg = pyl.get_logger(__name__)
         
-        twitter_lists: Any = api.get_lists()
+        twitter_lists: Any = api.get_lists(reverse=True)
         
         for twitter_list in twitter_lists:
             if twitter_list.name == twitter_list_name:
@@ -232,6 +232,122 @@ def has_twitter_list(
                             f'(twitter_list_name:{twitter_list_name}, err_msg:{err_msg})')
     
     return has_twitter_list
+
+
+def get_twitter_lists(
+        api: tweepy.API,
+        user_id: str = ''
+    ) -> Any:
+    
+    '''
+    Twitterリスト一覧取得
+    
+    Args:
+        api (tweepy.API)    : API
+        user_id (str)       : ユーザID
+    
+    Returns:
+        Any: Twitterリスト一覧 (tweepy.List[tweepy.models.List])
+    
+    Notes:
+        - 使用するエンドポイントはGETメソッドである
+    
+    References:
+        - エンドポイント
+            - https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/create-manage-lists/overview
+            - https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/create-manage-lists/api-reference/get-lists-list
+        - オブジェクトモデル
+            - https://developer.twitter.com/en/docs/twitter-api/data-dictionary/object-model/lists
+            - https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/create-manage-lists/api-reference/get-lists-show#example-response
+    '''  # noqa: E501
+    
+    lg: Optional[Logger] = None
+    
+    try:
+        lg = pyl.get_logger(__name__)
+        
+        twitter_lists: Any
+        if user_id == '':
+            twitter_lists = api.get_lists(reverse=True)
+        else:
+            twitter_lists = api.get_lists(screen_name=user_id, reverse=True)
+        
+        pyl.log_inf(lg, f'Twitterリスト一覧取得に成功しました。(user_id:{user_id})')
+    except Exception as e:
+        if lg is not None:
+            err_msg: str = str(e).replace('\n', ' ')
+            pyl.log_err(lg, f'Twitterリスト一覧取得に失敗しました。' +
+                            f'(user_id:{user_id}, err_msg:{err_msg})')
+        raise(e)
+    
+    return twitter_lists
+
+
+class ListMember(IntEnum):
+    MAX_NUM_OF_DATA_PER_REQUEST = 5000
+    MAX_NUM_OF_REQUESTS_PER_15MIN = 900
+
+
+def get_twitter_list_member_pages(
+        api: tweepy.API,
+        twitter_list_id: str,
+        num_of_data_per_request: int = ListMember.MAX_NUM_OF_DATA_PER_REQUEST.value,
+        num_of_requests: int = ListMember.MAX_NUM_OF_REQUESTS_PER_15MIN.value
+    ) -> list[ResultSet]:
+    
+    '''
+    Twitterリストメンバーページ取得
+    
+    Args:
+        api (tweepy.API)                : API
+        twitter_list_id (str)           : TwitterリストID
+        num_of_data_per_request (int)   : リクエストごとのデータ数(デフォルト：5000)
+        num_of_requests (int)           : リクエスト数(デフォルト：900)
+    
+    Returns:
+        list[ResultSet] : Twitterリストメンバーページ (list[list[tweepy.models.User]])
+    
+    Notes:
+        - 使用するエンドポイントはGETメソッドである
+        - 引数「リクエストごとのデータ数」は上限が5000データ
+            - 超過して指定した場合は5000で上書きする
+        - 引数「リクエスト数」は15分ごとに最大900リクエスト
+            - 超過して指定した場合はレート制限により15分の待機時間が発生する
+        - 15分で最大450万データを取得できる
+            - 5000 data/req * 900 req/15-min = 4,500,000 data/15-min
+    
+    References:
+        - エンドポイント
+            - https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/create-manage-lists/overview
+            - https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/create-manage-lists/api-reference/get-lists-members
+        - オブジェクトモデル
+            - https://developer.twitter.com/en/docs/twitter-api/v1/data-dictionary/object-model/user
+    '''  # noqa: E501
+    
+    lg: Optional[Logger] = None
+    list_member_pages: list[ResultSet] = []
+    
+    try:
+        lg = pyl.get_logger(__name__)
+        
+        list_member_pagination: tweepy.Cursor = tweepy.Cursor(
+                api.get_list_members,
+                list_id=twitter_list_id,
+                count=num_of_data_per_request
+                if num_of_data_per_request <= ListMember.MAX_NUM_OF_DATA_PER_REQUEST.value
+                else ListMember.MAX_NUM_OF_DATA_PER_REQUEST.value
+            )
+        list_member_pages = list(list_member_pagination.pages(num_of_requests))
+        
+        pyl.log_inf(lg, f'Twitterリストメンバーページ取得に成功しました。' +
+                        f'(twitter_list_id:{twitter_list_id})')
+    except Exception as e:
+        if lg is not None:
+            err_msg: str = str(e).replace('\n', ' ')
+            pyl.log_war(lg, f'Twitterリストメンバーページ取得に失敗しました。' +
+                            f'(twitter_list_id:{twitter_list_id}, err_msg:{err_msg})')
+    
+    return list_member_pages
 
 
 def generate_twitter_list(
@@ -311,7 +427,7 @@ def destroy_twitter_list(
     try:
         lg = pyl.get_logger(__name__)
         
-        twitter_lists: Any = api.get_lists()
+        twitter_lists: Any = api.get_lists(reverse=True)
         
         for twitter_list in twitter_lists:
             if twitter_list.name == twitter_list_name:

@@ -3,6 +3,24 @@ import pandas as pd
 from twitter_app.util import const_util
 
 
+def save_twitter_list_df(
+        twitter_list_df: pd.DataFrame,
+        twitter_list_file_path: str
+    ) -> None:
+    
+    '''Twitterリストデータフレーム保存'''
+    
+    twitter_list_df.to_csv(
+            twitter_list_file_path,
+            header=True,
+            index=False,
+            mode='w',
+            encoding=const_util.ENCODING
+        )
+    
+    return None
+
+
 def read_twitter_list_file(
         twitter_list_csv_file_path: str,
         header_line_num: int
