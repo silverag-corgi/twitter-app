@@ -4,7 +4,8 @@ from twitter_app.util import const_util
 
 
 def read_twitter_list_file(
-        twitter_list_csv_file_path: str
+        twitter_list_csv_file_path: str,
+        header_line_num: int
     ) -> pd.DataFrame:
     
     '''TwitterリストCSVファイル読み込み'''
@@ -15,7 +16,7 @@ def read_twitter_list_file(
             names=const_util.TWITTER_LIST_FILE_HEADER,
             index_col=None,
             usecols=[0, 1],
-            skiprows=1,
+            skiprows=header_line_num,
             encoding=const_util.ENCODING
         )
     
