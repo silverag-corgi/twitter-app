@@ -63,6 +63,12 @@ def show_rate_limit(
     return None
 
 
+def show_rate_limit_of_lists_members(api: tweepy.API) -> None:
+    '''レート制限表示(GET lists/members)'''
+    show_rate_limit(api, 'lists', '/lists/members')
+    return None
+
+
 def show_rate_limit_of_friends_list(api: tweepy.API) -> None:
     '''レート制限表示(GET friends/list)'''
     show_rate_limit(api, 'friends', '/friends/list')
