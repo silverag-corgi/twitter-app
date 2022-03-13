@@ -25,8 +25,8 @@ def main() -> int:
     
     Args on cmd line:
         user_id (str)                   : [必須] ユーザID(Twitter)
-        generate_followee_list (bool)   : [いずれかが必須] フォロイーリスト生成
-        generate_follower_list (bool)   : [いずれかが必須] フォロワーリスト生成
+        generate_followee_list (bool)   : [グループAで1つのみ必須] フォロイーリスト生成
+        generate_follower_list (bool)   : [グループAで1つのみ必須] フォロワーリスト生成
         num_of_followxxs (int)          : [任意] フォロイー(フォロワー)数
     
     Returns:
@@ -80,31 +80,37 @@ def __get_args() -> argparse.Namespace:
     '''引数取得'''
     
     try:
-        parser: argparse.ArgumentParser = argparse.ArgumentParser(
+        parser: pyl.CustomArgumentParser = pyl.CustomArgumentParser(
+                description='Twitterフォロイー(フォロワー)リスト生成\n' +
+                            '指定したTwitterユーザのフォロイー(フォロワー)のTwitterリストを生成します',
                 formatter_class=argparse.RawTextHelpFormatter,
                 exit_on_error=True
             )
         
         # 必須の引数
-        help_msg = 'ユーザID(Twitter)'
+        help_msg = '[必須] ユーザID(Twitter)'
         parser.add_argument('user_id', help=help_msg)
         
-        # グループで1つのみ必須の引数
-        group: argparse._MutuallyExclusiveGroup = parser.add_mutually_exclusive_group(required=True)
-        help_msg =  '{0}\n' + \
-                    'グループで1つのみ必須\n' + \
-                    '指定した場合は{1}のTwitterリストを生成する'
-        group.add_argument(
+        # グループAの引数
+        arg_group_a: argparse._ArgumentGroup = parser.add_argument_group(
+            'options in this group', '実行する処理を指定します')
+        mutually_exclusive_group_a: argparse._MutuallyExclusiveGroup = \
+            arg_group_a.add_mutually_exclusive_group(required=True)
+        help_msg =  '[1つのみ必須] {0}\n' + \
+                    '指定した場合は{1}のTwitterリストを生成します'
+        mutually_exclusive_group_a.add_argument(
             '-followee', '--generate_followee_list',
-            help=help_msg.format('フォロイーリスト生成', 'フォロイー'), action='store_true')
-        group.add_argument(
+            action='store_true',
+            help=help_msg.format('フォロイーリスト生成', 'フォロイー'))
+        mutually_exclusive_group_a.add_argument(
             '-follower', '--generate_follower_list',
-            help=help_msg.format('フォロワーリスト生成', 'フォロワー'), action='store_true')
+            action='store_true',
+            help=help_msg.format('フォロワーリスト生成', 'フォロワー'))
         
         # 任意の引数
-        help_msg =  'フォロイー(フォロワー)数 (default: %(default)s)\n' + \
+        help_msg =  '[任意] フォロイー(フォロワー)数 (デフォルト：%(default)s)\n' + \
                     'Twitterリストに追加したいフォロイー(フォロワー)の人数\n' + \
-                    '3000人を超過した場合はレート制限により3000人ごとに15分の待機時間が発生する'
+                    '3000人を超過した場合はレート制限により3000人ごとに15分の待機時間が発生します'
         parser.add_argument('-f', '--num_of_followxxs', type=int, default=3000, help=help_msg)
         
         args: argparse.Namespace = parser.parse_args()

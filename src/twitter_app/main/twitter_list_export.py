@@ -110,7 +110,7 @@ def __get_args() -> argparse.Namespace:
     try:
         parser: pyl.CustomArgumentParser = pyl.CustomArgumentParser(
                 description='Twitterリストエクスポート\n' +
-                            '指定したTwitterリストをTwitterからエクスポートする',
+                            '指定したTwitterリストをTwitterからエクスポートします',
                 formatter_class=argparse.RawTextHelpFormatter,
                 exit_on_error=True
             )
@@ -119,7 +119,7 @@ def __get_args() -> argparse.Namespace:
         
         # グループAの引数
         arg_group_a: argparse._ArgumentGroup = parser.add_argument_group(
-            'グループA', '実行する処理を選択する')
+            'options in this group', '実行する処理を指定します')
         mutually_exclusive_group_a: argparse._MutuallyExclusiveGroup = \
             arg_group_a.add_mutually_exclusive_group(required=True)
         help_msg =  '[1つのみ必須] {0}\n{1}'
@@ -127,16 +127,16 @@ def __get_args() -> argparse.Namespace:
             '-s', '--show_twitter_list',
             action='store_true',
             help=help_msg.format(
-                'Twitterリスト表示要否', '指定した場合はTwitterリストを表示する'))
+                'Twitterリスト表示要否', '指定した場合はTwitterリストを表示します'))
         mutually_exclusive_group_a.add_argument(
             '-e', '--export_twitter_list',
             action='store_true',
             help=help_msg.format(
-                'Twitterリストエクスポート要否', '指定した場合はTwitterリストをエクスポートする'))
+                'Twitterリストエクスポート要否', '指定した場合はTwitterリストをエクスポートします'))
         
         # グループBの引数
         arg_group_b: argparse._ArgumentGroup = parser.add_argument_group(
-            'グループB', '処理対象のTwitterリストを選択する')
+            'options in this group', '処理対象のTwitterリストを指定します')
         mutually_exclusive_group_b: argparse._MutuallyExclusiveGroup = \
             arg_group_b.add_mutually_exclusive_group(required=True)
         help_msg =  '[1つのみ必須] {0}\n{1}'

@@ -66,7 +66,9 @@ def __get_args() -> argparse.Namespace:
     '''引数取得'''
     
     try:
-        parser: argparse.ArgumentParser = argparse.ArgumentParser(
+        parser: pyl.CustomArgumentParser = pyl.CustomArgumentParser(
+                description='Twitterツイート検索\n' +
+                            '指定したクエリでツイートを検索し、ツイート検索結果ファイルを生成します',
                 formatter_class=argparse.RawTextHelpFormatter,
                 exit_on_error=True
             )
@@ -74,14 +76,14 @@ def __get_args() -> argparse.Namespace:
         help_msg: str = ''
         
         # 必須の引数
-        help_msg =  'クエリ\n' + \
-                    'RTと返信はデフォルトで除外する'
+        help_msg =  '[必須] クエリ\n' + \
+                    'RTと返信はデフォルトで除外します'
         parser.add_argument('query', help=help_msg)
         
         # 任意の引数
-        help_msg =  'ツイート数 (default: %(default)s)\n' + \
+        help_msg =  '[任意] ツイート数 (デフォルト：%(default)s)\n' + \
                     '表示したいツイートの数\n' + \
-                    '18000件を超過した場合はレート制限により18000件ごとに15分の待機時間が発生する'
+                    '18000件を超過した場合はレート制限により18000件ごとに15分の待機時間が発生します'
         parser.add_argument('-t', '--num_of_tweets', type=int, default=100, help=help_msg)
         
         args: argparse.Namespace = parser.parse_args()

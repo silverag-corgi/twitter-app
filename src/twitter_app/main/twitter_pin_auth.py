@@ -58,7 +58,9 @@ def __get_args() -> argparse.Namespace:
     '''引数取得'''
     
     try:
-        parser: argparse.ArgumentParser = argparse.ArgumentParser(
+        parser: pyl.CustomArgumentParser = pyl.CustomArgumentParser(
+                description='TwitterPIN認証\n' +
+                            'コンシューマーキーとPINコードを基にアクセストークンを生成し、認証情報ファイルに保存します',
                 formatter_class=argparse.RawTextHelpFormatter,
                 exit_on_error=True
             )
