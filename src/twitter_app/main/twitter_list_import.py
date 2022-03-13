@@ -67,7 +67,9 @@ def __get_args() -> argparse.Namespace:
     '''引数取得'''
     
     try:
-        parser: argparse.ArgumentParser = argparse.ArgumentParser(
+        parser: pyl.CustomArgumentParser = pyl.CustomArgumentParser(
+                description='Twitterリストインポート\n' +
+                            '指定したCSVファイルをTwitterリストとしてTwitterにインポートします',
                 formatter_class=argparse.RawTextHelpFormatter,
                 exit_on_error=True
             )
@@ -75,11 +77,11 @@ def __get_args() -> argparse.Namespace:
         help_msg: str = ''
         
         # 任意の引数
-        help_msg =  'TwitterリストCSVファイルパス(csv) (default: %(default)s)\n' + \
+        help_msg =  '[任意] TwitterリストCSVファイルパス (デフォルト：%(default)s)\n' + \
                     'ワイルドカード可'
         parser.add_argument(
-            '-t', '--twitter_list_csv_file_path', default='input/*.csv', help=help_msg)
-        help_msg =  'ヘッダ行番号 (default: %(default)s)\n' + \
+            '-t', '--twitter_list_csv_file_path', type=str, default='input/*.csv', help=help_msg)
+        help_msg =  '[任意] ヘッダ行番号 (デフォルト：%(default)s)\n' + \
                     '0：ヘッダなし、1~：ヘッダとなるファイルの行番号'
         parser.add_argument(
             '-hd', '--header_line_num', type=int, default='1', help=help_msg)

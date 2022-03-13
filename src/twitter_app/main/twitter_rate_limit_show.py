@@ -64,21 +64,26 @@ def __get_args() -> argparse.Namespace:
     '''引数取得'''
     
     try:
-        parser: argparse.ArgumentParser = argparse.ArgumentParser(
+        parser: pyl.CustomArgumentParser = pyl.CustomArgumentParser(
+                description='Twitterレート制限表示\n' +
+                            '指定したリソース群とエンドポイントのレート制限を表示します',
                 formatter_class=argparse.RawTextHelpFormatter,
                 exit_on_error=True
             )
         
         help_msg: str = ''
         
-        # 必須の引数
-        help_msg =  'リソース群\n' + \
+        # グループAの引数
+        arg_group_a: argparse._ArgumentGroup = parser.add_argument_group(
+            'positional arguments in this group',
+            '表示するレート制限を指定します\n' +
+            '両方とも空文字の場合は全てのレート制限を表示します')
+        help_msg =  '[必須] リソース群\n' + \
                     '例：application'
-        parser.add_argument('resource_family', help=help_msg)
-        help_msg =  'エンドポイント\n' + \
-                    '例：/application/rate_limit_status\n' + \
-                    '両方とも空文字の場合は全てのレート制限を表示します'
-        parser.add_argument('endpoint', help=help_msg)
+        arg_group_a.add_argument('resource_family', help=help_msg)
+        help_msg =  '[必須] エンドポイント\n' + \
+                    '例：/application/rate_limit_status'
+        arg_group_a.add_argument('endpoint', help=help_msg)
         
         args: argparse.Namespace = parser.parse_args()
     except Exception as e:
