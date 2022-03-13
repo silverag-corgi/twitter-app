@@ -28,8 +28,9 @@
     - [6.5.1. プログラムの実行](#651-プログラムの実行)
   - [6.6. TwitterPIN認証](#66-twitterpin認証)
     - [6.6.1. プログラムの実行](#661-プログラムの実行)
-- [7. 連絡先](#7-連絡先)
-- [8. ライセンス](#8-ライセンス)
+- [7. (付録)実行コマンド一覧](#7-付録実行コマンド一覧)
+- [8. 連絡先](#8-連絡先)
+- [9. ライセンス](#9-ライセンス)
 
 
 # 1. 概要
@@ -58,9 +59,8 @@ TwitterAPIを利用したアプリケーション。
 # 3. 動作確認済み環境
 
 - Windows 10 Pro
-- Python 3.10.1
-- Poetry 1.1.12
-- Tweepy 4.4.0
+- [Python 3.10.1](https://www.python.org/downloads/release/python-3101/)
+- [Poetry 1.1.12](https://python-poetry.org/docs/#installing-with-pip)
 
 
 # 4. 事前準備
@@ -126,7 +126,7 @@ Bの手順は5分程度で完了するが、Twitter社が突然公開を停止�
 まで完了した後に、上記項目を用いて
 [5.3. TwitterAPI認証情報の設定](#53-twitterapi認証情報の設定)
 及び
-[6.5. TwitterPIN認証](#65-twitterpin認証)
+[6.6. TwitterPIN認証](#66-twitterpin認証)
 を実行する。
 
 
@@ -231,15 +231,18 @@ googlemaps,Google Maps
 
 ```cmd
 > poetry run list-import -h 
-usage: list-import [-h] [-t TWITTER_LIST_CSV_FILE_PATH] [-hd HEADER_LINE_NUM]
+usage: list-imp [-h] [-t TWITTER_LIST_CSV_FILE_PATH] [-hd HEADER_LINE_NUM]
+
+Twitterリストインポート
+指定したCSVファイルをTwitterリストとしてTwitterにインポートします
 
 options:
   -h, --help            show this help message and exit
   -t TWITTER_LIST_CSV_FILE_PATH, --twitter_list_csv_file_path TWITTER_LIST_CSV_FILE_PATH
-                        TwitterリストCSVファイルパス(csv) (default: input/*.csv)
+                        [任意] TwitterリストCSVファイルパス (デフォルト：input/*.csv)
                         ワイルドカード可
   -hd HEADER_LINE_NUM, --header_line_num HEADER_LINE_NUM
-                        ヘッダ行番号 (default: 1)
+                        [任意] ヘッダ行番号 (デフォルト：1)
                         0：ヘッダなし、1~：ヘッダとなるファイルの行番号
 ```
 
@@ -264,23 +267,23 @@ options:
 usage: list-exp [-h] (-s | -e) (-all | -id TWITTER_LIST_ID | -name TWITTER_LIST_NAME)
 
 Twitterリストエクスポート
-指定したTwitterリストをTwitterからエクスポートする
+指定したTwitterリストをTwitterからエクスポートします
 
 options:
   -h, --help            show this help message and exit
 
-グループA:
-  実行する処理を選択する
+options in this group:
+  実行する処理を指定します
 
   -s, --show_twitter_list
                         [1つのみ必須] Twitterリスト表示要否
-                        指定した場合はTwitterリストを表示する
+                        指定した場合はTwitterリストを表示します
   -e, --export_twitter_list
                         [1つのみ必須] Twitterリストエクスポート要否
-                        指定した場合はTwitterリストをエクスポートする
+                        指定した場合はTwitterリストをエクスポートします
 
-グループB:
-  処理対象のTwitterリストを選択する
+options in this group:
+  処理対象のTwitterリストを指定します
 
   -all, --all_twitter_list
                         [1つのみ必須] 全てのTwitterリスト
@@ -312,23 +315,28 @@ options:
 > poetry run followxx-gen -h
 usage: followxx-gen [-h] (-followee | -follower) [-f NUM_OF_FOLLOWXXS] user_id
 
+Twitterフォロイー(フォロワー)リスト生成
+指定したTwitterユーザのフォロイー(フォロワー)のTwitterリストを生成します
+
 positional arguments:
-  user_id               ユーザID(Twitter)
+  user_id               [必須] ユーザID(Twitter)
 
 options:
   -h, --help            show this help message and exit
-  -followee, --generate_followee_list
-                        フォロイーリスト生成
-                        グループで1つのみ必須
-                        指定した場合はフォロイーのTwitterリストを生成する
-  -follower, --generate_follower_list
-                        フォロワーリスト生成
-                        グループで1つのみ必須
-                        指定した場合はフォロワーのTwitterリストを生成する
   -f NUM_OF_FOLLOWXXS, --num_of_followxxs NUM_OF_FOLLOWXXS
-                        フォロイー(フォロワー)数 (default: 3000)
+                        [任意] フォロイー(フォロワー)数 (デフォルト：3000)
                         Twitterリストに追加したいフォロイー(フォロワー)の人数
-                        3000人を超過した場合はレート制限により3000人ごとに15分の待機時間が発生する
+                        3000人を超過した場合はレート制限により3000人ごとに15分の待機時間が発生します
+
+options in this group:
+  実行する処理を指定します
+
+  -followee, --generate_followee_list
+                        [1つのみ必須] フォロイーリスト生成
+                        指定した場合はフォロイーのTwitterリストを生成します
+  -follower, --generate_follower_list
+                        [1つのみ必須] フォロワーリスト生成
+                        指定した場合はフォロワーのTwitterリストを生成します
 ```
 
 
@@ -351,16 +359,19 @@ options:
 > poetry run tweet-search -h
 usage: tweet-search [-h] [-t NUM_OF_TWEETS] query
 
+Twitterツイート検索
+指定したクエリでツイートを検索し、ツイート検索結果ファイルを生成します
+
 positional arguments:
-  query                 クエリ
-                        RTと返信はデフォルトで除外する
+  query                 [必須] クエリ
+                        RTと返信はデフォルトで除外します
 
 options:
   -h, --help            show this help message and exit
   -t NUM_OF_TWEETS, --num_of_tweets NUM_OF_TWEETS
-                        ツイート数 (default: 100)
+                        [任意] ツイート数 (デフォルト：100)
                         表示したいツイートの数
-                        18000件を超過した場合はレート制限により18000件ごとに15分の待機時間が発生する
+                        18000件を超過した場合はレート制限により18000件ごとに15分の待機時間が発生します
 ```
 
 
@@ -383,15 +394,20 @@ options:
 > poetry run limit-show -h
 usage: limit-show [-h] resource_family endpoint
 
-positional arguments:
-  resource_family  リソース群
-                   例：application
-  endpoint         エンドポイント
-                   例：/application/rate_limit_status
-                   両方とも空文字の場合は全てのレート制限を表示します
+Twitterレート制限表示
+指定したリソース群とエンドポイントのレート制限を表示します
 
 options:
   -h, --help       show this help message and exit
+
+positional arguments in this group:
+  表示するレート制限を指定します
+  両方とも空文字の場合は全てのレート制限を表示します
+
+  resource_family  [必須] リソース群
+                   例：application
+  endpoint         [必須] エンドポイント
+                   例：/application/rate_limit_status
 ```
 
 
@@ -414,17 +430,32 @@ options:
 > poetry run pin-auth -h
 usage: pin-auth [-h]
 
+TwitterPIN認証
+コンシューマーキーとPINコードを基にアクセストークンを生成し、認証情報ファイルに保存します
+
 options:
   -h, --help  show this help message and exit
 ```
 
 
-# 7. 連絡先
+# 7. (付録)実行コマンド一覧
+
+```cmd
+> poetry run list-imp     -h
+> poetry run list-exp     -h
+> poetry run followxx-gen -h
+> poetry run tweet-search -h
+> poetry run limit-show   -h
+> poetry run pin-auth     -h
+```
+
+
+# 8. 連絡先
 
 [Twitter(@silverag_corgi)](https://twitter.com/silverag_corgi)
 
 
-# 8. ライセンス
+# 9. ライセンス
 
 MITライセンスの下で公開している。
 詳細はLICENSEを確認すること。
