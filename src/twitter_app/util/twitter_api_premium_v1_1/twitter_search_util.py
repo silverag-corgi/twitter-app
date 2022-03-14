@@ -47,7 +47,7 @@ def search_tweets(
         num_of_requests (int, optional)         : リクエスト数(デフォルト：30)
     
     Returns:
-        list[ResultSet] : ツイートページ (list[list[tweepy.models.Status]])
+        list[ResultSet] : ツイートページ (list[ResultSet[tweepy.models.Status]])
     
     Notes:
         - 使用するエンドポイントはPOSTメソッドである

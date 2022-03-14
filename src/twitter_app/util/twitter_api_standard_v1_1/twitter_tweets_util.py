@@ -37,7 +37,7 @@ def search_tweets_in_past_7day(
         num_of_requests (int, optional)         : リクエスト数(デフォルト：180)
     
     Returns:
-        list[ResultSet] : ツイート検索結果ページ (list[list[tweepy.models.SearchResults]])
+        list[ResultSet] : ツイート検索結果ページ (list[ResultSet[tweepy.models.SearchResults]])
     
     Notes:
         - 使用するエンドポイントはGETメソッドである

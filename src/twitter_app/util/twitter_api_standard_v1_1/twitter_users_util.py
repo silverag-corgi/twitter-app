@@ -33,7 +33,7 @@ def get_followee_pages(
         num_of_requests (int)           : リクエスト数(デフォルト：15)
     
     Returns:
-        list[ResultSet] : フォロイーページ (list[list[tweepy.models.User]])
+        list[ResultSet] : フォロイーページ (list[ResultSet[tweepy.models.User]])
     
     Notes:
         - 使用するエンドポイントはGETメソッドである
@@ -101,7 +101,7 @@ def get_follower_pages(
         num_of_requests (int)           : リクエスト数(デフォルト：15)
     
     Returns:
-        list[ResultSet] : フォロワーページ (list[list[tweepy.models.User]])
+        list[ResultSet] : フォロワーページ (list[ResultSet[tweepy.models.User]])
     
     Notes:
         - 「フォロイーページ取得」を参照する
@@ -211,8 +211,7 @@ def has_twitter_list(
             - https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/create-manage-lists/overview
             - https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/create-manage-lists/api-reference/get-lists-list
         - オブジェクトモデル
-            - https://developer.twitter.com/en/docs/twitter-api/data-dictionary/object-model/lists
-                - Twitter API v2.0 用だが他に該当するドキュメントがないため参考程度に記載する
+            - https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/create-manage-lists/api-reference/get-lists-show#example-response
     '''  # noqa: E501
     
     lg: Optional[Logger] = None
@@ -241,7 +240,7 @@ def has_twitter_list(
 def get_twitter_lists(
         api: tweepy.API,
         user_id: str = ''
-    ) -> Any:
+    ) -> ResultSet:
     
     '''
     Twitterリスト一覧取得
@@ -251,7 +250,7 @@ def get_twitter_lists(
         user_id (str)       : ユーザID
     
     Returns:
-        Any: Twitterリスト一覧 (tweepy.List[tweepy.models.List])
+        ResultSet: Twitterリスト一覧 (ResultSet[tweepy.models.List])
     
     Notes:
         - 使用するエンドポイントはGETメソッドである
@@ -309,7 +308,7 @@ def get_twitter_list_member_pages(
         num_of_requests (int)           : リクエスト数(デフォルト：900)
     
     Returns:
-        list[ResultSet] : Twitterリストメンバーページ (list[list[tweepy.models.User]])
+        list[ResultSet] : Twitterリストメンバーページ (list[ResultSet[tweepy.models.User]])
     
     Notes:
         - 使用するエンドポイントはGETメソッドである
@@ -357,7 +356,7 @@ def get_twitter_list_member_pages(
 def generate_twitter_list(
         api: tweepy.API,
         twitter_list_name: str
-    ) -> tweepy.List:
+    ) -> Any:
     
     '''
     Twitterリスト生成
@@ -367,7 +366,7 @@ def generate_twitter_list(
         twitter_list_name (str) : Twitterリスト名
     
     Returns:
-        tweepy.List: Twitterリスト
+        Any: Twitterリスト (tweepy.models.List)
     
     Notes:
         - 使用するエンドポイントはPOSTメソッドである
@@ -377,8 +376,7 @@ def generate_twitter_list(
             - https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/create-manage-lists/overview
             - https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/create-manage-lists/api-reference/post-lists-create
         - オブジェクトモデル
-            - https://developer.twitter.com/en/docs/twitter-api/data-dictionary/object-model/lists
-                - Twitter API v2.0 用だが他に該当するドキュメントがないため参考程度に記載する
+            - https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/create-manage-lists/api-reference/get-lists-show#example-response
     '''  # noqa: E501
     
     lg: Optional[Logger] = None
@@ -387,6 +385,7 @@ def generate_twitter_list(
         lg = pyl.get_logger(__name__)
         
         twitter_list: Any = api.create_list(twitter_list_name, mode='private', description='')
+        
         pyl.log_inf(lg, f'Twitterリスト生成に成功しました。(twitter_list_name:{twitter_list_name})')
     except Exception as e:
         if lg is not None:
@@ -421,8 +420,7 @@ def destroy_twitter_list(
             - https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/create-manage-lists/overview
             - https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/create-manage-lists/api-reference/post-lists-destroy
         - オブジェクトモデル
-            - https://developer.twitter.com/en/docs/twitter-api/data-dictionary/object-model/lists
-                - Twitter API v2.0 用だが他に該当するドキュメントがないため参考程度に記載する
+            - https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/create-manage-lists/api-reference/get-lists-show#example-response
     '''  # noqa: E501
     
     lg: Optional[Logger] = None
@@ -451,7 +449,7 @@ def destroy_twitter_list(
 
 def add_user_to_twitter_list(
         api: tweepy.API,
-        twitter_list: tweepy.List,
+        twitter_list_id: str,
         user_id: str,
         user_name: str = ''
     ) -> bool:
@@ -461,7 +459,7 @@ def add_user_to_twitter_list(
     
     Args:
         api (tweepy.API)            : API
-        twitter_list (tweepy.List)  : Twitterリスト
+        twitter_list_id (str)       : TwitterリストID
         user_id (str)               : ユーザID
         user_name (str, optional)   : ユーザ名
     
@@ -476,8 +474,7 @@ def add_user_to_twitter_list(
             - https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/create-manage-lists/overview
             - https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/create-manage-lists/api-reference/post-lists-members-create
         - オブジェクトモデル
-            - https://developer.twitter.com/en/docs/twitter-api/data-dictionary/object-model/lists
-                - Twitter API v2.0 用だが他に該当するドキュメントがないため参考程度に記載する
+            - https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/create-manage-lists/api-reference/get-lists-show#example-response
     '''  # noqa: E501
     
     lg: Optional[Logger] = None
@@ -486,7 +483,7 @@ def add_user_to_twitter_list(
     try:
         lg = pyl.get_logger(__name__)
         
-        api.add_list_member(list_id=twitter_list.id, screen_name=user_id)
+        api.add_list_member(list_id=twitter_list_id, screen_name=user_id)
         pyl.log_deb(lg, f'ユーザ追加に成功しました。(user_id:{user_id: <15}, user_name:{user_name})')
         
         result = True

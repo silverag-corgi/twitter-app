@@ -1,7 +1,7 @@
 import glob
 import os
 from logging import Logger
-from typing import Optional
+from typing import Any, Optional
 
 import pandas as pd
 import python_lib_for_me as pyl
@@ -20,7 +20,7 @@ def do_logic(
     '''ロジック実行'''
     
     lg: Optional[Logger] = None
-    twitter_list: Optional[tweepy.List] = None
+    twitter_list: Any = None
     
     try:
         # ロガーの取得
@@ -59,7 +59,7 @@ def do_logic(
                     if len(twitter_list_row) >= 2:
                         twitter_users_util.add_user_to_twitter_list(
                                 api,
-                                twitter_list,
+                                twitter_list.id,
                                 str(twitter_list_row[const_util.TWITTER_LIST_FILE_HEADER[0]]),
                                 str(twitter_list_row[const_util.TWITTER_LIST_FILE_HEADER[1]])
                             )

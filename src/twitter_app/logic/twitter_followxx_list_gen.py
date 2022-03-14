@@ -21,7 +21,7 @@ def do_logic(api: tweepy.API, user_id: str, num_of_followxxs: int, kind_of_pages
     '''ロジック実行'''
     
     lg: Optional[Logger] = None
-    twitter_list: Optional[tweepy.List] = None
+    twitter_list: Any = None
     
     try:
         # ロガーの取得
@@ -101,7 +101,7 @@ def do_logic(api: tweepy.API, user_id: str, num_of_followxxs: int, kind_of_pages
                     # ユーザの追加
                     add_user_result: bool = twitter_users_util.add_user_to_twitter_list(
                             api,
-                            twitter_list,
+                            twitter_list.id,
                             followxx.screen_name,
                             followxx.name
                         )
