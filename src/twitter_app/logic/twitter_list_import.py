@@ -60,8 +60,8 @@ def do_logic(
                         twitter_users_util.add_user_to_twitter_list(
                                 api,
                                 twitter_list.id,
-                                str(twitter_list_row[const_util.TWITTER_LIST_FILE_HEADER[0]]),
-                                str(twitter_list_row[const_util.TWITTER_LIST_FILE_HEADER[1]])
+                                str(twitter_list_row[const_util.TWITTER_LIST_HEADER[0]]),
+                                str(twitter_list_row[const_util.TWITTER_LIST_HEADER[1]])
                             )
                 
                 # Twitterリストの破棄(ユーザが0人の場合)
