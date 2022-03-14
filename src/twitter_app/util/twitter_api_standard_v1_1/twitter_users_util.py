@@ -69,12 +69,10 @@ def get_followee_pages(
             )
         followee_pages = list(followee_pagination.pages(num_of_requests))
         
-        pyl.log_inf(lg, f'フォロイーページ取得に成功しました。')
+        pyl.log_inf(lg, f'フォロイーページ取得に成功しました。(user_id:{user_id})')
     except Exception as e:
         if lg is not None:
-            err_msg: str = str(e).replace('\n', ' ')
-            pyl.log_war(lg, f'フォロイーページ取得に失敗しました。' +
-                            f'(user_id:{user_id}, err_msg:{err_msg})')
+            pyl.log_war(lg, f'フォロイーページ取得に失敗しました。(user_id:{user_id})', e)
     
     return followee_pages
 
@@ -131,12 +129,10 @@ def get_follower_pages(
             )
         follower_pages = list(follower_pagination.pages(num_of_requests))
         
-        pyl.log_inf(lg, f'フォロワーページ取得に成功しました。')
+        pyl.log_inf(lg, f'フォロワーページ取得に成功しました。(user_id:{user_id})')
     except Exception as e:
         if lg is not None:
-            err_msg: str = str(e).replace('\n', ' ')
-            pyl.log_war(lg, f'フォロワーページ取得に失敗しました。' +
-                            f'(user_id:{user_id}, err_msg:{err_msg})')
+            pyl.log_war(lg, f'フォロワーページ取得に失敗しました。(user_id:{user_id})', e)
     
     return follower_pages
 
@@ -230,9 +226,8 @@ def has_twitter_list(
                 break
     except Exception as e:
         if lg is not None:
-            err_msg: str = str(e).replace('\n', ' ')
             pyl.log_war(lg, f'Twitterリスト存在有無確認に失敗しました。' +
-                            f'(twitter_list_name:{twitter_list_name}, err_msg:{err_msg})')
+                            f'(twitter_list_name:{twitter_list_name})', e)
     
     return has_twitter_list
 
@@ -278,9 +273,7 @@ def get_twitter_lists(
         pyl.log_inf(lg, f'Twitterリスト一覧取得に成功しました。(user_id:{user_id})')
     except Exception as e:
         if lg is not None:
-            err_msg: str = str(e).replace('\n', ' ')
-            pyl.log_err(lg, f'Twitterリスト一覧取得に失敗しました。' +
-                            f'(user_id:{user_id}, err_msg:{err_msg})')
+            pyl.log_err(lg, f'Twitterリスト一覧取得に失敗しました。(user_id:{user_id})')
         raise(e)
     
     return twitter_lists
@@ -346,9 +339,8 @@ def get_twitter_list_member_pages(
                         f'(twitter_list_id:{twitter_list_id})')
     except Exception as e:
         if lg is not None:
-            err_msg: str = str(e).replace('\n', ' ')
             pyl.log_war(lg, f'Twitterリストメンバーページ取得に失敗しました。' +
-                            f'(twitter_list_id:{twitter_list_id}, err_msg:{err_msg})')
+                            f'(twitter_list_id:{twitter_list_id})', e)
     
     return list_member_pages
 
@@ -389,9 +381,8 @@ def generate_twitter_list(
         pyl.log_inf(lg, f'Twitterリスト生成に成功しました。(twitter_list_name:{twitter_list_name})')
     except Exception as e:
         if lg is not None:
-            err_msg: str = str(e).replace('\n', ' ')
             pyl.log_err(lg, f'Twitterリスト生成に失敗しました。' +
-                            f'(twitter_list_name:{twitter_list_name}, err_msg:{err_msg})')
+                            f'(twitter_list_name:{twitter_list_name})')
         raise(e)
     
     return twitter_list
@@ -440,9 +431,8 @@ def destroy_twitter_list(
                 break
     except Exception as e:
         if lg is not None:
-            err_msg: str = str(e).replace('\n', ' ')
             pyl.log_war(lg, f'Twitterリスト破棄に失敗しました。' +
-                            f'(twitter_list_name:{twitter_list_name}, err_msg:{err_msg})')
+                            f'(twitter_list_name:{twitter_list_name})', e)
     
     return result
 
@@ -489,9 +479,8 @@ def add_user_to_twitter_list(
         result = True
     except Exception as e:
         if lg is not None:
-            err_msg: str = str(e).replace('\n', ' ')
             pyl.log_war(lg, f'ユーザ追加に失敗しました。鍵付きや削除済みの可能性があります。' +
-                            f'(user_id:{user_id: <15}, user_name:{user_name}, err_msg:{err_msg})')
+                            f'(user_id:{user_id: <15}, user_name:{user_name})', e)
     
     return result
 
@@ -536,7 +525,6 @@ def get_auth_user_info(
                         f'user_name:{auth_user_info.name})')
     except Exception as e:
         if lg is not None:
-            err_msg: str = str(e).replace('\n', ' ')
             pyl.log_err(lg, f'認証ユーザ情報取得に失敗しました。')
         raise(e)
     
