@@ -1,11 +1,12 @@
 from datetime import datetime
 from enum import IntEnum, auto
 from logging import Logger
-from typing import Any, Optional
+from typing import Optional
 
 import pandas as pd
 import python_lib_for_me as pyl
 import tweepy
+from tweepy.models import ResultSet
 
 from twitter_app.util import const_util, pandas_util
 from twitter_app.util.twitter_api_standard_v1_1 import twitter_developer_util, twitter_users_util
@@ -46,7 +47,7 @@ def do_logic_that_show_twitter_list(
         pd.set_option('display.unicode.east_asian_width', True)
         
         # Twitterリスト一覧の取得
-        twitter_lists: Any = twitter_users_util.get_twitter_lists(api)
+        twitter_lists: ResultSet = twitter_users_util.get_twitter_lists(api)
         
         # Twitterリスト一覧データフレームの初期化
         twitter_lists_df: pd.DataFrame = pd.DataFrame(columns=const_util.TWITTER_LISTS_HEADER)
