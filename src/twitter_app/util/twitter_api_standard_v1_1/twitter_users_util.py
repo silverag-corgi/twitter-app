@@ -16,7 +16,7 @@ class Followee(IntEnum):
     MAX_NUM_OF_REQUESTS_PER_15MIN = 15
 
 
-def get_followee_list_pages(
+def get_followee_pages(
         api: tweepy.API,
         user_id: str,
         num_of_data_per_request: int = Followee.MAX_NUM_OF_DATA_PER_REQUEST.value,
@@ -24,7 +24,7 @@ def get_followee_list_pages(
     ) -> list[ResultSet]:
     
     '''
-    フォロイーリストページ取得
+    フォロイーページ取得
     
     Args:
         api (tweepy.API)                : API
@@ -33,7 +33,7 @@ def get_followee_list_pages(
         num_of_requests (int)           : リクエスト数(デフォルト：15)
     
     Returns:
-        list[ResultSet] : フォロイーリストページ (list[list[tweepy.models.User]])
+        list[ResultSet] : フォロイーページ (list[list[tweepy.models.User]])
     
     Notes:
         - 使用するエンドポイントはGETメソッドである
@@ -53,7 +53,7 @@ def get_followee_list_pages(
     '''  # noqa: E501
     
     lg: Optional[Logger] = None
-    followee_list_pages: list[ResultSet] = []
+    followee_pages: list[ResultSet] = []
     
     try:
         lg = pyl.get_logger(__name__)
@@ -67,14 +67,16 @@ def get_followee_list_pages(
                 if num_of_data_per_request <= Followee.MAX_NUM_OF_DATA_PER_REQUEST.value
                 else Followee.MAX_NUM_OF_DATA_PER_REQUEST.value
             )
-        followee_list_pages = list(followee_pagination.pages(num_of_requests))
+        followee_pages = list(followee_pagination.pages(num_of_requests))
+        
+        pyl.log_inf(lg, f'フォロイーページ取得に成功しました。')
     except Exception as e:
         if lg is not None:
             err_msg: str = str(e).replace('\n', ' ')
-            pyl.log_war(lg, f'指定したユーザIDのフォロイーを取得する際にエラーが発生しました。' +
+            pyl.log_war(lg, f'フォロイーページ取得に失敗しました。' +
                             f'(user_id:{user_id}, err_msg:{err_msg})')
     
-    return followee_list_pages
+    return followee_pages
 
 
 class Follower(IntEnum):
@@ -82,7 +84,7 @@ class Follower(IntEnum):
     MAX_NUM_OF_REQUESTS_PER_15MIN = 15
 
 
-def get_follower_list_pages(
+def get_follower_pages(
         api: tweepy.API,
         user_id: str,
         num_of_data_per_request: int = Follower.MAX_NUM_OF_DATA_PER_REQUEST.value,
@@ -90,7 +92,7 @@ def get_follower_list_pages(
     ) -> list[ResultSet]:
     
     '''
-    フォロワーリストページ取得
+    フォロワーページ取得
     
     Args:
         api (tweepy.API)                : API
@@ -99,10 +101,10 @@ def get_follower_list_pages(
         num_of_requests (int)           : リクエスト数(デフォルト：15)
     
     Returns:
-        list[ResultSet] : フォロワーリストページ (list[list[tweepy.models.User]])
+        list[ResultSet] : フォロワーページ (list[list[tweepy.models.User]])
     
     Notes:
-        - 「フォロイーリストページ取得」を参照する
+        - 「フォロイーページ取得」を参照する
     
     References:
         - エンドポイント
@@ -113,7 +115,7 @@ def get_follower_list_pages(
     '''  # noqa: E501
     
     lg: Optional[Logger] = None
-    follower_list_pages: list[ResultSet] = []
+    follower_pages: list[ResultSet] = []
     
     try:
         lg = pyl.get_logger(__name__)
@@ -127,14 +129,16 @@ def get_follower_list_pages(
                 if num_of_data_per_request <= Follower.MAX_NUM_OF_DATA_PER_REQUEST.value
                 else Follower.MAX_NUM_OF_DATA_PER_REQUEST.value
             )
-        follower_list_pages = list(follower_pagination.pages(num_of_requests))
+        follower_pages = list(follower_pagination.pages(num_of_requests))
+        
+        pyl.log_inf(lg, f'フォロワーページ取得に成功しました。')
     except Exception as e:
         if lg is not None:
             err_msg: str = str(e).replace('\n', ' ')
-            pyl.log_war(lg, f'指定したユーザIDのフォロワーを取得する際にエラーが発生しました。' +
+            pyl.log_war(lg, f'フォロワーページ取得に失敗しました。' +
                             f'(user_id:{user_id}, err_msg:{err_msg})')
     
-    return follower_list_pages
+    return follower_pages
 
 
 def get_user_info(

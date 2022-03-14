@@ -49,7 +49,7 @@ def main() -> int:
             return 1
         
         # ロジック(TwitterAPI認証)の実行
-        api: tweepy.API = twitter_api_auth.do_logic_of_api_by_oauth_1_user()
+        api: tweepy.API = twitter_api_auth.do_logic_that_generate_api_by_oauth_1_user()
         
         # ロジック(Twitterリスト生成)の実行
         if bool(args.generate_followee_list) == True:

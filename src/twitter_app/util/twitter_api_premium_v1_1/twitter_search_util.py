@@ -80,14 +80,14 @@ def search_tweets(
         if start_date is not None:
             start_date_utc = pyl.convert_timestamp_to_utc(
                     start_date,
-                    src_timestamp_format='%Y-%m-%d %H:%M%z',
+                    src_timestamp_format='%Y-%m-%d %H:%M',
                     utc_timestamp_format='%Y%m%d%H%M'
                 )
         end_date_utc: Optional[str] = None
         if end_date is not None:
             end_date_utc = pyl.convert_timestamp_to_utc(
                     end_date,
-                    src_timestamp_format='%Y-%m-%d %H:%M%z',
+                    src_timestamp_format='%Y-%m-%d %H:%M',
                     utc_timestamp_format='%Y%m%d%H%M'
                 )
         
@@ -100,8 +100,9 @@ def search_tweets(
         
         # ツイートの検索
         tweet_search_result_pages: list[ResultSet] = []
-        pyl.log_inf(lg, f'時間がかかるため気長にお待ちください。')
         try:
+            pyl.log_inf(lg, f'時間がかかるため気長にお待ちください。')
+            
             tweet_search_result_pagination: tweepy.Cursor = tweepy.Cursor(
                     search_api_function,
                     label=env_label.value,
@@ -114,9 +115,11 @@ def search_tweets(
                     else TWEETS.MAX_NUM_OF_DATA_PER_REQUEST.value
                 )
             tweet_search_result_pages = list(tweet_search_result_pagination.pages(num_of_requests))
+            
+            pyl.log_inf(lg, f'ツイート検索(過去30日以内／フルアーカイブ)に成功しました。')
         except Exception as e:
             err_msg: str = str(e).replace('\n', ' ')
-            pyl.log_war(lg, f'検索する際にエラーが発生しました。' +
+            pyl.log_war(lg, f'ツイート検索(過去30日以内／フルアーカイブ)に失敗しました。' +
                             f'(query:{query}, err_msg:{err_msg})')
     except Exception as e:
         raise(e)

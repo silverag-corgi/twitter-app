@@ -8,7 +8,7 @@ import tweepy
 from twitter_app.util import const_util, twitter_api_auth_util
 
 
-def do_logic_of_api_by_oauth_1_user() -> tweepy.API:
+def do_logic_that_generate_api_by_oauth_1_user() -> tweepy.API:
     '''ロジック実行(TwitterAPI認証)(OAuth 1.0a - User Access Tokens)'''
     
     lg: Optional[Logger] = None
@@ -29,7 +29,7 @@ def do_logic_of_api_by_oauth_1_user() -> tweepy.API:
     return api
 
 
-def do_logic_of_api_by_oauth_1_user_using_pin() -> tweepy.API:
+def do_logic_that_generate_api_by_oauth_1_user_using_pin() -> tweepy.API:
     '''ロジック実行(TwitterAPI認証)(OAuth 1.0a - User Access Tokens (PIN-Based OAuth flow))'''
     
     lg: Optional[Logger] = None
@@ -61,7 +61,7 @@ def do_logic_of_api_by_oauth_1_user_using_pin() -> tweepy.API:
     return api
 
 
-def do_logic_of_api_by_oauth_2_app() -> tweepy.API:
+def do_logic_that_generate_api_by_oauth_2_app() -> tweepy.API:
     '''ロジック実行(TwitterAPI認証)(OAuth 2.0 - Bearer Token (App-Only))'''
     
     lg: Optional[Logger] = None
