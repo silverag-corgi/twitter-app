@@ -49,16 +49,16 @@ def show_rate_limit(
             limit: int = rate_limit['limit']
             reset_datetime: datetime = datetime.fromtimestamp(rate_limit['reset'])
             pyl.log_inf(lg, f'リクエスト回数(15分間隔)：{remaining}/{limit}、' +
-                            f'制限リセット時刻：{reset_datetime}')
+                            f'制限リセット時刻：{reset_datetime} ' +
+                            f'(resource_family:{resource_family}, ' +
+                            f'endpoint:{endpoint})')
         else:
             pyl.log_inf(lg, f'レート制限：\n{json.dumps(rate_limits, indent=2)}')
     except Exception as e:
         if lg is not None:
-            err_msg: str = str(e).replace('\n', ' ')
-            pyl.log_war(lg, f'レート制限を取得する際にエラーが発生しました。' +
+            pyl.log_war(lg, f'レート制限表示に失敗しました。' +
                             f'(resource_family:{resource_family}, ' +
-                            f'endpoint:{endpoint}, ' +
-                            f'err_msg:{err_msg})')
+                            f'endpoint:{endpoint})', e)
     
     return None
 
