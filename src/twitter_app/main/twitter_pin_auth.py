@@ -45,7 +45,7 @@ def main() -> int:
             return 1
         
         # ロジック(TwitterAPI認証)の実行
-        twitter_api_auth.do_logic_of_api_by_oauth_1_user_using_pin()
+        twitter_api_auth.do_logic_that_generate_api_by_oauth_1_user_using_pin()
     except Exception as e:
         if lg is not None:
             pyl.log_exc(lg, '')

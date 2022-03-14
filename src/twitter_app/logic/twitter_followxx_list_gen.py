@@ -42,8 +42,8 @@ def do_logic(api: tweepy.API, user_id: str, num_of_followxxs: int, kind_of_pages
             # レート制限の表示
             twitter_developer_util.show_rate_limit_of_friends_list(api)
             
-            # フォロイーリストページの取得
-            followxx_list_pages = twitter_users_util.get_followee_list_pages(
+            # フォロイーページの取得
+            followxx_list_pages = twitter_users_util.get_followee_pages(
                     api,
                     user_id,
                     num_of_requests=math.ceil(
@@ -64,8 +64,8 @@ def do_logic(api: tweepy.API, user_id: str, num_of_followxxs: int, kind_of_pages
             # レート制限の表示
             twitter_developer_util.show_rate_limit_of_followers_list(api)
             
-            # フォロワーリストページの取得
-            followxx_list_pages = twitter_users_util.get_follower_list_pages(
+            # フォロワーページの取得
+            followxx_list_pages = twitter_users_util.get_follower_pages(
                     api,
                     user_id,
                     num_of_requests=math.ceil(
