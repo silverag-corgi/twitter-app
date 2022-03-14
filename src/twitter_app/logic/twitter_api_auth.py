@@ -5,7 +5,8 @@ from typing import Optional, TextIO
 import python_lib_for_me as pyl
 import tweepy
 
-from twitter_app.util import const_util, twitter_api_auth_util
+from twitter_app.util import const_util
+from twitter_app.util.twitter_api_v1_1 import twitter_api_auth_util
 
 
 def do_logic_that_generate_api_by_oauth_1_user() -> tweepy.API:

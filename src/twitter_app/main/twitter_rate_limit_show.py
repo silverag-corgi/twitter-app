@@ -8,7 +8,7 @@ import python_lib_for_me as pyl
 import tweepy
 
 from twitter_app.logic import twitter_api_auth
-from twitter_app.util.twitter_api_standard_v1_1 import twitter_developer_util
+from twitter_app.util.twitter_api_v1_1.standard import twitter_developer_util
 
 
 def main() -> int:

@@ -6,9 +6,7 @@ import python_lib_for_me as pyl
 
 from .const_util import *
 from .pandas_util import *
-from .twitter_api_auth_util import *
-from .twitter_api_premium_v1_1 import *
-from .twitter_api_standard_v1_1 import *
+from .twitter_api_v1_1 import *
 
 
 def show_estimated_proc_time(
