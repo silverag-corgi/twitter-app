@@ -31,7 +31,7 @@ def read_twitter_list_file(
     twitter_list_df: pd.DataFrame = pd.read_csv(
             twitter_list_csv_file_path,
             header=None,
-            names=const_util.TWITTER_LIST_FILE_HEADER,
+            names=const_util.TWITTER_LIST_HEADER,
             index_col=None,
             usecols=[0, 1],
             skiprows=header_line_num,

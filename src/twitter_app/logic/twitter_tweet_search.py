@@ -79,7 +79,8 @@ def do_logic(
                                 str(tweet.text).replace('\n', ''),
                                 tweet.retweet_count,
                                 tweet.favorite_count,
-                                const_util.TWITTER_URL.format(tweet.user.screen_name, tweet.id)
+                                const_util.TWITTER_TWEET_URL.format(
+                                    tweet.user.screen_name, tweet.id)
                             ]],
                             columns=const_util.TWITTER_TWEET_SEARCH_RESULT_HEADER
                         )

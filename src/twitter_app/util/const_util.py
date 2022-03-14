@@ -6,10 +6,9 @@ FOLLOWEE_TWITTER_LIST_NAME: Final[str] = 'followee_{0}_{1}'
 FOLLOWER_TWITTER_LIST_NAME: Final[str] = 'follower_{0}_{1}'
 
 TWITTER_LIST_FILE_PATH: Final[str] = \
-    './dest/twitter_list/twitter_list_{0}.csv'
+    './dest/twitter_list/{0}.csv'
 TWITTER_TWEET_SEARCH_RESULT_FILE_PATH: Final[str] = \
-    './dest/tweet_search_result/tweet_search_result_{0}.csv'
-
+    './dest/tweet_search_result/{0}.csv'
 
 TWITTER_LISTS_HEADER: Final[list[str]] = \
     [
@@ -18,10 +17,11 @@ TWITTER_LISTS_HEADER: Final[list[str]] = \
         'twitter_list_name',
         'num_of_members',
     ]
-TWITTER_LIST_FILE_HEADER: Final[list[str]] = \
+TWITTER_LIST_HEADER: Final[list[str]] = \
     [
         'user_id',
         'user_name',
+        'url',
     ]
 TWITTER_TWEET_SEARCH_RESULT_HEADER: Final[list[str]] = \
     [
@@ -34,6 +34,9 @@ TWITTER_TWEET_SEARCH_RESULT_HEADER: Final[list[str]] = \
         'url',
     ]
 
-TWITTER_URL: Final[str] = 'https://twitter.com/{0}/status/{1}'
+TWITTER_ACCOUNT_URL: Final[str] = \
+    'https://twitter.com/{0}'
+TWITTER_TWEET_URL: Final[str] = \
+    'https://twitter.com/{0}/status/{1}'
 
 ENCODING: Final[str] = 'utf8'

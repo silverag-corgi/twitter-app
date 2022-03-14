@@ -156,7 +156,7 @@ def do_logic_that_export_twitter_list(
             
             # Twitterリストデータフレームの初期化
             twitter_list_df: pd.DataFrame = \
-                pd.DataFrame(columns=const_util.TWITTER_LIST_FILE_HEADER)
+                pd.DataFrame(columns=const_util.TWITTER_LIST_HEADER)
             
             # Twitterリストデータフレームへの格納
             for twitter_list_members_by_page in twitter_list_member_pages:
@@ -164,12 +164,14 @@ def do_logic_that_export_twitter_list(
                 for twitter_list_member in twitter_list_members_by_page:
                     # Twitterリスト情報の格納
                     twitter_list_info_df = pd.DataFrame(
-                        [[twitter_list_member.screen_name, twitter_list_member.name]],
-                        columns=const_util.TWITTER_LIST_FILE_HEADER)
+                        [[
+                            twitter_list_member.screen_name,
+                            twitter_list_member.name,
+                            const_util.TWITTER_ACCOUNT_URL.format(twitter_list_member.screen_name)
+                        ]],
+                        columns=const_util.TWITTER_LIST_HEADER)
                     twitter_list_df = pd.concat(
                         [twitter_list_df, twitter_list_info_df], ignore_index=True)
-                    pyl.log_inf(lg, f'ユーザID：{twitter_list_member.screen_name: <15}' +
-                                    f'ユーザ名：{twitter_list_member.name}')
             
             # Twitterリストファイルパスの生成
             twitter_list_path = const_util.TWITTER_LIST_FILE_PATH.format(
