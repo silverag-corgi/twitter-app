@@ -34,6 +34,7 @@ list-imp        = "twitter_app.main.twitter_list_import:main"
 pin-auth        = "twitter_app.main.twitter_pin_auth:main"
 limit-show      = "twitter_app.main.twitter_rate_limit_show:main"
 tweet-search    = "twitter_app.main.twitter_tweet_search:main"
+tweet-stream    = "twitter_app.main.twitter_tweet_stream:main"
 
 ####################################################################################################
 # build system

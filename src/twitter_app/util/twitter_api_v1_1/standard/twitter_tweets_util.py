@@ -1,10 +1,12 @@
 from enum import Enum, IntEnum
 from logging import Logger
-from typing import Optional
+from typing import Any, Optional
 
 import python_lib_for_me as pyl
 import tweepy
 from tweepy.models import ResultSet
+
+from twitter_app.util import const_util
 
 
 class SEARCH_RESULT_TYPE(Enum):
@@ -82,3 +84,78 @@ def search_tweets_in_past_7day(
             pyl.log_war(lg, f'ツイート検索(過去7日間)に失敗しました。(query:{query})', e)
     
     return tweet_search_result_pages
+
+
+class CustomStream(tweepy.Stream):
+    def on_status(self, tweet: Any) -> None:
+        try:
+            lg: Logger = pyl.get_logger(__name__)
+            
+            tweet.created_at = pyl.convert_timestamp_to_jst(str(tweet.created_at))
+            tweet.text = str(tweet.text).replace('\n', '')
+            tweet_url: str = const_util.TWITTER_TWEET_URL.format(tweet.user.screen_name, tweet.id)
+            
+            pyl.log_inf(lg, f'{tweet.created_at}, ' +
+                            f'{tweet.user.screen_name: <15}, ' +
+                            f'{tweet.user.name: <20}, ' +
+                            f'{tweet.text}, ' +
+                            f'{tweet_url}')
+        except Exception as e:
+            pass
+
+
+class Stream(IntEnum):
+    MAX_NUM_OF_KEYWORDS = 400
+    MAX_NUM_OF_FOLLOWING = 5000
+
+
+def stream_tweets(
+        api: tweepy.API,
+        following_user_ids: Optional[list[str]] = None,
+        keywords: Optional[list[str]] = None
+    ) -> None:
+    
+    '''
+    ツイート配信
+    
+    Args:
+        api (tweepy.API)                            : API
+        following_user_ids (Optional[list[str]])    : フォローユーザID (×：TwitterユーザID、〇：ユーザID)
+        keywords (Optional[list[str]])              : キーワード
+    
+    Returns:
+        -
+    
+    Notes:
+        - 使用するエンドポイントはPOSTメソッドである
+    
+    References:
+        - エンドポイント
+            - https://developer.twitter.com/en/docs/twitter-api/v1/tweets/filter-realtime/overview
+            - https://developer.twitter.com/en/docs/twitter-api/v1/tweets/filter-realtime/api-reference/post-statuses-filter
+            - https://developer.twitter.com/en/docs/twitter-api/v1/tweets/filter-realtime/guides/basic-stream-parameters#follow
+            - https://developer.twitter.com/en/docs/twitter-api/v1/tweets/filter-realtime/guides/basic-stream-parameters#track
+        - オブジェクトモデル
+            - https://developer.twitter.com/en/docs/twitter-api/v1/data-dictionary/object-model/tweet
+    '''  # noqa: E501
+    
+    lg: Optional[Logger] = None
+    
+    try:
+        lg = pyl.get_logger(__name__)
+        
+        auth: Any = api.auth
+        stream: CustomStream = CustomStream(
+                auth.consumer_key,
+                auth.consumer_secret,
+                auth.access_token,
+                auth.access_token_secret
+            )
+        
+        stream.filter(follow=following_user_ids, track=keywords, languages=['ja'])
+    except Exception as e:
+        if lg is not None:
+            pyl.log_err(lg, f'ツイート配信に失敗しました。')
+        raise(e)
+    
+    return None
