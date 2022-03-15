@@ -28,6 +28,8 @@
     - [6.5.1. プログラムの実行](#651-プログラムの実行)
   - [6.6. TwitterPIN認証](#66-twitterpin認証)
     - [6.6.1. プログラムの実行](#661-プログラムの実行)
+  - [6.7. Twitterツイート配信](#67-twitterツイート配信)
+    - [6.7.1. プログラムの実行](#671-プログラムの実行)
 - [7. (付録)実行コマンド一覧](#7-付録実行コマンド一覧)
 - [8. 連絡先](#8-連絡先)
 - [9. ライセンス](#9-ライセンス)
@@ -54,6 +56,8 @@ TwitterAPIを利用したアプリケーション。
   - 指定したリソース群とエンドポイントのレート制限を表示する
 - TwitterPIN認証
   - コンシューマーキーとPINコードを基にアクセストークンを生成し、認証情報ファイルに保存する
+- Twitterツイート配信
+  - 指定したキーワードのツイートを配信する
 
 
 # 3. 動作確認済み環境
@@ -288,10 +292,10 @@ options in this group:
   -all, --all_twitter_list
                         [1つのみ必須] 全てのTwitterリスト
   -id TWITTER_LIST_ID, --twitter_list_id TWITTER_LIST_ID
-                        [1つのみ必須] TwitterリストID (csv形式)
+                        [1つのみ必須] TwitterリストID(csv形式)
                         例："0123456789111111111, 0123456789222222222"
   -name TWITTER_LIST_NAME, --twitter_list_name TWITTER_LIST_NAME
-                        [1つのみ必須] Twitterリスト名 (csv形式)
+                        [1つのみ必須] Twitterリスト名(csv形式)
                         例："Google関連アカウント, Microsoft関連アカウント"
 ```
 
@@ -438,6 +442,48 @@ options:
 ```
 
 
+## 6.7. Twitterツイート配信
+
+
+### 6.7.1. プログラムの実行
+
+下記コマンドを実行する。
+
+実行例：
+```cmd
+> cd twitter-app
+> poetry run tweet-stream -u silverag_corgi
+```
+
+また、ヘルプを呼び出す時は下記コマンドを実行する。
+
+```cmd
+> poetry run tweet-stream -h
+usage: tweet-stream [-h] (-u TWITTER_USER_ID_FOR_FOLLOWEES | -l TWITTER_LIST_ID) [-k KEYWORD_OF_CSV_FORMAT]
+
+Twitterツイート配信
+指定したキーワードのツイートを配信します
+
+options:
+  -h, --help            show this help message and exit
+  -k KEYWORD_OF_CSV_FORMAT, --keyword_of_csv_format KEYWORD_OF_CSV_FORMAT
+                        [任意] キーワード(csv形式)
+                        例："Google Docs, Google Drive"
+                        スペースはAND検索(Google AND Docs)
+                        カンマはOR検索(Google Docs OR Google Drive)
+
+options in this group:
+  処理対象のIDを指定します
+
+  -u TWITTER_USER_ID_FOR_FOLLOWEES, --twitter_user_id_for_followees TWITTER_USER_ID_FOR_FOLLOWEES
+                        [1つのみ必須] ユーザID(フォロイー用)
+                        指定したユーザIDのフォロイーのツイートを配信する
+  -l TWITTER_LIST_ID, --twitter_list_id TWITTER_LIST_ID
+                        [1つのみ必須] TwitterリストID
+                        指定したTwitterリストIDのツイートを配信する
+```
+
+
 # 7. (付録)実行コマンド一覧
 
 ```cmd
@@ -447,6 +493,7 @@ options:
 > poetry run tweet-search -h
 > poetry run limit-show   -h
 > poetry run pin-auth     -h
+> poetry run tweet-stream -h
 ```
 
 
