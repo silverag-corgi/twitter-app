@@ -148,12 +148,12 @@ def __get_args() -> argparse.Namespace:
             '-id', '--twitter_list_id',
             type=str,
             help=help_msg.format(
-                'TwitterリストID (csv形式)', '例："0123456789111111111, 0123456789222222222"'))
+                'TwitterリストID(csv形式)', '例："0123456789111111111, 0123456789222222222"'))
         mutually_exclusive_group_b.add_argument(
             '-name', '--twitter_list_name',
             type=str,
             help=help_msg.format(
-                'Twitterリスト名 (csv形式)', '例："Google関連アカウント, Microsoft関連アカウント"'))
+                'Twitterリスト名(csv形式)', '例："Google関連アカウント, Microsoft関連アカウント"'))
         
         args: argparse.Namespace = parser.parse_args()
     except Exception as e:
