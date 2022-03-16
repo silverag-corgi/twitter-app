@@ -24,7 +24,7 @@ def main() -> int:
         -
     
     Args on cmd line:
-        user_id (str)                   : [必須] ユーザID(Twitter)
+        twitter_user_id (str)           : [必須] TwitterユーザID
         generate_followee_list (bool)   : [グループAで1つのみ必須] フォロイーリスト生成
         generate_follower_list (bool)   : [グループAで1つのみ必須] フォロワーリスト生成
         num_of_followxxs (int)          : [任意] フォロイー(フォロワー)数
@@ -56,7 +56,7 @@ def main() -> int:
             # ロジック(Twitterフォロイーリスト生成)の実行
             twitter_followxx_list_gen.do_logic(
                     api,
-                    args.user_id,
+                    args.twitter_user_id,
                     args.num_of_followxxs,
                     twitter_followxx_list_gen.Pages.FOLLOWEE_LIST
                 )
@@ -64,7 +64,7 @@ def main() -> int:
             # ロジック(Twitterフォロワーリスト生成)の実行
             twitter_followxx_list_gen.do_logic(
                     api,
-                    args.user_id,
+                    args.twitter_user_id,
                     args.num_of_followxxs,
                     twitter_followxx_list_gen.Pages.FOLLOWER_LIST
                 )
@@ -88,8 +88,8 @@ def __get_args() -> argparse.Namespace:
             )
         
         # 必須の引数
-        help_msg = '[必須] ユーザID(Twitter)'
-        parser.add_argument('user_id', help=help_msg)
+        help_msg = '[必須] TwitterユーザID'
+        parser.add_argument('twitter_user_id', help=help_msg)
         
         # グループAの引数
         arg_group_a: argparse._ArgumentGroup = parser.add_argument_group(
@@ -129,9 +129,10 @@ def __validate_args(args: argparse.Namespace) -> bool:
         # ロガーの取得
         lg = pyl.get_logger(__name__)
         
-        # 検証：ユーザIDが4文字以上であること
-        if len(args.user_id) < 4:
-            pyl.log_war(lg, f'ユーザIDが4文字以上ではありません。(user_id:{args.user_id})')
+        # 検証：TwitterユーザIDが4文字以上であること
+        if len(args.twitter_user_id) < 4:
+            pyl.log_war(lg, f'TwitterユーザIDが4文字以上ではありません。' +
+                            f'(twitter_user_id:{args.twitter_user_id})')
             return False
         
         # 検証：フォロイー(フォロワー)数が1人以上であること

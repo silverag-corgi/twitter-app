@@ -31,7 +31,7 @@ def do_logic(
                 math.ceil(twitter_tweets_util.Stream.MAX_NUM_OF_FOLLOWING.value /
                             twitter_users_util.Followee.MAX_NUM_OF_DATA_PER_REQUEST.value)
             user_pages = twitter_users_util.get_followee_pages(
-                    api, user_id=id, num_of_requests=num_of_requests)
+                    api, twitter_user_id=id, num_of_requests=num_of_requests)
         else:
             # 指定したTwitterリストIDのツイートを配信する場合
             user_pages = twitter_users_util.get_twitter_list_member_pages(api, twitter_list_id=id)

@@ -18,7 +18,7 @@ class Followee(IntEnum):
 
 def get_followee_pages(
         api: tweepy.API,
-        user_id: str,
+        twitter_user_id: str,
         num_of_data_per_request: int = Followee.MAX_NUM_OF_DATA_PER_REQUEST.value,
         num_of_requests: int = Followee.MAX_NUM_OF_REQUESTS_PER_15MIN.value
     ) -> list[ResultSet]:
@@ -28,7 +28,7 @@ def get_followee_pages(
     
     Args:
         api (tweepy.API)                : API
-        user_id (str)                   : ユーザID
+        twitter_user_id (str)           : TwitterユーザID
         num_of_data_per_request (int)   : リクエストごとのデータ数(デフォルト：200)
         num_of_requests (int)           : リクエスト数(デフォルト：15)
     
@@ -62,17 +62,17 @@ def get_followee_pages(
         
         followee_pagination: tweepy.Cursor = tweepy.Cursor(
                 api.get_friends,
-                screen_name=user_id,
+                screen_name=twitter_user_id,
                 count=num_of_data_per_request
                 if num_of_data_per_request <= Followee.MAX_NUM_OF_DATA_PER_REQUEST.value
                 else Followee.MAX_NUM_OF_DATA_PER_REQUEST.value
             )
         followee_pages = list(followee_pagination.pages(num_of_requests))
         
-        pyl.log_inf(lg, f'フォロイーページ取得に成功しました。(user_id:{user_id})')
+        pyl.log_inf(lg, f'フォロイーページ取得に成功しました。(twitter_user_id:{twitter_user_id})')
     except Exception as e:
         if lg is not None:
-            pyl.log_war(lg, f'フォロイーページ取得に失敗しました。(user_id:{user_id})', e)
+            pyl.log_war(lg, f'フォロイーページ取得に失敗しました。(twitter_user_id:{twitter_user_id})', e)
     
     return followee_pages
 
@@ -84,7 +84,7 @@ class Follower(IntEnum):
 
 def get_follower_pages(
         api: tweepy.API,
-        user_id: str,
+        twitter_user_id: str,
         num_of_data_per_request: int = Follower.MAX_NUM_OF_DATA_PER_REQUEST.value,
         num_of_requests: int = Follower.MAX_NUM_OF_REQUESTS_PER_15MIN.value
     ) -> list[ResultSet]:
@@ -94,7 +94,7 @@ def get_follower_pages(
     
     Args:
         api (tweepy.API)                : API
-        user_id (str)                   : ユーザID
+        twitter_user_id (str)           : TwitterユーザID
         num_of_data_per_request (int)   : リクエストごとのデータ数(デフォルト：200)
         num_of_requests (int)           : リクエスト数(デフォルト：15)
     
@@ -122,32 +122,32 @@ def get_follower_pages(
         
         follower_pagination: tweepy.Cursor = tweepy.Cursor(
                 api.get_followers,
-                screen_name=user_id,
+                screen_name=twitter_user_id,
                 count=num_of_data_per_request
                 if num_of_data_per_request <= Follower.MAX_NUM_OF_DATA_PER_REQUEST.value
                 else Follower.MAX_NUM_OF_DATA_PER_REQUEST.value
             )
         follower_pages = list(follower_pagination.pages(num_of_requests))
         
-        pyl.log_inf(lg, f'フォロワーページ取得に成功しました。(user_id:{user_id})')
+        pyl.log_inf(lg, f'フォロワーページ取得に成功しました。(twitter_user_id:{twitter_user_id})')
     except Exception as e:
         if lg is not None:
-            pyl.log_war(lg, f'フォロワーページ取得に失敗しました。(user_id:{user_id})', e)
+            pyl.log_war(lg, f'フォロワーページ取得に失敗しました。(twitter_user_id:{twitter_user_id})', e)
     
     return follower_pages
 
 
 def get_user_info(
         api: tweepy.API,
-        user_id: str
+        twitter_user_id: str
     ) -> Any:
     
     '''
     ユーザ情報取得
     
     Args:
-        api (tweepy.API)    : API
-        user_id (str)       : ユーザID
+        api (tweepy.API)        : API
+        twitter_user_id (str)   : TwitterユーザID
     
     Returns:
         Any: ユーザ情報 (tweepy.models.User)
@@ -168,7 +168,7 @@ def get_user_info(
     try:
         lg = pyl.get_logger(__name__)
         
-        user_info: Any = api.get_user(screen_name=user_id)
+        user_info: Any = api.get_user(screen_name=twitter_user_id)
         
         pyl.log_deb(lg, f'ユーザ情報取得に成功しました。')
     except Exception as e:
@@ -234,15 +234,15 @@ def has_twitter_list(
 
 def get_twitter_lists(
         api: tweepy.API,
-        user_id: str = ''
+        twitter_user_id: str = ''
     ) -> ResultSet:
     
     '''
     Twitterリスト一覧取得
     
     Args:
-        api (tweepy.API)    : API
-        user_id (str)       : ユーザID
+        api (tweepy.API)        : API
+        twitter_user_id (str)   : TwitterユーザID
     
     Returns:
         ResultSet: Twitterリスト一覧 (ResultSet[tweepy.models.List])
@@ -265,15 +265,15 @@ def get_twitter_lists(
         lg = pyl.get_logger(__name__)
         
         twitter_lists: Any
-        if user_id == '':
+        if twitter_user_id == '':
             twitter_lists = api.get_lists(reverse=True)
         else:
-            twitter_lists = api.get_lists(screen_name=user_id, reverse=True)
+            twitter_lists = api.get_lists(screen_name=twitter_user_id, reverse=True)
         
-        pyl.log_inf(lg, f'Twitterリスト一覧取得に成功しました。(user_id:{user_id})')
+        pyl.log_inf(lg, f'Twitterリスト一覧取得に成功しました。(twitter_user_id:{twitter_user_id})')
     except Exception as e:
         if lg is not None:
-            pyl.log_err(lg, f'Twitterリスト一覧取得に失敗しました。(user_id:{user_id})')
+            pyl.log_err(lg, f'Twitterリスト一覧取得に失敗しました。(twitter_user_id:{twitter_user_id})')
         raise(e)
     
     return twitter_lists
@@ -440,18 +440,18 @@ def destroy_twitter_list(
 def add_user_to_twitter_list(
         api: tweepy.API,
         twitter_list_id: str,
-        user_id: str,
-        user_name: str = ''
+        twitter_user_id: str,
+        twitter_user_name: str = ''
     ) -> bool:
     
     '''
     ユーザ追加
     
     Args:
-        api (tweepy.API)            : API
-        twitter_list_id (str)       : TwitterリストID
-        user_id (str)               : ユーザID
-        user_name (str, optional)   : ユーザ名
+        api (tweepy.API)                    : API
+        twitter_list_id (str)               : TwitterリストID
+        twitter_user_id (str)               : TwitterユーザID
+        twitter_user_name (str, optional)   : Twitterユーザ名
     
     Returns:
         bool: 実行結果 (True：成功、False：失敗)
@@ -473,14 +473,17 @@ def add_user_to_twitter_list(
     try:
         lg = pyl.get_logger(__name__)
         
-        api.add_list_member(list_id=twitter_list_id, screen_name=user_id)
-        pyl.log_deb(lg, f'ユーザ追加に成功しました。(user_id:{user_id: <15}, user_name:{user_name})')
+        api.add_list_member(list_id=twitter_list_id, screen_name=twitter_user_id)
+        pyl.log_deb(lg, f'ユーザ追加に成功しました。' +
+                        f'(twitter_user_id:{twitter_user_id: <15}, ' +
+                        f'twitter_user_name:{twitter_user_name})')
         
         result = True
     except Exception as e:
         if lg is not None:
             pyl.log_war(lg, f'ユーザ追加に失敗しました。鍵付きや削除済みの可能性があります。' +
-                            f'(user_id:{user_id: <15}, user_name:{user_name})', e)
+                            f'(twitter_user_id:{twitter_user_id: <15}, ' +
+                            f'twitter_user_name:{twitter_user_name})', e)
     
     return result
 
@@ -521,8 +524,8 @@ def get_auth_user_info(
         auth_user_info : Any = api.verify_credentials()
         
         pyl.log_inf(lg, f'認証ユーザ情報取得に成功しました。' +
-                        f'(user_id:{auth_user_info.screen_name: <15}, ' +
-                        f'user_name:{auth_user_info.name})')
+                        f'(twitter_user_id:{auth_user_info.screen_name: <15}, ' +
+                        f'twitter_user_name:{auth_user_info.name})')
     except Exception as e:
         if lg is not None:
             pyl.log_err(lg, f'認証ユーザ情報取得に失敗しました。')
