@@ -19,15 +19,15 @@ TWITTER_LISTS_HEADER: Final[list[str]] = \
     ]
 TWITTER_LIST_HEADER: Final[list[str]] = \
     [
-        'user_id',
-        'user_name',
+        'twitter_user_id',
+        'twitter_user_name',
         'url',
     ]
 TWITTER_TWEET_SEARCH_RESULT_HEADER: Final[list[str]] = \
     [
         'creation_datetime',
-        'user_id',
-        'user_name',
+        'twitter_user_id',
+        'twitter_user_name',
         'tweet_text',
         'retweet_count',
         'favorite_count',

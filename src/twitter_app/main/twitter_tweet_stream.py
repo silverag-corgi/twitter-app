@@ -99,7 +99,7 @@ def __get_args() -> argparse.Namespace:
             '-u', '--twitter_user_id_for_followees',
             type=str,
             help=help_msg.format(
-                'ユーザID(フォロイー用)', '指定したユーザIDのフォロイーのツイートを配信する'))
+                'TwitterユーザID(フォロイー用)', '指定したTwitterユーザIDのフォロイーのツイートを配信する'))
         mutually_exclusive_group_a.add_argument(
             '-l', '--twitter_list_id',
             type=str,
@@ -132,7 +132,7 @@ def __validate_args(args: argparse.Namespace) -> bool:
         # 検証：グループAの引数が指定された場合は1文字以上であること
         if args.twitter_user_id_for_followees is not None \
             and not (len(args.twitter_user_id_for_followees) >= 1):
-            pyl.log_war(lg, f'ユーザID(フォロイー用)が1文字以上ではありません。' +
+            pyl.log_war(lg, f'TwitterユーザID(フォロイー用)が1文字以上ではありません。' +
                             f'(twitter_user_id_for_followees:{args.twitter_user_id_for_followees})')
             return False
         elif args.twitter_list_id is not None \
