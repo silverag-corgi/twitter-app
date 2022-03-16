@@ -317,13 +317,13 @@ options in this group:
 
 ```cmd
 > poetry run followxx-gen -h
-usage: followxx-gen [-h] (-followee | -follower) [-f NUM_OF_FOLLOWXXS] user_id
+usage: followxx-gen [-h] (-followee | -follower) [-f NUM_OF_FOLLOWXXS] twitter_user_id
 
 Twitterフォロイー(フォロワー)リスト生成
 指定したTwitterユーザのフォロイー(フォロワー)のTwitterリストを生成します
 
 positional arguments:
-  user_id               [必須] ユーザID(Twitter)
+  twitter_user_id       [必須] TwitterユーザID
 
 options:
   -h, --help            show this help message and exit
@@ -476,8 +476,8 @@ options in this group:
   処理対象のIDを指定します
 
   -u TWITTER_USER_ID_FOR_FOLLOWEES, --twitter_user_id_for_followees TWITTER_USER_ID_FOR_FOLLOWEES
-                        [1つのみ必須] ユーザID(フォロイー用)
-                        指定したユーザIDのフォロイーのツイートを配信する
+                        [1つのみ必須] TwitterユーザID(フォロイー用)
+                        指定したTwitterユーザIDのフォロイーのツイートを配信する
   -l TWITTER_LIST_ID, --twitter_list_id TWITTER_LIST_ID
                         [1つのみ必須] TwitterリストID
                         指定したTwitterリストIDのツイートを配信する
