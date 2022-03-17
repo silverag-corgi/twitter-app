@@ -1,3 +1,4 @@
+import math
 from enum import Enum, IntEnum
 from logging import Logger
 from typing import Any, Optional
@@ -9,53 +10,69 @@ from tweepy.models import ResultSet
 from twitter_app.util import const_util
 
 
-class SEARCH_RESULT_TYPE(Enum):
+class EnumOfSearchResultType(Enum):
     MIXED = 'mixed'         # 最新の検索結果と人気のある検索結果
     RECENT = 'recent'       # 最新の検索結果のみ
     POPULAR = 'popular'     # 人気のある検索結果のみ
 
 
-class TWEETS_IN_PAST_7DAY(IntEnum):
-    MAX_NUM_OF_DATA_PER_REQUEST = 100
-    MAX_NUM_OF_REQUESTS_PER_15MIN = 180
+class EnumOfTweetsInPast7Day():
+    class EnumOfOauth1User(IntEnum):
+        MAX_NUM_OF_DATA_PER_REQUEST = 100
+        MAX_NUM_OF_REQUESTS_PER_15MIN = 180
+        MAX_NUM_OF_DATA_PER_15MIN = MAX_NUM_OF_DATA_PER_REQUEST * MAX_NUM_OF_REQUESTS_PER_15MIN
+    
+    class EnumOfOauth2App(IntEnum):
+        MAX_NUM_OF_DATA_PER_REQUEST = 100
+        MAX_NUM_OF_REQUESTS_PER_15MIN = 450
+        MAX_NUM_OF_DATA_PER_15MIN = MAX_NUM_OF_DATA_PER_REQUEST * MAX_NUM_OF_REQUESTS_PER_15MIN
 
 
 def search_tweets_in_past_7day(
         api: tweepy.API,
         query: str,
-        search_result_type: SEARCH_RESULT_TYPE,
-        num_of_data_per_request: int = TWEETS_IN_PAST_7DAY.MAX_NUM_OF_DATA_PER_REQUEST.value,
-        num_of_requests: int = TWEETS_IN_PAST_7DAY.MAX_NUM_OF_REQUESTS_PER_15MIN.value
+        search_result_type: EnumOfSearchResultType,
+        num_of_data: int = EnumOfTweetsInPast7Day.EnumOfOauth1User.MAX_NUM_OF_DATA_PER_15MIN.value,
+        num_of_data_per_request: int =
+        EnumOfTweetsInPast7Day.EnumOfOauth1User.MAX_NUM_OF_DATA_PER_REQUEST.value
     ) -> list[ResultSet]:
     
     '''
     ツイート検索(過去7日間)
     
     Args:
-        api (tweepy.API)                        : API
-        query (str)                             : クエリ
-        search_result_type (SEARCH_RESULT_TYPE) : 検索結果の種類
-        num_of_data_per_request (int, optional) : リクエストごとのデータ数(デフォルト：100)
-        num_of_requests (int, optional)         : リクエスト数(デフォルト：180)
+        api (tweepy.API)                            : API
+        query (str)                                 : クエリ
+        search_result_type (EnumOfSearchResultType) : 検索結果の種類
+        num_of_data (int, optional)                 : データ数
+        num_of_data_per_request (int, optional)     : リクエストごとのデータ数
     
     Returns:
         list[ResultSet] : ツイート検索結果ページ (list[ResultSet[tweepy.models.SearchResults]])
     
     Notes:
-        - 使用するエンドポイントはGETメソッドである
-        - 引数「リクエストごとのデータ数」は上限が100データ
-            - 超過して指定した場合は上限で上書きする
-        - 引数「リクエスト数」は15分ごとに最大180リクエスト
-            - 超過して指定した場合はレート制限により15分の待機時間が発生する
-        - 15分で最大18000データを取得できる
-            - 100 data/req * 180 req/15-min = 18000 data/15-min
+        - 認証
+            - ユーザ認証(OAuth 1.0a)
+            - アプリ認証(OAuth 2.0)
+        - エンドポイント
+            - GET search/tweets
+        - レート制限
+            - ユーザ認証(OAuth 1.0a)
+                - データ数／リクエスト : 100
+                - リクエスト数／１５分 : 180
+                    - 超過した場合は15分の待機時間が発生する
+            - アプリ認証(OAuth 2.0)
+                - データ数／リクエスト : 100
+                - リクエスト数／１５分 : 450
+                    - 超過した場合は15分の待機時間が発生する
     
     References:
         - エンドポイント
             - https://developer.twitter.com/en/docs/twitter-api/v1/tweets/search/overview
             - https://developer.twitter.com/en/docs/twitter-api/v1/tweets/search/api-reference/get-search-tweets
+        - パラメータ
             - https://developer.twitter.com/en/docs/twitter-api/v1/tweets/search/guides/standard-operators
-        - オブジェクトモデル
+        - レスポンス
             - https://developer.twitter.com/en/docs/twitter-api/v1/data-dictionary/object-model/tweet
     '''  # noqa: E501
     
@@ -65,16 +82,16 @@ def search_tweets_in_past_7day(
     try:
         lg = pyl.get_logger(__name__)
         
-        pyl.log_inf(lg, f'時間がかかるため気長にお待ちください。')
+        # リクエスト数の算出
+        num_of_requests = math.ceil(num_of_data / num_of_data_per_request)
         
+        # ツイートの検索
+        pyl.log_inf(lg, f'時間がかかるため気長にお待ちください。')
         tweet_search_result_pagination: tweepy.Cursor = tweepy.Cursor(
                 api.search_tweets,
                 q=query,
                 result_type=search_result_type,
                 count=num_of_data_per_request
-                if (num_of_data_per_request <=
-                    TWEETS_IN_PAST_7DAY.MAX_NUM_OF_DATA_PER_REQUEST.value)
-                else TWEETS_IN_PAST_7DAY.MAX_NUM_OF_DATA_PER_REQUEST.value
             )
         tweet_search_result_pages = list(tweet_search_result_pagination.pages(num_of_requests))
         
@@ -104,7 +121,7 @@ class CustomStream(tweepy.Stream):
             pass
 
 
-class Stream(IntEnum):
+class EnumOfStream(IntEnum):
     MAX_NUM_OF_KEYWORDS = 400
     MAX_NUM_OF_FOLLOWING = 5000
 
@@ -127,15 +144,22 @@ def stream_tweets(
         -
     
     Notes:
-        - 使用するエンドポイントはPOSTメソッドである
+        - 認証
+            - ユーザ認証(OAuth 1.0a)
+        - エンドポイント
+            - POST statuses/filter
+        - レート制限
+            - ユーザ認証(OAuth 1.0a)
+                - リクエスト数／１５分 : (未公表)
     
     References:
         - エンドポイント
             - https://developer.twitter.com/en/docs/twitter-api/v1/tweets/filter-realtime/overview
             - https://developer.twitter.com/en/docs/twitter-api/v1/tweets/filter-realtime/api-reference/post-statuses-filter
+        - パラメータ
             - https://developer.twitter.com/en/docs/twitter-api/v1/tweets/filter-realtime/guides/basic-stream-parameters#follow
             - https://developer.twitter.com/en/docs/twitter-api/v1/tweets/filter-realtime/guides/basic-stream-parameters#track
-        - オブジェクトモデル
+        - レスポンス
             - https://developer.twitter.com/en/docs/twitter-api/v1/data-dictionary/object-model/tweet
     '''  # noqa: E501
     
@@ -144,6 +168,7 @@ def stream_tweets(
     try:
         lg = pyl.get_logger(__name__)
         
+        # ストリームの生成
         auth: Any = api.auth
         stream: CustomStream = CustomStream(
                 auth.consumer_key,
@@ -152,6 +177,7 @@ def stream_tweets(
                 auth.access_token_secret
             )
         
+        # ツイートの配信
         stream.filter(follow=following_user_ids, track=keywords, languages=['ja'])
     except Exception as e:
         if lg is not None:

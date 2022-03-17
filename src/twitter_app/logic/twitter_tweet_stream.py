@@ -1,4 +1,3 @@
-import math
 from logging import Logger
 from typing import Any, Optional
 
@@ -23,22 +22,25 @@ def do_logic(
         lg = pyl.get_logger(__name__)
         pyl.log_inf(lg, f'Twitterツイート配信を開始します。')
         
-        # ユーザページの取得
-        user_pages: list[ResultSet]
+        # Twitterユーザページの取得
+        twitter_user_pages: list[ResultSet]
         if stream_by_twitter_list_id == False:
-            # 指定したユーザIDのフォロイーのツイートを配信する場合
-            num_of_requests: int = \
-                math.ceil(twitter_tweets_util.Stream.MAX_NUM_OF_FOLLOWING.value /
-                            twitter_users_util.Followee.MAX_NUM_OF_DATA_PER_REQUEST.value)
-            user_pages = twitter_users_util.get_followee_pages(
-                    api, twitter_user_id=id, num_of_requests=num_of_requests)
+            # 指定したTwitterユーザIDのフォロイーのツイートを配信する場合
+            twitter_user_pages = twitter_users_util.get_followee_pages(
+                    api,
+                    twitter_user_id=id,
+                    num_of_data=twitter_tweets_util.EnumOfStream.MAX_NUM_OF_FOLLOWING.value
+                )
         else:
             # 指定したTwitterリストIDのツイートを配信する場合
-            user_pages = twitter_users_util.get_twitter_list_member_pages(api, twitter_list_id=id)
+            twitter_user_pages = twitter_users_util.get_twitter_list_member_pages(
+                api, twitter_list_id=id)
         
         # フォローユーザIDの生成
-        following_user_ids: list[str] = \
-            [user.id for users_by_page in user_pages for user in users_by_page]
+        following_user_ids: list[str] = [
+            user.id
+            for twitter_users_by_page in twitter_user_pages
+            for user in twitter_users_by_page]
         auth_user_info : Any = twitter_users_util.get_auth_user_info(api)
         following_user_ids.append(auth_user_info.id)
         

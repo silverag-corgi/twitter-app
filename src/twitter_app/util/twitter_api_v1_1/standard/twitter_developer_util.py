@@ -25,9 +25,19 @@ def show_rate_limit(
         -
     
     Notes:
-        - 使用するエンドポイントはGETメソッドである
-        - Twitter API Standard v1.1 に対してのみ正確である
-        - レート制限を表示できるエンドポイントはGETメソッドのみである
+        - 認証
+            - ユーザ認証(OAuth 1.0a)
+            - アプリ認証(OAuth 2.0)
+        - エンドポイント
+            - GET application/rate_limit_status
+        - レート制限
+            - ユーザ認証(OAuth 1.0a)
+                - リクエスト数／１５分 : 180
+                    - 超過した場合は15分の待機時間が発生する
+            - アプリ認証(OAuth 2.0)
+                - リクエスト数／１５分 : 180
+                    - 超過した場合は15分の待機時間が発生する
+        - Twitter API Standard v1.1 のGETメソッドに対してのみ正確である
     
     References:
         - エンドポイント
@@ -42,8 +52,9 @@ def show_rate_limit(
     try:
         lg = pyl.get_logger(__name__)
         
+        # レート制限の表示
         rate_limits: Any = api.rate_limit_status()
-        if resource_family != '' and endpoint != '':
+        if not(resource_family == '' or endpoint == ''):
             rate_limit: dict = rate_limits['resources'][resource_family][endpoint]
             remaining: int = rate_limit['remaining']
             limit: int = rate_limit['limit']

@@ -1,4 +1,3 @@
-import math
 import os
 import re
 from logging import Logger
@@ -35,9 +34,9 @@ def do_logic(
         
         # 想定処理時間の表示
         util.show_estimated_proc_time(
-                twitter_tweets_util.TWEETS_IN_PAST_7DAY.MAX_NUM_OF_DATA_PER_REQUEST.value,
-                twitter_tweets_util.TWEETS_IN_PAST_7DAY.MAX_NUM_OF_REQUESTS_PER_15MIN.value,
-                num_of_tweets
+                num_of_tweets,
+                twitter_tweets_util.EnumOfTweetsInPast7Day.EnumOfOauth1User.
+                MAX_NUM_OF_DATA_PER_15MIN.value
             )
         
         # レート制限の表示
@@ -48,15 +47,14 @@ def do_logic(
         tweet_search_result_pages: list[ResultSet] = twitter_tweets_util.search_tweets_in_past_7day(
                 api,
                 query_with_filter,
-                twitter_tweets_util.SEARCH_RESULT_TYPE.RECENT,
-                num_of_requests=math.ceil(
-                    num_of_tweets /
-                    twitter_tweets_util.TWEETS_IN_PAST_7DAY.MAX_NUM_OF_DATA_PER_REQUEST.value)
+                twitter_tweets_util.EnumOfSearchResultType.RECENT,
+                num_of_tweets
             )
         
         # ツイート検索結果ページの件数が0件の場合
         if len(tweet_search_result_pages) == 0:
-            pyl.log_inf(lg, f'ツイート検索結果ページの件数が0件です。(query_with_filter:{query_with_filter})')
+            pyl.log_inf(lg, f'ツイート検索結果ページの件数が0件です。' +
+                            f'(query_with_filter:{query_with_filter})')
         else:
             # ツイート検索結果ファイル名の生成
             query_for_name: str = re.sub(r'[\\/:*?"<>\|]+', '-', query)

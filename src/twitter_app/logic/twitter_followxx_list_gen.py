@@ -1,4 +1,3 @@
-import math
 from enum import IntEnum, auto
 from logging import Logger
 from typing import Any, Optional
@@ -40,9 +39,9 @@ def do_logic(
         if kind_of_pages == Pages.FOLLOWEE_LIST:
             # 想定処理時間の表示
             util.show_estimated_proc_time(
-                    twitter_users_util.Followee.MAX_NUM_OF_DATA_PER_REQUEST.value,
-                    twitter_users_util.Followee.MAX_NUM_OF_REQUESTS_PER_15MIN.value,
-                    num_of_followxxs
+                    num_of_followxxs,
+                    twitter_users_util.EnumOfFollowee.EnumOfOauth1User.
+                    MAX_NUM_OF_DATA_PER_15MIN.value
                 )
             
             # レート制限の表示
@@ -50,21 +49,16 @@ def do_logic(
             
             # フォロイーページの取得
             followxx_pages = twitter_users_util.get_followee_pages(
-                    api,
-                    twitter_user_id,
-                    num_of_requests=math.ceil(
-                        num_of_followxxs /
-                        twitter_users_util.Followee.MAX_NUM_OF_DATA_PER_REQUEST.value)
-                )
+                api, twitter_user_id, num_of_data=num_of_followxxs)
             
             # Twitterリスト名フォーマットの決定
             twitter_list_name_format = const_util.FOLLOWEE_TWITTER_LIST_NAME
         elif kind_of_pages == Pages.FOLLOWER_LIST:
             # 想定処理時間の表示
             util.show_estimated_proc_time(
-                    twitter_users_util.Follower.MAX_NUM_OF_DATA_PER_REQUEST.value,
-                    twitter_users_util.Follower.MAX_NUM_OF_REQUESTS_PER_15MIN.value,
-                    num_of_followxxs
+                    num_of_followxxs,
+                    twitter_users_util.EnumOfFollower.EnumOfOauth1User.
+                    MAX_NUM_OF_DATA_PER_15MIN.value
                 )
             
             # レート制限の表示
@@ -72,12 +66,7 @@ def do_logic(
             
             # フォロワーページの取得
             followxx_pages = twitter_users_util.get_follower_pages(
-                    api,
-                    twitter_user_id,
-                    num_of_requests=math.ceil(
-                        num_of_followxxs /
-                        twitter_users_util.Follower.MAX_NUM_OF_DATA_PER_REQUEST.value)
-                )
+                api, twitter_user_id, num_of_data=num_of_followxxs)
             
             # Twitterリスト名フォーマットの決定
             twitter_list_name_format = const_util.FOLLOWER_TWITTER_LIST_NAME
@@ -105,15 +94,15 @@ def do_logic(
             for followxxs_by_page in followxx_pages:
                 # followxx: tweepy.models.User
                 for followxx in followxxs_by_page:
-                    # ユーザの追加
-                    add_user_result: bool = twitter_users_util.add_user_to_twitter_list(
+                    # Twitterユーザの追加
+                    add_user_result: bool = twitter_users_util.add_twitter_user_to_twitter_list(
                             api,
                             twitter_list.id,
                             followxx.screen_name,
                             followxx.name
                         )
                     
-                    # ユーザのカウント
+                    # Twitterユーザのカウント
                     count_of_followxxs = count_of_followxxs + 1
                     if add_user_result == True:
                         count_of_added_followxxs = count_of_added_followxxs + 1
