@@ -1,3 +1,4 @@
+import math
 from enum import IntEnum
 from logging import Logger
 from typing import Any, Optional
@@ -11,44 +12,59 @@ from tweepy.models import ResultSet
 ####################################################################################################
 
 
-class Followee(IntEnum):
-    MAX_NUM_OF_DATA_PER_REQUEST = 200
-    MAX_NUM_OF_REQUESTS_PER_15MIN = 15
+class EnumOfFollowee():
+    class EnumOfOauth1User(IntEnum):
+        MAX_NUM_OF_DATA_PER_REQUEST = 200
+        MAX_NUM_OF_REQUESTS_PER_15MIN = 15
+        MAX_NUM_OF_DATA_PER_15MIN = MAX_NUM_OF_DATA_PER_REQUEST * MAX_NUM_OF_REQUESTS_PER_15MIN
+    
+    class EnumOfOauth2App(IntEnum):
+        MAX_NUM_OF_DATA_PER_REQUEST = 200
+        MAX_NUM_OF_REQUESTS_PER_15MIN = 15
+        MAX_NUM_OF_DATA_PER_15MIN = MAX_NUM_OF_DATA_PER_REQUEST * MAX_NUM_OF_REQUESTS_PER_15MIN
 
 
 def get_followee_pages(
         api: tweepy.API,
         twitter_user_id: str,
-        num_of_data_per_request: int = Followee.MAX_NUM_OF_DATA_PER_REQUEST.value,
-        num_of_requests: int = Followee.MAX_NUM_OF_REQUESTS_PER_15MIN.value
+        num_of_data: int = EnumOfFollowee.EnumOfOauth1User.MAX_NUM_OF_DATA_PER_15MIN.value,
+        num_of_data_per_request: int =
+        EnumOfFollowee.EnumOfOauth1User.MAX_NUM_OF_DATA_PER_REQUEST.value
     ) -> list[ResultSet]:
     
     '''
     フォロイーページ取得
     
     Args:
-        api (tweepy.API)                : API
-        twitter_user_id (str)           : TwitterユーザID
-        num_of_data_per_request (int)   : リクエストごとのデータ数(デフォルト：200)
-        num_of_requests (int)           : リクエスト数(デフォルト：15)
+        api (tweepy.API)                        : API
+        twitter_user_id (str)                   : TwitterユーザID
+        num_of_data (int, optional)             : データ数
+        num_of_data_per_request (int, optional) : リクエストごとのデータ数
     
     Returns:
         list[ResultSet] : フォロイーページ (list[ResultSet[tweepy.models.User]])
     
     Notes:
-        - 使用するエンドポイントはGETメソッドである
-        - 引数「リクエストごとのデータ数」は上限が200データ
-            - 超過して指定した場合は200で上書きする
-        - 引数「リクエスト数」は15分ごとに最大15リクエスト
-            - 超過して指定した場合はレート制限により15分の待機時間が発生する
-        - 15分で最大3000データを取得できる
-            - 200 data/req * 15 req/15-min = 3000 data/15-min
+        - 認証
+            - ユーザ認証(OAuth 1.0a)
+            - アプリ認証(OAuth 2.0)
+        - エンドポイント
+            - GET friends/list
+        - レート制限
+            - ユーザ認証(OAuth 1.0a)
+                - データ数／リクエスト : 200
+                - リクエスト数／１５分 : 15
+                    - 超過した場合は15分の待機時間が発生する
+            - アプリ認証(OAuth 2.0)
+                - データ数／リクエスト : 200
+                - リクエスト数／１５分 : 15
+                    - 超過した場合は15分の待機時間が発生する
     
     References:
         - エンドポイント
             - https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/follow-search-get-users/overview
             - https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/follow-search-get-users/api-reference/get-friends-list
-        - オブジェクトモデル
+        - レスポンス
             - https://developer.twitter.com/en/docs/twitter-api/v1/data-dictionary/object-model/user
     '''  # noqa: E501
     
@@ -58,14 +74,15 @@ def get_followee_pages(
     try:
         lg = pyl.get_logger(__name__)
         
-        pyl.log_inf(lg, f'時間がかかるため気長にお待ちください。')
+        # リクエスト数の算出
+        num_of_requests = math.ceil(num_of_data / num_of_data_per_request)
         
+        # フォロイーページの取得
+        pyl.log_inf(lg, f'時間がかかるため気長にお待ちください。')
         followee_pagination: tweepy.Cursor = tweepy.Cursor(
                 api.get_friends,
                 screen_name=twitter_user_id,
                 count=num_of_data_per_request
-                if num_of_data_per_request <= Followee.MAX_NUM_OF_DATA_PER_REQUEST.value
-                else Followee.MAX_NUM_OF_DATA_PER_REQUEST.value
             )
         followee_pages = list(followee_pagination.pages(num_of_requests))
         
@@ -77,38 +94,59 @@ def get_followee_pages(
     return followee_pages
 
 
-class Follower(IntEnum):
-    MAX_NUM_OF_DATA_PER_REQUEST = 200
-    MAX_NUM_OF_REQUESTS_PER_15MIN = 15
+class EnumOfFollower():
+    class EnumOfOauth1User(IntEnum):
+        MAX_NUM_OF_DATA_PER_REQUEST = 200
+        MAX_NUM_OF_REQUESTS_PER_15MIN = 15
+        MAX_NUM_OF_DATA_PER_15MIN = MAX_NUM_OF_DATA_PER_REQUEST * MAX_NUM_OF_REQUESTS_PER_15MIN
+    
+    class EnumOfOauth2App(IntEnum):
+        MAX_NUM_OF_DATA_PER_REQUEST = 200
+        MAX_NUM_OF_REQUESTS_PER_15MIN = 15
+        MAX_NUM_OF_DATA_PER_15MIN = MAX_NUM_OF_DATA_PER_REQUEST * MAX_NUM_OF_REQUESTS_PER_15MIN
 
 
 def get_follower_pages(
         api: tweepy.API,
         twitter_user_id: str,
-        num_of_data_per_request: int = Follower.MAX_NUM_OF_DATA_PER_REQUEST.value,
-        num_of_requests: int = Follower.MAX_NUM_OF_REQUESTS_PER_15MIN.value
+        num_of_data: int = EnumOfFollower.EnumOfOauth1User.MAX_NUM_OF_DATA_PER_15MIN.value,
+        num_of_data_per_request: int =
+        EnumOfFollower.EnumOfOauth1User.MAX_NUM_OF_DATA_PER_REQUEST.value
     ) -> list[ResultSet]:
     
     '''
     フォロワーページ取得
     
     Args:
-        api (tweepy.API)                : API
-        twitter_user_id (str)           : TwitterユーザID
-        num_of_data_per_request (int)   : リクエストごとのデータ数(デフォルト：200)
-        num_of_requests (int)           : リクエスト数(デフォルト：15)
+        api (tweepy.API)                        : API
+        twitter_user_id (str)                   : TwitterユーザID
+        num_of_data (int, optional)             : データ数
+        num_of_data_per_request (int, optional) : リクエストごとのデータ数
     
     Returns:
         list[ResultSet] : フォロワーページ (list[ResultSet[tweepy.models.User]])
     
     Notes:
-        - 「フォロイーページ取得」を参照する
+        - 認証
+            - ユーザ認証(OAuth 1.0a)
+            - アプリ認証(OAuth 2.0)
+        - エンドポイント
+            - GET followers/list
+        - レート制限
+            - ユーザ認証(OAuth 1.0a)
+                - データ数／リクエスト : 200
+                - リクエスト数／１５分 : 15
+                    - 超過した場合は15分の待機時間が発生する
+            - アプリ認証(OAuth 2.0)
+                - データ数／リクエスト : 200
+                - リクエスト数／１５分 : 15
+                    - 超過した場合は15分の待機時間が発生する
     
     References:
         - エンドポイント
             - https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/follow-search-get-users/overview
             - https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/follow-search-get-users/api-reference/get-followers-list
-        - オブジェクトモデル
+        - レスポンス
             - https://developer.twitter.com/en/docs/twitter-api/v1/data-dictionary/object-model/user
     '''  # noqa: E501
     
@@ -118,14 +156,15 @@ def get_follower_pages(
     try:
         lg = pyl.get_logger(__name__)
         
-        pyl.log_inf(lg, f'時間がかかるため気長にお待ちください。')
+        # リクエスト数の算出
+        num_of_requests = math.ceil(num_of_data / num_of_data_per_request)
         
+        # フォロワーページの取得
+        pyl.log_inf(lg, f'時間がかかるため気長にお待ちください。')
         follower_pagination: tweepy.Cursor = tweepy.Cursor(
                 api.get_followers,
                 screen_name=twitter_user_id,
                 count=num_of_data_per_request
-                if num_of_data_per_request <= Follower.MAX_NUM_OF_DATA_PER_REQUEST.value
-                else Follower.MAX_NUM_OF_DATA_PER_REQUEST.value
             )
         follower_pages = list(follower_pagination.pages(num_of_requests))
         
@@ -153,13 +192,24 @@ def get_user_info(
         Any: ユーザ情報 (tweepy.models.User)
     
     Notes:
-        - 使用するエンドポイントはGETメソッドである
+        - 認証
+            - ユーザ認証(OAuth 1.0a)
+            - アプリ認証(OAuth 2.0)
+        - エンドポイント
+            - GET users/show
+        - レート制限
+            - ユーザ認証(OAuth 1.0a)
+                - リクエスト数／１５分 : 900
+                    - 超過した場合は15分の待機時間が発生する
+            - アプリ認証(OAuth 2.0)
+                - リクエスト数／１５分 : 900
+                    - 超過した場合は15分の待機時間が発生する
     
     References:
         - エンドポイント
             - https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/follow-search-get-users/overview
             - https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/follow-search-get-users/api-reference/get-users-show
-        - オブジェクトモデル
+        - レスポンス
             - https://developer.twitter.com/en/docs/twitter-api/v1/data-dictionary/object-model/user
     '''  # noqa: E501
     
@@ -168,6 +218,7 @@ def get_user_info(
     try:
         lg = pyl.get_logger(__name__)
         
+        # ユーザ情報の取得
         user_info: Any = api.get_user(screen_name=twitter_user_id)
         
         pyl.log_deb(lg, f'ユーザ情報取得に成功しました。')
@@ -200,13 +251,25 @@ def has_twitter_list(
         bool: Twitterリスト存在有無 (True：有、False：無)
     
     Notes:
-        - 使用するエンドポイントはGETメソッドである
+        - 認証
+            - ユーザ認証(OAuth 1.0a)
+            - アプリ認証(OAuth 2.0)
+        - エンドポイント
+            - GET lists/list
+        - レート制限
+            - ユーザ認証(OAuth 1.0a)
+                - リクエスト数／１５分 : 15
+                    - 超過した場合は15分の待機時間が発生する
+            - アプリ認証(OAuth 2.0)
+                - リクエスト数／１５分 : 15
+                    - 超過した場合は15分の待機時間が発生する
     
     References:
         - エンドポイント
             - https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/create-manage-lists/overview
             - https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/create-manage-lists/api-reference/get-lists-list
-        - オブジェクトモデル
+        - レスポンス
+            - https://developer.twitter.com/en/docs/twitter-api/data-dictionary/object-model/lists
             - https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/create-manage-lists/api-reference/get-lists-show#example-response
     '''  # noqa: E501
     
@@ -216,8 +279,10 @@ def has_twitter_list(
     try:
         lg = pyl.get_logger(__name__)
         
+        # Twitterリスト一覧の取得
         twitter_lists: Any = api.get_lists(reverse=True)
         
+        # Twitterリスト存在有無の確認
         for twitter_list in twitter_lists:
             if twitter_list.name == twitter_list_name:
                 pyl.log_inf(lg, f'Twitterリストが既に存在します。' +
@@ -248,13 +313,24 @@ def get_twitter_lists(
         ResultSet: Twitterリスト一覧 (ResultSet[tweepy.models.List])
     
     Notes:
-        - 使用するエンドポイントはGETメソッドである
+        - 認証
+            - ユーザ認証(OAuth 1.0a)
+            - アプリ認証(OAuth 2.0)
+        - エンドポイント
+            - GET lists/list
+        - レート制限
+            - ユーザ認証(OAuth 1.0a)
+                - リクエスト数／１５分 : 15
+                    - 超過した場合は15分の待機時間が発生する
+            - アプリ認証(OAuth 2.0)
+                - リクエスト数／１５分 : 15
+                    - 超過した場合は15分の待機時間が発生する
     
     References:
         - エンドポイント
             - https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/create-manage-lists/overview
             - https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/create-manage-lists/api-reference/get-lists-list
-        - オブジェクトモデル
+        - レスポンス
             - https://developer.twitter.com/en/docs/twitter-api/data-dictionary/object-model/lists
             - https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/create-manage-lists/api-reference/get-lists-show#example-response
     '''  # noqa: E501
@@ -264,6 +340,7 @@ def get_twitter_lists(
     try:
         lg = pyl.get_logger(__name__)
         
+        # Twitterリスト一覧の取得
         twitter_lists: Any
         if twitter_user_id == '':
             twitter_lists = api.get_lists(reverse=True)
@@ -279,61 +356,78 @@ def get_twitter_lists(
     return twitter_lists
 
 
-class ListMember(IntEnum):
-    MAX_NUM_OF_DATA_PER_REQUEST = 5000
-    MAX_NUM_OF_REQUESTS_PER_15MIN = 900
+class EnumOfTwitterListMember():
+    class EnumOfOauth1User(IntEnum):
+        MAX_NUM_OF_DATA_PER_REQUEST = 5000
+        MAX_NUM_OF_REQUESTS_PER_15MIN = 900
+        MAX_NUM_OF_DATA_PER_15MIN = MAX_NUM_OF_DATA_PER_REQUEST * MAX_NUM_OF_REQUESTS_PER_15MIN
+    
+    class EnumOfOauth2App(IntEnum):
+        MAX_NUM_OF_DATA_PER_REQUEST = 5000
+        MAX_NUM_OF_REQUESTS_PER_15MIN = 75
+        MAX_NUM_OF_DATA_PER_15MIN = MAX_NUM_OF_DATA_PER_REQUEST * MAX_NUM_OF_REQUESTS_PER_15MIN
 
 
 def get_twitter_list_member_pages(
         api: tweepy.API,
         twitter_list_id: str,
-        num_of_data_per_request: int = ListMember.MAX_NUM_OF_DATA_PER_REQUEST.value,
-        num_of_requests: int = ListMember.MAX_NUM_OF_REQUESTS_PER_15MIN.value
+        num_of_data: int = EnumOfTwitterListMember.EnumOfOauth1User.MAX_NUM_OF_DATA_PER_15MIN.value,
+        num_of_data_per_request: int =
+        EnumOfTwitterListMember.EnumOfOauth1User.MAX_NUM_OF_DATA_PER_REQUEST.value
     ) -> list[ResultSet]:
     
     '''
     Twitterリストメンバーページ取得
     
     Args:
-        api (tweepy.API)                : API
-        twitter_list_id (str)           : TwitterリストID
-        num_of_data_per_request (int)   : リクエストごとのデータ数(デフォルト：5000)
-        num_of_requests (int)           : リクエスト数(デフォルト：900)
+        api (tweepy.API)                        : API
+        twitter_list_id (str)                   : TwitterリストID
+        num_of_data (int, optional)             : データ数
+        num_of_data_per_request (int, optional) : リクエストごとのデータ数
     
     Returns:
         list[ResultSet] : Twitterリストメンバーページ (list[ResultSet[tweepy.models.User]])
     
     Notes:
-        - 使用するエンドポイントはGETメソッドである
-        - 引数「リクエストごとのデータ数」は上限が5000データ
-            - 超過して指定した場合は5000で上書きする
-        - 引数「リクエスト数」は15分ごとに最大900リクエスト
-            - 超過して指定した場合はレート制限により15分の待機時間が発生する
-        - 15分で最大450万データを取得できる
-            - 5000 data/req * 900 req/15-min = 4,500,000 data/15-min
+        - 認証
+            - ユーザ認証(OAuth 1.0a)
+            - アプリ認証(OAuth 2.0)
+        - エンドポイント
+            - GET lists/members
+        - レート制限
+            - ユーザ認証(OAuth 1.0a)
+                - データ数／リクエスト : 5000
+                - リクエスト数／１５分 : 900
+                    - 超過した場合は15分の待機時間が発生する
+            - アプリ認証(OAuth 2.0)
+                - データ数／リクエスト : 5000
+                - リクエスト数／１５分 : 75
+                    - 超過した場合は15分の待機時間が発生する
     
     References:
         - エンドポイント
             - https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/create-manage-lists/overview
             - https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/create-manage-lists/api-reference/get-lists-members
-        - オブジェクトモデル
+        - レスポンス
             - https://developer.twitter.com/en/docs/twitter-api/v1/data-dictionary/object-model/user
     '''  # noqa: E501
     
     lg: Optional[Logger] = None
-    list_member_pages: list[ResultSet] = []
+    twitter_list_member_pages: list[ResultSet] = []
     
     try:
         lg = pyl.get_logger(__name__)
         
-        list_member_pagination: tweepy.Cursor = tweepy.Cursor(
+        # リクエスト数の算出
+        num_of_requests = math.ceil(num_of_data / num_of_data_per_request)
+        
+        # Twitterリストメンバーページの取得
+        twitter_list_member_pagination: tweepy.Cursor = tweepy.Cursor(
                 api.get_list_members,
                 list_id=twitter_list_id,
                 count=num_of_data_per_request
-                if num_of_data_per_request <= ListMember.MAX_NUM_OF_DATA_PER_REQUEST.value
-                else ListMember.MAX_NUM_OF_DATA_PER_REQUEST.value
             )
-        list_member_pages = list(list_member_pagination.pages(num_of_requests))
+        twitter_list_member_pages = list(twitter_list_member_pagination.pages(num_of_requests))
         
         pyl.log_inf(lg, f'Twitterリストメンバーページ取得に成功しました。' +
                         f'(twitter_list_id:{twitter_list_id})')
@@ -342,7 +436,7 @@ def get_twitter_list_member_pages(
             pyl.log_war(lg, f'Twitterリストメンバーページ取得に失敗しました。' +
                             f'(twitter_list_id:{twitter_list_id})', e)
     
-    return list_member_pages
+    return twitter_list_member_pages
 
 
 def generate_twitter_list(
@@ -361,13 +455,19 @@ def generate_twitter_list(
         Any: Twitterリスト (tweepy.models.List)
     
     Notes:
-        - 使用するエンドポイントはPOSTメソッドである
+        - 認証
+            - ユーザ認証(OAuth 1.0a)
+        - エンドポイント
+            - POST lists/create
+        - レート制限
+            - ユーザ認証(OAuth 1.0a)
+                - リクエスト数／１５分 : (未公表)
     
     References:
         - エンドポイント
             - https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/create-manage-lists/overview
             - https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/create-manage-lists/api-reference/post-lists-create
-        - オブジェクトモデル
+        - レスポンス
             - https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/create-manage-lists/api-reference/get-lists-show#example-response
     '''  # noqa: E501
     
@@ -376,6 +476,7 @@ def generate_twitter_list(
     try:
         lg = pyl.get_logger(__name__)
         
+        # Twitterリストの生成
         twitter_list: Any = api.create_list(twitter_list_name, mode='private', description='')
         
         pyl.log_inf(lg, f'Twitterリスト生成に成功しました。(twitter_list_name:{twitter_list_name})')
@@ -404,13 +505,19 @@ def destroy_twitter_list(
         bool: 実行結果 (True：成功、False：失敗)
     
     Notes:
-        - 使用するエンドポイントはPOSTメソッドである
+        - 認証
+            - ユーザ認証(OAuth 1.0a)
+        - エンドポイント
+            - POST lists/destroy
+        - レート制限
+            - ユーザ認証(OAuth 1.0a)
+                - リクエスト数／１５分 : (未公表)
     
     References:
         - エンドポイント
             - https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/create-manage-lists/overview
             - https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/create-manage-lists/api-reference/post-lists-destroy
-        - オブジェクトモデル
+        - レスポンス
             - https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/create-manage-lists/api-reference/get-lists-show#example-response
     '''  # noqa: E501
     
@@ -420,8 +527,10 @@ def destroy_twitter_list(
     try:
         lg = pyl.get_logger(__name__)
         
+        # Twitterリスト一覧の取得
         twitter_lists: Any = api.get_lists(reverse=True)
         
+        # Twitterリストの破棄
         for twitter_list in twitter_lists:
             if twitter_list.name == twitter_list_name:
                 api.destroy_list(list_id=twitter_list.id)
@@ -437,7 +546,7 @@ def destroy_twitter_list(
     return result
 
 
-def add_user_to_twitter_list(
+def add_twitter_user_to_twitter_list(
         api: tweepy.API,
         twitter_list_id: str,
         twitter_user_id: str,
@@ -445,7 +554,7 @@ def add_user_to_twitter_list(
     ) -> bool:
     
     '''
-    ユーザ追加
+    Twitterユーザ追加
     
     Args:
         api (tweepy.API)                    : API
@@ -457,13 +566,19 @@ def add_user_to_twitter_list(
         bool: 実行結果 (True：成功、False：失敗)
     
     Notes:
-        - 使用するエンドポイントはPOSTメソッドである
+        - 認証
+            - ユーザ認証(OAuth 1.0a)
+        - エンドポイント
+            - POST lists/members/create
+        - レート制限
+            - ユーザ認証(OAuth 1.0a)
+                - リクエスト数／１５分 : (未公表)
     
     References:
         - エンドポイント
             - https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/create-manage-lists/overview
             - https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/create-manage-lists/api-reference/post-lists-members-create
-        - オブジェクトモデル
+        - レスポンス
             - https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/create-manage-lists/api-reference/get-lists-show#example-response
     '''  # noqa: E501
     
@@ -473,6 +588,7 @@ def add_user_to_twitter_list(
     try:
         lg = pyl.get_logger(__name__)
         
+        # Twitterユーザの追加
         api.add_list_member(list_id=twitter_list_id, screen_name=twitter_user_id)
         pyl.log_deb(lg, f'ユーザ追加に成功しました。' +
                         f'(twitter_user_id:{twitter_user_id: <15}, ' +
@@ -506,13 +622,19 @@ def get_auth_user_info(
         Any: 認証ユーザ情報 (tweepy.models.User)
     
     Notes:
-        - 使用するエンドポイントはGETメソッドである
+        - 認証
+            - ユーザ認証(OAuth 1.0a)
+        - エンドポイント
+            - GET account/verify_credentials
+        - レート制限
+            - ユーザ認証(OAuth 1.0a)
+                - リクエスト数／１５分 : (未公表)
     
     References:
         - エンドポイント
             - https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/manage-account-settings/overview
             - https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/manage-account-settings/api-reference/get-account-verify_credentials
-        - オブジェクトモデル
+        - レスポンス
             - https://developer.twitter.com/en/docs/twitter-api/v1/data-dictionary/object-model/user
     '''  # noqa: E501
     
@@ -521,6 +643,7 @@ def get_auth_user_info(
     try:
         lg = pyl.get_logger(__name__)
         
+        # 認証ユーザ情報の取得
         auth_user_info : Any = api.verify_credentials()
         
         pyl.log_inf(lg, f'認証ユーザ情報取得に成功しました。' +
