@@ -79,6 +79,12 @@ def search_tweets_in_past_7day(
     lg: Optional[Logger] = None
     tweet_search_result_pages: list[ResultSet] = []
     
+    # 認証方式の確認
+    if not (isinstance(api.auth, tweepy.OAuth1UserHandler) == True
+            or isinstance(api.auth, tweepy.OAuth2AppHandler) == True):
+        raise(pyl.CustomError(
+            f'この認証方式ではTwitterAPIにアクセスできません。(Auth:{type(api.auth)})'))
+    
     try:
         lg = pyl.get_logger(__name__)
         
@@ -164,6 +170,11 @@ def stream_tweets(
     '''  # noqa: E501
     
     lg: Optional[Logger] = None
+    
+    # 認証方式の確認
+    if not (isinstance(api.auth, tweepy.OAuth1UserHandler) == True):
+        raise(pyl.CustomError(
+            f'この認証方式ではTwitterAPIにアクセスできません。(Auth:{type(api.auth)})'))
     
     try:
         lg = pyl.get_logger(__name__)

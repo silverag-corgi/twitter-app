@@ -80,6 +80,11 @@ def search_tweets(
     lg: Optional[Logger] = None
     tweet_search_result_pages: list[ResultSet] = []
     
+    # 認証方式の確認
+    if not (isinstance(api.auth, tweepy.OAuth1UserHandler) == True):
+        raise(pyl.CustomError(
+            f'この認証方式ではTwitterAPIにアクセスできません。(Auth:{type(api.auth)})'))
+    
     try:
         lg = pyl.get_logger(__name__)
         

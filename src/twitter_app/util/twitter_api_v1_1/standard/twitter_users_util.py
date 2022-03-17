@@ -71,6 +71,12 @@ def get_followee_pages(
     lg: Optional[Logger] = None
     followee_pages: list[ResultSet] = []
     
+    # 認証方式の確認
+    if not (isinstance(api.auth, tweepy.OAuth1UserHandler) == True
+            or isinstance(api.auth, tweepy.OAuth2AppHandler) == True):
+        raise(pyl.CustomError(
+            f'この認証方式ではTwitterAPIにアクセスできません。(Auth:{type(api.auth)})'))
+    
     try:
         lg = pyl.get_logger(__name__)
         
@@ -153,6 +159,12 @@ def get_follower_pages(
     lg: Optional[Logger] = None
     follower_pages: list[ResultSet] = []
     
+    # 認証方式の確認
+    if not (isinstance(api.auth, tweepy.OAuth1UserHandler) == True
+            or isinstance(api.auth, tweepy.OAuth2AppHandler) == True):
+        raise(pyl.CustomError(
+            f'この認証方式ではTwitterAPIにアクセスできません。(Auth:{type(api.auth)})'))
+    
     try:
         lg = pyl.get_logger(__name__)
         
@@ -215,6 +227,12 @@ def get_user_info(
     
     lg: Optional[Logger] = None
     
+    # 認証方式の確認
+    if not (isinstance(api.auth, tweepy.OAuth1UserHandler) == True
+            or isinstance(api.auth, tweepy.OAuth2AppHandler) == True):
+        raise(pyl.CustomError(
+            f'この認証方式ではTwitterAPIにアクセスできません。(Auth:{type(api.auth)})'))
+    
     try:
         lg = pyl.get_logger(__name__)
         
@@ -276,6 +294,12 @@ def has_twitter_list(
     lg: Optional[Logger] = None
     has_twitter_list: bool = False
     
+    # 認証方式の確認
+    if not (isinstance(api.auth, tweepy.OAuth1UserHandler) == True
+            or isinstance(api.auth, tweepy.OAuth2AppHandler) == True):
+        raise(pyl.CustomError(
+            f'この認証方式ではTwitterAPIにアクセスできません。(Auth:{type(api.auth)})'))
+    
     try:
         lg = pyl.get_logger(__name__)
         
@@ -336,6 +360,12 @@ def get_twitter_lists(
     '''  # noqa: E501
     
     lg: Optional[Logger] = None
+    
+    # 認証方式の確認
+    if not (isinstance(api.auth, tweepy.OAuth1UserHandler) == True
+            or isinstance(api.auth, tweepy.OAuth2AppHandler) == True):
+        raise(pyl.CustomError(
+            f'この認証方式ではTwitterAPIにアクセスできません。(Auth:{type(api.auth)})'))
     
     try:
         lg = pyl.get_logger(__name__)
@@ -415,6 +445,12 @@ def get_twitter_list_member_pages(
     lg: Optional[Logger] = None
     twitter_list_member_pages: list[ResultSet] = []
     
+    # 認証方式の確認
+    if not (isinstance(api.auth, tweepy.OAuth1UserHandler) == True
+            or isinstance(api.auth, tweepy.OAuth2AppHandler) == True):
+        raise(pyl.CustomError(
+            f'この認証方式ではTwitterAPIにアクセスできません。(Auth:{type(api.auth)})'))
+    
     try:
         lg = pyl.get_logger(__name__)
         
@@ -473,6 +509,11 @@ def generate_twitter_list(
     
     lg: Optional[Logger] = None
     
+    # 認証方式の確認
+    if not (isinstance(api.auth, tweepy.OAuth1UserHandler) == True):
+        raise(pyl.CustomError(
+            f'この認証方式ではTwitterAPIにアクセスできません。(Auth:{type(api.auth)})'))
+    
     try:
         lg = pyl.get_logger(__name__)
         
@@ -523,6 +564,11 @@ def destroy_twitter_list(
     
     lg: Optional[Logger] = None
     result: bool = False
+    
+    # 認証方式の確認
+    if not (isinstance(api.auth, tweepy.OAuth1UserHandler) == True):
+        raise(pyl.CustomError(
+            f'この認証方式ではTwitterAPIにアクセスできません。(Auth:{type(api.auth)})'))
     
     try:
         lg = pyl.get_logger(__name__)
@@ -585,6 +631,11 @@ def add_twitter_user_to_twitter_list(
     lg: Optional[Logger] = None
     result: bool = False
     
+    # 認証方式の確認
+    if not (isinstance(api.auth, tweepy.OAuth1UserHandler) == True):
+        raise(pyl.CustomError(
+            f'この認証方式ではTwitterAPIにアクセスできません。(Auth:{type(api.auth)})'))
+    
     try:
         lg = pyl.get_logger(__name__)
         
@@ -639,6 +690,11 @@ def get_auth_user_info(
     '''  # noqa: E501
     
     lg: Optional[Logger] = None
+    
+    # 認証方式の確認
+    if not (isinstance(api.auth, tweepy.OAuth1UserHandler) == True):
+        raise(pyl.CustomError(
+            f'この認証方式ではTwitterAPIにアクセスできません。(Auth:{type(api.auth)})'))
     
     try:
         lg = pyl.get_logger(__name__)
