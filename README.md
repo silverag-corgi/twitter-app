@@ -91,9 +91,13 @@ Bの手順は5分程度で完了するが、Twitter社が突然公開を停止�
 
 [Twitter Developer Portal](https://developer.twitter.com/en/apply-for-access)
 で認証情報を発行する。
+
 発行手順は長くなる上に頻繁に仕様が変更されるため
-[ググる](https://www.google.com/search?q=TwitterAPI+申請)
+[ググる](https://www.google.com/search?q=TwitterAPI+申請+解説)
 こと。
+2022年3月時点では
+[Twitter APIの申請方法を解説【2022年版】](https://mitchieblog.com/twitter-api-apply/)
+を参考に申請するとよい。
 
 また、以下の通り設定する。
 
