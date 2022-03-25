@@ -87,31 +87,17 @@ def do_logic(
             # Twitterリストの生成
             twitter_list = twitter_users_util.generate_twitter_list(api, twitter_list_name)
             
-            # フォロイー(フォロワー)の取得・追加
-            count_of_followxxs: int = 0
-            count_of_added_followxxs: int = 0
-            for followxxs_by_page in followxx_pages:
-                # followxx: tweepy.models.User
-                for followxx in followxxs_by_page:
-                    # Twitterユーザの追加
-                    add_user_result: bool = twitter_users_util.add_twitter_user_to_twitter_list(
-                            api,
-                            twitter_list.id,
-                            followxx.screen_name,
-                            followxx.name
-                        )
-                    
-                    # Twitterユーザのカウント
-                    count_of_followxxs = count_of_followxxs + 1
-                    if add_user_result == True:
-                        count_of_added_followxxs = count_of_added_followxxs + 1
-            
-            pyl.log_inf(lg, f'フォロイー(フォロワー)の取得・追加が完了しました。' +
-                        f'(count_of_followxxs:{count_of_added_followxxs}/{count_of_followxxs})')
-            
-            # Twitterリストの破棄(フォロイー(フォロワー)が0人の場合)
-            if count_of_added_followxxs == 0:
-                twitter_users_util.destroy_twitter_list(api, twitter_list_name)
+            # フォロイー(フォロワー)の追加
+            twitter_users_util.add_twitter_users_to_twitter_list(
+                    api,
+                    twitter_list.id,
+                    [str(followxx.screen_name)
+                        for followxxs_by_page in followxx_pages
+                        for followxx in followxxs_by_page],
+                    [str(followxx.name)
+                        for followxxs_by_page in followxx_pages
+                        for followxx in followxxs_by_page]
+                )
         
         # レート制限の表示
         if kind_of_pages == Pages.FOLLOWEE_LIST:

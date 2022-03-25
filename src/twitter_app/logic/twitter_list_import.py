@@ -53,19 +53,14 @@ def do_logic(
                     pandas_util.read_twitter_list_file(twitter_list_csv_file_path, header_line_num)
                 
                 # Twitterユーザの追加
-                pyl.log_inf(lg, f'時間がかかるため気長にお待ちください。')
-                for _, twitter_list_row in twitter_list_df.iterrows():
-                    if len(twitter_list_row) >= 2:
-                        twitter_users_util.add_twitter_user_to_twitter_list(
-                                api,
-                                twitter_list.id,
-                                str(twitter_list_row[const_util.TWITTER_LIST_HEADER[0]]),
-                                str(twitter_list_row[const_util.TWITTER_LIST_HEADER[1]])
-                            )
-                
-                # Twitterリストの破棄(Twitterユーザが0人の場合)
-                if len(twitter_list_df) == 0:
-                    twitter_users_util.destroy_twitter_list(api, twitter_list_name)
+                twitter_users_util.add_twitter_users_to_twitter_list(
+                        api,
+                        twitter_list.id,
+                        [str(twitter_list_row[const_util.TWITTER_LIST_HEADER[0]])
+                            for _, twitter_list_row in twitter_list_df.iterrows()],
+                        [str(twitter_list_row[const_util.TWITTER_LIST_HEADER[1]])
+                            for _, twitter_list_row in twitter_list_df.iterrows()]
+                    )
         
         pyl.log_inf(lg, f'Twitterリストインポートを終了します。')
     except Exception as e:
