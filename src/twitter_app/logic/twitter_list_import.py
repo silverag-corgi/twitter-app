@@ -42,9 +42,8 @@ def do_logic(
                 twitter_list_name: str = \
                     os.path.splitext(os.path.basename(twitter_list_csv_file_path))[0]
                 
-                # Twitterリストが存在する場合
-                if twitter_users_util.has_twitter_list(api, twitter_list_name) == True:
-                    twitter_users_util.destroy_twitter_list(api, twitter_list_name)
+                # Twitterリストの破棄
+                twitter_users_util.destroy_twitter_list(api, twitter_list_name)
                 
                 # Twitterリストの生成
                 twitter_list = twitter_users_util.generate_twitter_list(api, twitter_list_name)

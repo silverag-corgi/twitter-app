@@ -115,7 +115,6 @@ def search_tweets(
         num_of_requests = math.ceil(num_of_data / num_of_data_per_request)
         
         # ツイートの検索
-        pyl.log_inf(lg, f'時間がかかるため気長にお待ちください。')
         tweet_search_result_pagination: tweepy.Cursor = tweepy.Cursor(
                 search_api_function,
                 label=env_label.value,
