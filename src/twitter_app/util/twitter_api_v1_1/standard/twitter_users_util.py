@@ -79,12 +79,12 @@ def get_followee_pages(
     
     try:
         lg = pyl.get_logger(__name__)
+        pyl.log_inf(lg, f'時間がかかるため気長にお待ちください。')
         
         # リクエスト数の算出
         num_of_requests = math.ceil(num_of_data / num_of_data_per_request)
         
         # フォロイーページの取得
-        pyl.log_inf(lg, f'時間がかかるため気長にお待ちください。')
         followee_pagination: tweepy.Cursor = tweepy.Cursor(
                 api.get_friends,
                 screen_name=twitter_user_id,
@@ -167,12 +167,12 @@ def get_follower_pages(
     
     try:
         lg = pyl.get_logger(__name__)
+        pyl.log_inf(lg, f'時間がかかるため気長にお待ちください。')
         
         # リクエスト数の算出
         num_of_requests = math.ceil(num_of_data / num_of_data_per_request)
         
         # フォロワーページの取得
-        pyl.log_inf(lg, f'時間がかかるため気長にお待ちください。')
         follower_pagination: tweepy.Cursor = tweepy.Cursor(
                 api.get_followers,
                 screen_name=twitter_user_id,
@@ -251,74 +251,6 @@ def get_user_info(
 ####################################################################################################
 # Create and manage lists
 ####################################################################################################
-
-
-def has_twitter_list(
-        api: tweepy.API,
-        twitter_list_name: str
-    ) -> bool:
-    
-    '''
-    Twitterリスト存在有無確認
-    
-    Args:
-        api (tweepy.API)        : API
-        twitter_list_name (str) : Twitterリスト名
-    
-    Returns:
-        bool: Twitterリスト存在有無 (True：有、False：無)
-    
-    Notes:
-        - 認証
-            - ユーザ認証(OAuth 1.0a)
-            - アプリ認証(OAuth 2.0)
-        - エンドポイント
-            - GET lists/list
-        - レート制限
-            - ユーザ認証(OAuth 1.0a)
-                - リクエスト数／１５分 : 15
-                    - 超過した場合は15分の待機時間が発生する
-            - アプリ認証(OAuth 2.0)
-                - リクエスト数／１５分 : 15
-                    - 超過した場合は15分の待機時間が発生する
-    
-    References:
-        - エンドポイント
-            - https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/create-manage-lists/overview
-            - https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/create-manage-lists/api-reference/get-lists-list
-        - レスポンス
-            - https://developer.twitter.com/en/docs/twitter-api/data-dictionary/object-model/lists
-            - https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/create-manage-lists/api-reference/get-lists-show#example-response
-    '''  # noqa: E501
-    
-    lg: Optional[Logger] = None
-    has_twitter_list: bool = False
-    
-    # 認証方式の確認
-    if not (isinstance(api.auth, tweepy.OAuth1UserHandler) == True
-            or isinstance(api.auth, tweepy.OAuth2AppHandler) == True):
-        raise(pyl.CustomError(
-            f'この認証方式ではTwitterAPIにアクセスできません。(Auth:{type(api.auth)})'))
-    
-    try:
-        lg = pyl.get_logger(__name__)
-        
-        # Twitterリスト一覧の取得
-        twitter_lists: Any = api.get_lists(reverse=True)
-        
-        # Twitterリスト存在有無の確認
-        for twitter_list in twitter_lists:
-            if twitter_list.name == twitter_list_name:
-                pyl.log_inf(lg, f'Twitterリストが既に存在します。' +
-                                f'(twitter_list_name:{twitter_list_name})')
-                has_twitter_list = True
-                break
-    except Exception as e:
-        if lg is not None:
-            pyl.log_war(lg, f'Twitterリスト存在有無確認に失敗しました。' +
-                            f'(twitter_list_name:{twitter_list_name})', e)
-    
-    return has_twitter_list
 
 
 def get_twitter_lists(
@@ -453,6 +385,7 @@ def get_twitter_list_member_pages(
     
     try:
         lg = pyl.get_logger(__name__)
+        pyl.log_inf(lg, f'時間がかかるため気長にお待ちください。')
         
         # リクエスト数の算出
         num_of_requests = math.ceil(num_of_data / num_of_data_per_request)
@@ -574,7 +507,7 @@ def destroy_twitter_list(
         lg = pyl.get_logger(__name__)
         
         # Twitterリスト一覧の取得
-        twitter_lists: Any = api.get_lists(reverse=True)
+        twitter_lists: ResultSet = get_twitter_lists(api)
         
         # Twitterリストの破棄
         for twitter_list in twitter_lists:
@@ -641,14 +574,14 @@ def add_twitter_user_to_twitter_list(
         
         # Twitterユーザの追加
         api.add_list_member(list_id=twitter_list_id, screen_name=twitter_user_id)
-        pyl.log_deb(lg, f'ユーザ追加に成功しました。' +
+        pyl.log_deb(lg, f'Twitterユーザ追加に成功しました。' +
                         f'(twitter_user_id:{twitter_user_id: <15}, ' +
                         f'twitter_user_name:{twitter_user_name})')
         
         result = True
     except Exception as e:
         if lg is not None:
-            pyl.log_war(lg, f'ユーザ追加に失敗しました。鍵付きや削除済みの可能性があります。' +
+            pyl.log_war(lg, f'Twitterユーザ追加に失敗しました。鍵付きや削除済みの可能性があります。' +
                             f'(twitter_user_id:{twitter_user_id: <15}, ' +
                             f'twitter_user_name:{twitter_user_name})', e)
     
@@ -658,6 +591,7 @@ def add_twitter_user_to_twitter_list(
 ####################################################################################################
 # Manage account settings and profile
 ####################################################################################################
+
 
 def get_auth_user_info(
         api: tweepy.API,
