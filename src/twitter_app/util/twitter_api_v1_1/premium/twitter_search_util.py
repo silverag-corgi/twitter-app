@@ -73,6 +73,7 @@ def search_tweets(
             - https://developer.twitter.com/en/docs/twitter-api/premium/search-api/api-reference/premium-search
         - パラメータ
             - https://developer.twitter.com/en/docs/twitter-api/premium/rules-and-filtering/operators-by-product
+                - 使用したい演算子(is:retweet,is:reply)が有料版でないと使用できない
         - レスポンス
             - https://developer.twitter.com/en/docs/twitter-api/premium/data-dictionary/object-model/tweet
     '''  # noqa: E501
@@ -81,7 +82,7 @@ def search_tweets(
     tweet_search_result_pages: list[ResultSet] = []
     
     # 認証方式の確認
-    if not (isinstance(api.auth, tweepy.OAuth1UserHandler) == True):
+    if not (isinstance(api.auth, tweepy.OAuth2AppHandler) == True):
         raise(pyl.CustomError(
             f'この認証方式ではTwitterAPIにアクセスできません。(Auth:{type(api.auth)})'))
     
