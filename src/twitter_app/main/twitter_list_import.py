@@ -55,6 +55,9 @@ def main() -> int:
                 args.list_member_file_path,
                 int(args.header_line_num)
             )
+    except KeyboardInterrupt as e:
+        if lg is not None:
+            pyl.log_inf(lg, f'処理を中断しました。')
     except Exception as e:
         if lg is not None:
             pyl.log_exc(lg, '')

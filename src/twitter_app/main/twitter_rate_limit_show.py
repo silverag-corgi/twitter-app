@@ -52,6 +52,9 @@ def main() -> int:
         
         # レート制限の表示
         twitter_developer_util.show_rate_limit(api, args.resource_family, args.endpoint)
+    except KeyboardInterrupt as e:
+        if lg is not None:
+            pyl.log_inf(lg, f'処理を中断しました。')
     except Exception as e:
         if lg is not None:
             pyl.log_exc(lg, '')

@@ -68,6 +68,9 @@ def main() -> int:
                     args.num_of_followxxs,
                     twitter_followxx_list_gen.EnumOfFollowxxList.FOLLOWER_LIST
                 )
+    except KeyboardInterrupt as e:
+        if lg is not None:
+            pyl.log_inf(lg, f'処理を中断しました。')
     except Exception as e:
         if lg is not None:
             pyl.log_exc(lg, '')
