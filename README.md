@@ -16,7 +16,7 @@
   - [5.3. TwitterAPI認証情報の設定](#53-twitterapi認証情報の設定)
 - [6. 使い方](#6-使い方)
   - [6.1. Twitterリストインポート](#61-twitterリストインポート)
-    - [6.1.1. TwitterリストCSVファイルの作成](#611-twitterリストcsvファイルの作成)
+    - [6.1.1. リストメンバーファイルの作成](#611-リストメンバーファイルの作成)
     - [6.1.2. プログラムの実行](#612-プログラムの実行)
   - [6.2. Twitterリストエクスポート](#62-twitterリストエクスポート)
     - [6.2.1. プログラムの実行](#621-プログラムの実行)
@@ -200,29 +200,25 @@ C:\Git\python\twitter-app\.venv
 ## 6.1. Twitterリストインポート
 
 
-### 6.1.1. TwitterリストCSVファイルの作成
+### 6.1.1. リストメンバーファイルの作成
 
-`input/twitter_list_name.csv.sample`をコピペし、拡張子`.sample`を削除し、作成したいリスト名にリネームする。
+1. リストメンバーサンプルファイル`input/list_member.csv.sample`をコピペする
+2. 拡張子`.sample`を削除する
+3. 作成したいリスト名にリネームする
+4. CSV形式でリストに追加したいユーザ(ユーザID、ユーザ名)を記入する
 
-CSVファイルの配置例：
+リストメンバーサンプルファイル：
 ```cmd
-> cd twitter-app/input
-> dir
-yyyy/mm/dd  hh:nn    <DIR>          .
-yyyy/mm/dd  hh:nn    <DIR>          ..
-yyyy/mm/dd  hh:nn                74 Google.csv
-yyyy/mm/dd  hh:nn                25 twitter_list_name.csv.sample
-```
-
-次にCSV形式でリストに追加したいユーザ(ユーザID、ユーザ名)を保存する。
-
-CSVファイルの保存例：
-```cmd
-> type Google.csv
+> type list_member.csv.sample
+user_id,user_name
 googledocs,Google Docs
 googledrive,Google Drive
 googlemaps,Google Maps
 ```
+
+また、後述の
+[6.2. Twitterリストエクスポート](#62-twitterリストエクスポート)
+の出力ファイルがリストメンバーファイルであるため、入力ファイルになる。
 
 
 ### 6.1.2. プログラムの実行
