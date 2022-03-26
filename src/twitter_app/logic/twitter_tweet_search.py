@@ -6,7 +6,7 @@ from typing import Optional
 import pandas as pd
 import python_lib_for_me as pyl
 import tweepy
-from tweepy.models import ResultSet
+from tweepy.models import SearchResults
 
 from twitter_app import util
 from twitter_app.util import const_util, pandas_util
@@ -44,12 +44,13 @@ def do_logic(
         
         # ツイート検索結果ページの取得
         query_with_filter: str = f'{query} -filter:replies -filter:retweets'
-        tweet_search_result_pages: list[ResultSet] = twitter_tweets_util.search_tweets_in_past_7day(
-                api,
-                query_with_filter,
-                twitter_tweets_util.EnumOfSearchResultType.RECENT,
-                num_of_tweets
-            )
+        tweet_search_result_pages: list[SearchResults] = \
+            twitter_tweets_util.search_tweets_in_past_7day(
+                    api,
+                    query_with_filter,
+                    twitter_tweets_util.EnumOfSearchResultType.RECENT,
+                    num_of_tweets
+                )
         
         # ツイート検索結果ページの件数が0件の場合
         if len(tweet_search_result_pages) == 0:
@@ -67,7 +68,7 @@ def do_logic(
             
             # ツイート検索結果データフレームへの格納
             for tweets_by_page in tweet_search_result_pages:
-                # tweet: tweepy.models.SearchResults
+                # tweet: tweepy.models.Status
                 for tweet in tweets_by_page:
                     # ツイート情報データフレームの格納
                     tweet_info_df: pd.DataFrame = pd.DataFrame(
