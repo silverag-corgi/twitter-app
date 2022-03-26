@@ -30,7 +30,7 @@
     - [6.6.1. プログラムの実行](#661-プログラムの実行)
   - [6.7. Twitterツイート配信](#67-twitterツイート配信)
     - [6.7.1. プログラムの実行](#671-プログラムの実行)
-- [7. (付録)実行コマンド一覧](#7-付録実行コマンド一覧)
+- [7. 実行コマンド一覧](#7-実行コマンド一覧)
 - [8. 連絡先](#8-連絡先)
 - [9. ライセンス](#9-ライセンス)
 
@@ -45,11 +45,11 @@ TwitterAPIを利用したアプリケーション。
 アプリケーションとしてコマンドラインから実行できる。
 
 - Twitterリストインポート
-  - 指定したCSVファイルをTwitterリストとしてTwitterにインポートする
+  - 指定したCSVファイルをリストとしてTwitterにインポートする
 - Twitterリストエクスポート
-  - 指定したTwitterリストをTwitterからエクスポートする
+  - 指定したリストをTwitterからエクスポートする
 - Twitterフォロイー(フォロワー)リスト生成
-  - 指定したTwitterユーザのフォロイー(フォロワー)のTwitterリストを生成する
+  - 指定したユーザのフォロイー(フォロワー)のリストを生成する
 - Twitterツイート検索
   - 指定したクエリでツイートを検索し、ツイート検索結果ファイルを生成する
 - Twitterレート制限表示
@@ -232,22 +232,22 @@ googlemaps,Google Maps
 実行例：
 ```cmd
 > cd twitter-app
-> poetry run list-import -t input/*.csv
+> poetry run list-imp -l input/*.csv
 ```
 
 また、ヘルプを呼び出す時は下記コマンドを実行する。
 
 ```cmd
-> poetry run list-import -h 
-usage: list-imp [-h] [-t TWITTER_LIST_CSV_FILE_PATH] [-hd HEADER_LINE_NUM]
+> poetry run list-imp -h 
+usage: list-imp [-h] [-l LIST_MEMBER_FILE_PATH] [-hd HEADER_LINE_NUM]
 
 Twitterリストインポート
-指定したCSVファイルをTwitterリストとしてTwitterにインポートします
+指定したCSVファイルをリストとしてTwitterにインポートします
 
 options:
   -h, --help            show this help message and exit
-  -t TWITTER_LIST_CSV_FILE_PATH, --twitter_list_csv_file_path TWITTER_LIST_CSV_FILE_PATH
-                        [任意] TwitterリストCSVファイルパス (デフォルト：input/*.csv)
+  -l LIST_MEMBER_FILE_PATH, --list_member_file_path LIST_MEMBER_FILE_PATH
+                        [任意] リストメンバーファイルパス (デフォルト：input/*.csv)
                         ワイルドカード可
   -hd HEADER_LINE_NUM, --header_line_num HEADER_LINE_NUM
                         [任意] ヘッダ行番号 (デフォルト：1)
@@ -272,10 +272,10 @@ options:
 
 ```cmd
 > poetry run list-exp -h
-usage: list-exp [-h] (-s | -e) (-all | -id TWITTER_LIST_ID | -name TWITTER_LIST_NAME)
+usage: list-exp [-h] (-s | -e) (-all | -id LIST_ID | -name LIST_NAME)
 
 Twitterリストエクスポート
-指定したTwitterリストをTwitterからエクスポートします
+指定したリストをTwitterからエクスポートします
 
 options:
   -h, --help            show this help message and exit
@@ -283,23 +283,20 @@ options:
 options in this group:
   実行する処理を指定します
 
-  -s, --show_twitter_list
-                        [1つのみ必須] Twitterリスト表示要否
-                        指定した場合はTwitterリストを表示します
-  -e, --export_twitter_list
-                        [1つのみ必須] Twitterリストエクスポート要否
-                        指定した場合はTwitterリストをエクスポートします
+  -s, --show_list       [1つのみ必須] リスト表示要否
+                        指定した場合はリストを表示します
+  -e, --export_list     [1つのみ必須] リストエクスポート要否
+                        指定した場合はリストをエクスポートします
 
 options in this group:
-  処理対象のTwitterリストを指定します
+  処理対象のリストを指定します
 
-  -all, --all_twitter_list
-                        [1つのみ必須] 全てのTwitterリスト
-  -id TWITTER_LIST_ID, --twitter_list_id TWITTER_LIST_ID
-                        [1つのみ必須] TwitterリストID(csv形式)
+  -all, --all_list      [1つのみ必須] 全てのリスト
+  -id LIST_ID, --list_id LIST_ID
+                        [1つのみ必須] リストID(csv形式)
                         例："0123456789111111111, 0123456789222222222"
-  -name TWITTER_LIST_NAME, --twitter_list_name TWITTER_LIST_NAME
-                        [1つのみ必須] Twitterリスト名(csv形式)
+  -name LIST_NAME, --list_name LIST_NAME
+                        [1つのみ必須] リスト名(csv形式)
                         例："Google関連アカウント, Microsoft関連アカウント"
 ```
 
@@ -321,19 +318,19 @@ options in this group:
 
 ```cmd
 > poetry run followxx-gen -h
-usage: followxx-gen [-h] (-followee | -follower) [-f NUM_OF_FOLLOWXXS] twitter_user_id
+usage: followxx-gen [-h] (-followee | -follower) [-f NUM_OF_FOLLOWXXS] user_id
 
 Twitterフォロイー(フォロワー)リスト生成
-指定したTwitterユーザのフォロイー(フォロワー)のTwitterリストを生成します
+指定したユーザのフォロイー(フォロワー)のリストを生成します
 
 positional arguments:
-  twitter_user_id       [必須] TwitterユーザID
+  user_id               [必須] ユーザID
 
 options:
   -h, --help            show this help message and exit
   -f NUM_OF_FOLLOWXXS, --num_of_followxxs NUM_OF_FOLLOWXXS
                         [任意] フォロイー(フォロワー)数 (デフォルト：3000)
-                        Twitterリストに追加したいフォロイー(フォロワー)の人数
+                        リストに追加したいフォロイー(フォロワー)の人数
                         3000人を超過した場合はレート制限により3000人ごとに15分の待機時間が発生します
 
 options in this group:
@@ -341,10 +338,10 @@ options in this group:
 
   -followee, --generate_followee_list
                         [1つのみ必須] フォロイーリスト生成
-                        指定した場合はフォロイーのTwitterリストを生成します
+                        指定した場合はフォロイーのリストを生成します
   -follower, --generate_follower_list
                         [1つのみ必須] フォロワーリスト生成
-                        指定した場合はフォロワーのTwitterリストを生成します
+                        指定した場合はフォロワーのリストを生成します
 ```
 
 
@@ -463,7 +460,7 @@ options:
 
 ```cmd
 > poetry run tweet-stream -h
-usage: tweet-stream [-h] (-u TWITTER_USER_ID_FOR_FOLLOWEES | -l TWITTER_LIST_ID) [-k KEYWORD_OF_CSV_FORMAT]
+usage: tweet-stream [-h] (-u USER_ID_FOR_FOLLOWEES | -l LIST_ID) [-k KEYWORD_OF_CSV_FORMAT]
 
 Twitterツイート配信
 指定したキーワードのツイートを配信します
@@ -479,16 +476,16 @@ options:
 options in this group:
   処理対象のIDを指定します
 
-  -u TWITTER_USER_ID_FOR_FOLLOWEES, --twitter_user_id_for_followees TWITTER_USER_ID_FOR_FOLLOWEES
-                        [1つのみ必須] TwitterユーザID(フォロイー用)
-                        指定したTwitterユーザIDのフォロイーのツイートを配信する
-  -l TWITTER_LIST_ID, --twitter_list_id TWITTER_LIST_ID
-                        [1つのみ必須] TwitterリストID
-                        指定したTwitterリストIDのツイートを配信する
+  -u USER_ID_FOR_FOLLOWEES, --user_id_for_followees USER_ID_FOR_FOLLOWEES
+                        [1つのみ必須] ユーザID(フォロイー用)
+                        指定したユーザIDのフォロイーのツイートを配信する
+  -l LIST_ID, --list_id LIST_ID
+                        [1つのみ必須] リストID
+                        指定したリストIDのツイートを配信する
 ```
 
 
-# 7. (付録)実行コマンド一覧
+# 7. 実行コマンド一覧
 
 ```cmd
 > poetry run list-imp     -h
