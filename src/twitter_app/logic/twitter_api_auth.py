@@ -51,7 +51,7 @@ def do_logic_that_generate_api_by_oauth_1_user_using_pin() -> tweepy.API:
         # TwitterAPI認証情報の保存
         json.dump(
                 twitter_api_auth_info.twitter_api_auth_info_dict,
-                open(const_util.TWITTER_API_AUTH_INFO_PATH, 'w'),
+                open(const_util.TWITTER_API_AUTH_INFO_FILE_PATH, 'w'),
                 indent=2
             )
         
@@ -92,7 +92,7 @@ def __get_twitter_api_auth_info() -> twitter_api_auth_util.TwitterApiAuthInfo:
         lg = pyl.get_logger(__name__)
         
         # TwitterAPI認証情報ファイルの読み込み
-        twitter_api_auth_info_file: TextIO = open(const_util.TWITTER_API_AUTH_INFO_PATH, 'r')
+        twitter_api_auth_info_file: TextIO = open(const_util.TWITTER_API_AUTH_INFO_FILE_PATH, 'r')
         twitter_api_auth_info_dict: dict[str, dict] = json.load(twitter_api_auth_info_file)
         
         # TwitterAPI認証情報の生成

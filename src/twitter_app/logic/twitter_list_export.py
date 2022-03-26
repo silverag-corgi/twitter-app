@@ -11,16 +11,16 @@ from twitter_app.util import const_util, pandas_util
 from twitter_app.util.twitter_api_v1_1.standard import twitter_developer_util, twitter_users_util
 
 
-class TWITTER_LIST_PROC_TARGET(IntEnum):
+class EnumOfListProcTarget(IntEnum):
     ALL = auto()
     ID = auto()
     NAME = auto()
 
 
-def do_logic_that_show_twitter_list(
+def do_logic_that_show_list(
         api: tweepy.API,
-        kind_of_proc_targets: TWITTER_LIST_PROC_TARGET,
-        twitter_list_id_or_name_of_csv_format: str
+        enum_of_list_proc_target: EnumOfListProcTarget,
+        list_id_or_name_of_csv_format: str
     ) -> pd.DataFrame:
     
     '''
@@ -28,11 +28,11 @@ def do_logic_that_show_twitter_list(
     
     Args:
         api (tweepy.API)                                : API
-        kind_of_proc_targets (TWITTER_LIST_PROC_TARGET) : Twitterリスト処理対象の種類
-        twitter_list_id_or_name_of_csv_format (str)     : TwitterリストID(名前)(csv形式)
+        enum_of_list_proc_target (EnumOfListProcTarget) : リスト処理対象
+        list_id_or_name_of_csv_format (str)             : リストID(名前)(csv形式)
     
     Returns:
-        pd.DataFrame: Twitterリスト一覧データフレーム
+        pd.DataFrame: リストデータフレーム
     '''
     
     lg: Optional[Logger] = None
@@ -45,73 +45,70 @@ def do_logic_that_show_twitter_list(
         # Pandasオプション設定
         pd.set_option('display.unicode.east_asian_width', True)
         
-        # Twitterリスト一覧の取得
-        twitter_lists: ResultSet = twitter_users_util.get_twitter_lists(api)
+        # リスト(複数)の取得
+        lists: ResultSet = twitter_users_util.get_lists(api)
         
-        # Twitterリスト一覧データフレームの初期化
-        twitter_lists_df: pd.DataFrame = pd.DataFrame(columns=const_util.TWITTER_LISTS_HEADER)
+        # リストデータフレームの初期化
+        list_df: pd.DataFrame = pd.DataFrame(columns=const_util.LIST_HEADER)
         
-        # Twitterリスト一覧データフレームへの格納
-        for twitter_list in twitter_lists:
-            # Twitterリスト情報の取得
-            creation_datetime: str = pyl.convert_timestamp_to_jst(str(twitter_list.created_at))
-            twitter_list_id: str = twitter_list.id
-            num_of_members: int = twitter_list.member_count
-            twitter_list_name: str = twitter_list.name
+        # リストデータフレームへの格納
+        for list_ in lists:
+            # リスト情報の取得
+            creation_datetime: str = pyl.convert_timestamp_to_jst(str(list_.created_at))
+            list_id: str = list_.id
+            num_of_members: int = list_.member_count
+            list_name: str = list_.name
             
-            # Twitterリスト情報の格納(処理対象の種類ごと)
-            twitter_list_info_df: pd.DataFrame
-            if kind_of_proc_targets == TWITTER_LIST_PROC_TARGET.ALL:
-                twitter_list_info_df = pd.DataFrame(
-                    [[creation_datetime, twitter_list_id, twitter_list_name, num_of_members]],
-                    columns=const_util.TWITTER_LISTS_HEADER)
-                twitter_lists_df = pd.concat(
-                    [twitter_lists_df, twitter_list_info_df], ignore_index=True)
-            elif kind_of_proc_targets == TWITTER_LIST_PROC_TARGET.ID:
-                # TwitterリストIDリスト(引数のCSVから)の生成
-                twitter_list_ids: list[str] = \
-                    pyl.generate_str_list_from_csv(twitter_list_id_or_name_of_csv_format)
+            # リスト情報の格納(リスト処理対象ごと)
+            list_info_df: pd.DataFrame
+            if enum_of_list_proc_target == EnumOfListProcTarget.ALL:
+                list_info_df = pd.DataFrame(
+                    [[creation_datetime, list_id, list_name, num_of_members]],
+                    columns=const_util.LIST_HEADER)
+                list_df = pd.concat([list_df, list_info_df], ignore_index=True)
+            elif enum_of_list_proc_target == EnumOfListProcTarget.ID:
+                # リストIDリスト(引数のCSVから)の生成
+                list_ids: list[str] = \
+                    pyl.generate_str_list_from_csv(list_id_or_name_of_csv_format)
                 
-                # TwitterリストID(APIから)がTwitterリストIDリスト(引数のCSVから)に含まれている場合
-                if twitter_list_id in twitter_list_ids:
-                    twitter_list_info_df = pd.DataFrame(
-                        [[creation_datetime, twitter_list_id, twitter_list_name, num_of_members]],
-                        columns=const_util.TWITTER_LISTS_HEADER)
-                    twitter_lists_df = pd.concat(
-                        [twitter_lists_df, twitter_list_info_df], ignore_index=True)
-            elif kind_of_proc_targets == TWITTER_LIST_PROC_TARGET.NAME:
-                # TwitterリストIDリスト(引数のCSVから)の生成
-                twitter_list_names: list[str] = \
-                    pyl.generate_str_list_from_csv(twitter_list_id_or_name_of_csv_format)
+                # リストID(APIから)がリストIDリスト(引数のCSVから)に含まれている場合
+                if list_id in list_ids:
+                    list_info_df = pd.DataFrame(
+                        [[creation_datetime, list_id, list_name, num_of_members]],
+                        columns=const_util.LIST_HEADER)
+                    list_df = pd.concat([list_df, list_info_df], ignore_index=True)
+            elif enum_of_list_proc_target == EnumOfListProcTarget.NAME:
+                # リスト名リスト(引数のCSVから)の生成
+                list_names: list[str] = \
+                    pyl.generate_str_list_from_csv(list_id_or_name_of_csv_format)
                 
-                # Twitterリスト名(APIから)がTwitterリスト名リスト(引数のCSVから)に含まれている場合
-                match_with_twitter_list_names: bool = False
-                for name in twitter_list_names:
-                    if name in twitter_list_name:
-                        match_with_twitter_list_names = True
+                # リスト名(APIから)がリスト名リスト(引数のCSVから)に含まれている場合
+                match_with_list_names: bool = False
+                for name in list_names:
+                    if name in list_name:
+                        match_with_list_names = True
                 
-                # Twitterリスト名一致有無がTrueの場合
-                if match_with_twitter_list_names == True:
-                    twitter_list_info_df = pd.DataFrame(
-                        [[creation_datetime, twitter_list_id, twitter_list_name, num_of_members]],
-                        columns=const_util.TWITTER_LISTS_HEADER)
-                    twitter_lists_df = pd.concat(
-                        [twitter_lists_df, twitter_list_info_df], ignore_index=True)
+                # リスト名一致有無がTrueの場合
+                if match_with_list_names == True:
+                    list_info_df = pd.DataFrame(
+                        [[creation_datetime, list_id, list_name, num_of_members]],
+                        columns=const_util.LIST_HEADER)
+                    list_df = pd.concat([list_df, list_info_df], ignore_index=True)
         
-        # Twitterリスト一覧データフレームの表示
-        pyl.log_inf(lg, f'Twitterリスト一覧：\n{twitter_lists_df}')
+        # リストデータフレームの表示
+        pyl.log_inf(lg, f'リスト：\n{list_df}')
         
         pyl.log_inf(lg, f'Twitterリスト表示を終了します。')
     except Exception as e:
         raise(e)
     
-    return twitter_lists_df
+    return list_df
 
 
-def do_logic_that_export_twitter_list(
+def do_logic_that_export_list(
         api: tweepy.API,
-        kind_of_proc_targets: TWITTER_LIST_PROC_TARGET,
-        twitter_list_id_or_name_of_csv_format: str
+        enum_of_list_proc_target: EnumOfListProcTarget,
+        list_id_or_name_of_csv_format: str
     ) -> None:
     
     '''
@@ -119,8 +116,8 @@ def do_logic_that_export_twitter_list(
     
     Args:
         api (tweepy.API)                                : API
-        kind_of_proc_targets (TWITTER_LIST_PROC_TARGET) : Twitterリスト処理対象の種類
-        twitter_list_id_or_name_of_csv_format (str)     : TwitterリストID(名前)(csv形式)
+        enum_of_list_proc_target (EnumOfListProcTarget) : リスト処理対象
+        list_id_or_name_of_csv_format (str)             : リストID(名前)(csv形式)
     
     Returns:
         -
@@ -137,47 +134,46 @@ def do_logic_that_export_twitter_list(
         pd.set_option('display.unicode.east_asian_width', True)
         
         # ロジック(Twitterリスト表示)の実行
-        twitter_lists_df: pd.DataFrame = do_logic_that_show_twitter_list(
-            api, kind_of_proc_targets, twitter_list_id_or_name_of_csv_format)
+        list_df: pd.DataFrame = do_logic_that_show_list(
+            api, enum_of_list_proc_target, list_id_or_name_of_csv_format)
         
         # レート制限の表示
         twitter_developer_util.show_rate_limit_of_lists_members(api)
         
-        # Twitterリストのエクスポート
-        for _, twitter_list_row in twitter_lists_df.iterrows():
-            # Twitterリストメンバーページの取得
-            twitter_list_member_pages = twitter_users_util.get_twitter_list_member_pages(
+        # リストのエクスポート
+        for _, list_ in list_df.iterrows():
+            # リストメンバーページの取得
+            list_member_pages = twitter_users_util.get_list_member_pages(
                     api,
-                    str(twitter_list_row[const_util.TWITTER_LISTS_HEADER[1]])
+                    str(list_[const_util.LIST_HEADER[1]])
                 )
             
-            # Twitterリストデータフレームの初期化
-            twitter_list_df: pd.DataFrame = \
-                pd.DataFrame(columns=const_util.TWITTER_LIST_HEADER)
+            # リストメンバーデータフレームの初期化
+            list_member_df: pd.DataFrame = pd.DataFrame(columns=const_util.LIST_MEMBER_HEADER)
             
-            # Twitterリストデータフレームへの格納
-            for twitter_list_members_by_page in twitter_list_member_pages:
-                # twitter_list_member: tweepy.models.User
-                for twitter_list_member in twitter_list_members_by_page:
-                    # Twitterリスト情報の格納
-                    twitter_list_info_df = pd.DataFrame(
-                        [[
-                            twitter_list_member.screen_name,
-                            twitter_list_member.name,
-                            const_util.TWITTER_ACCOUNT_URL.format(twitter_list_member.screen_name)
-                        ]],
-                        columns=const_util.TWITTER_LIST_HEADER)
-                    twitter_list_df = pd.concat(
-                        [twitter_list_df, twitter_list_info_df], ignore_index=True)
+            # リストメンバーデータフレームへの格納
+            for list_members_by_page in list_member_pages:
+                # list_member: tweepy.models.User
+                for list_member in list_members_by_page:
+                    # ユーザ情報データフレームの格納
+                    user_info_df = pd.DataFrame(
+                            [[
+                                list_member.screen_name,
+                                list_member.name,
+                                const_util.ACCOUNT_URL.format(list_member.screen_name)
+                            ]],
+                            columns=const_util.LIST_MEMBER_HEADER
+                        )
+                    list_member_df = pd.concat([list_member_df, user_info_df], ignore_index=True)
             
-            # Twitterリストファイルパスの生成
-            twitter_list_path = const_util.TWITTER_LIST_FILE_PATH.format(
-                str(twitter_list_row[const_util.TWITTER_LISTS_HEADER[2]]))
+            # リストメンバーファイルパスの生成
+            list_member_file_path = const_util.LIST_MEMBER_FILE_PATH.format(
+                str(list_[const_util.LIST_HEADER[2]]))
             
-            # Twitterリストデータフレームの保存
-            pyl.log_inf(lg, f'Twitterリスト(追加分先頭n行)：\n{twitter_list_df.head(5)}')
-            pyl.log_inf(lg, f'Twitterリスト(追加分末尾n行)：\n{twitter_list_df.tail(5)}')
-            pandas_util.save_twitter_list_df(twitter_list_df, twitter_list_path)
+            # リストメンバーデータフレームの保存
+            pyl.log_inf(lg, f'リストメンバー(追加分先頭n行)：\n{list_member_df.head(5)}')
+            pyl.log_inf(lg, f'リストメンバー(追加分末尾n行)：\n{list_member_df.tail(5)}')
+            pandas_util.save_list_member_df(list_member_df, list_member_file_path)
         
         # レート制限の表示
         twitter_developer_util.show_rate_limit_of_lists_members(api)

@@ -24,9 +24,9 @@ def main() -> int:
         -
     
     Args on cmd line:
-        twitter_user_id_for_followees (str) : [グループAで1つのみ必須] TwitterユーザID(フォロイー用)
-        twitter_list_id (str)               : [グループAで1つのみ必須] TwitterリストID
-        keyword_of_csv_format (str)         : [任意] キーワード(csv形式)
+        user_id_for_followees (str) : [グループAで1つのみ必須] ユーザID(フォロイー用)
+        list_id (str)               : [グループAで1つのみ必須] リストID
+        keyword_of_csv_format (str) : [任意] キーワード(csv形式)
     
     Returns:
         int: 終了コード(0：正常、1：異常)
@@ -50,20 +50,20 @@ def main() -> int:
         # ロジック(TwitterAPI認証)の実行
         api: tweepy.API = twitter_api_auth.do_logic_that_generate_api_by_oauth_1_user()
         
-        # ロジック(ツイート配信)の実行
-        if args.twitter_user_id_for_followees is not None:
+        # ロジック(Twitterツイート配信)の実行
+        if args.user_id_for_followees is not None:
             twitter_tweet_stream.do_logic(
                     api,
-                    args.twitter_user_id_for_followees,
+                    args.user_id_for_followees,
                     args.keyword_of_csv_format,
-                    stream_by_twitter_list_id=False
+                    stream_by_list_id=False
                 )
-        elif args.twitter_list_id is not None:
+        elif args.list_id is not None:
             twitter_tweet_stream.do_logic(
                     api,
-                    args.twitter_list_id,
+                    args.list_id,
                     args.keyword_of_csv_format,
-                    stream_by_twitter_list_id=True
+                    stream_by_list_id=True
                 )
     except KeyboardInterrupt as e:
         if lg is not None:
@@ -96,15 +96,15 @@ def __get_args() -> argparse.Namespace:
             arg_group_a.add_mutually_exclusive_group(required=True)
         help_msg =  '[1つのみ必須] {0}\n{1}'
         mutually_exclusive_group_a.add_argument(
-            '-u', '--twitter_user_id_for_followees',
+            '-u', '--user_id_for_followees',
             type=str,
             help=help_msg.format(
-                'TwitterユーザID(フォロイー用)', '指定したTwitterユーザIDのフォロイーのツイートを配信する'))
+                'ユーザID(フォロイー用)', '指定したユーザIDのフォロイーのツイートを配信する'))
         mutually_exclusive_group_a.add_argument(
-            '-l', '--twitter_list_id',
+            '-l', '--list_id',
             type=str,
             help=help_msg.format(
-                'TwitterリストID', '指定したTwitterリストIDのツイートを配信する'))
+                'リストID', '指定したリストIDのツイートを配信する'))
         
         # 任意の引数
         help_msg =  '[任意] キーワード(csv形式)\n' + \
@@ -130,15 +130,15 @@ def __validate_args(args: argparse.Namespace) -> bool:
         lg = pyl.get_logger(__name__)
         
         # 検証：グループAの引数が指定された場合は1文字以上であること
-        if args.twitter_user_id_for_followees is not None \
-            and not (len(args.twitter_user_id_for_followees) >= 1):
-            pyl.log_war(lg, f'TwitterユーザID(フォロイー用)が1文字以上ではありません。' +
-                            f'(twitter_user_id_for_followees:{args.twitter_user_id_for_followees})')
+        if args.user_id_for_followees is not None \
+            and not (len(args.user_id_for_followees) >= 1):
+            pyl.log_war(lg, f'ユーザID(フォロイー用)が1文字以上ではありません。' +
+                            f'(user_id_for_followees:{args.user_id_for_followees})')
             return False
-        elif args.twitter_list_id is not None \
-            and not (len(args.twitter_list_id) >= 1):
-            pyl.log_war(lg, f'TwitterリストIDが1文字以上ではありません。' +
-                            f'(twitter_list_id:{args.twitter_list_id})')
+        elif args.list_id is not None \
+            and not (len(args.list_id) >= 1):
+            pyl.log_war(lg, f'リストIDが1文字以上ではありません。' +
+                            f'(list_id:{args.list_id})')
             return False
     except Exception as e:
         raise(e)

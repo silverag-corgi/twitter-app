@@ -116,7 +116,7 @@ class CustomStream(tweepy.Stream):
             
             tweet.created_at = pyl.convert_timestamp_to_jst(str(tweet.created_at))
             tweet.text = str(tweet.text).replace('\n', '')
-            tweet_url: str = const_util.TWITTER_TWEET_URL.format(tweet.user.screen_name, tweet.id)
+            tweet_url: str = const_util.TWEET_URL.format(tweet.user.screen_name, tweet.id)
             
             pyl.log_inf(lg, f'{tweet.created_at}, ' +
                             f'{tweet.user.screen_name: <15}, ' +
@@ -143,7 +143,7 @@ def stream_tweets(
     
     Args:
         api (tweepy.API)                            : API
-        following_user_ids (Optional[list[str]])    : フォローユーザID (×：TwitterユーザID、〇：ユーザID)
+        following_user_ids (Optional[list[str]])    : フォローユーザID (×：screen_name、〇：user_id)
         keywords (Optional[list[str]])              : キーワード
     
     Returns:

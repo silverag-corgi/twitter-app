@@ -18,13 +18,13 @@ def main() -> int:
     Summary:
         コマンドラインから実行する。
         
-        引数を検証して問題ない場合、指定したユーザのフォロイー(フォロワー)のTwitterリストを生成する。
+        引数を検証して問題ない場合、指定したユーザのフォロイー(フォロワー)のリストを生成する。
     
     Args:
         -
     
     Args on cmd line:
-        twitter_user_id (str)           : [必須] TwitterユーザID
+        user_id (str)                   : [必須] ユーザID
         generate_followee_list (bool)   : [グループAで1つのみ必須] フォロイーリスト生成
         generate_follower_list (bool)   : [グループAで1つのみ必須] フォロワーリスト生成
         num_of_followxxs (int)          : [任意] フォロイー(フォロワー)数
@@ -51,22 +51,22 @@ def main() -> int:
         # ロジック(TwitterAPI認証)の実行
         api: tweepy.API = twitter_api_auth.do_logic_that_generate_api_by_oauth_1_user()
         
-        # ロジック(Twitterリスト生成)の実行
+        # ロジック(Twitterフォロイー(フォロワー)リスト生成)の実行
         if bool(args.generate_followee_list) == True:
             # ロジック(Twitterフォロイーリスト生成)の実行
             twitter_followxx_list_gen.do_logic(
                     api,
-                    args.twitter_user_id,
+                    args.user_id,
                     args.num_of_followxxs,
-                    twitter_followxx_list_gen.Pages.FOLLOWEE_LIST
+                    twitter_followxx_list_gen.EnumOfFollowxxList.FOLLOWEE_LIST
                 )
         elif bool(args.generate_follower_list) == True:
             # ロジック(Twitterフォロワーリスト生成)の実行
             twitter_followxx_list_gen.do_logic(
                     api,
-                    args.twitter_user_id,
+                    args.user_id,
                     args.num_of_followxxs,
-                    twitter_followxx_list_gen.Pages.FOLLOWER_LIST
+                    twitter_followxx_list_gen.EnumOfFollowxxList.FOLLOWER_LIST
                 )
     except Exception as e:
         if lg is not None:
@@ -82,14 +82,14 @@ def __get_args() -> argparse.Namespace:
     try:
         parser: pyl.CustomArgumentParser = pyl.CustomArgumentParser(
                 description='Twitterフォロイー(フォロワー)リスト生成\n' +
-                            '指定したTwitterユーザのフォロイー(フォロワー)のTwitterリストを生成します',
+                            '指定したユーザのフォロイー(フォロワー)のリストを生成します',
                 formatter_class=argparse.RawTextHelpFormatter,
                 exit_on_error=True
             )
         
         # 必須の引数
-        help_msg = '[必須] TwitterユーザID'
-        parser.add_argument('twitter_user_id', help=help_msg)
+        help_msg = '[必須] ユーザID'
+        parser.add_argument('user_id', help=help_msg)
         
         # グループAの引数
         arg_group_a: argparse._ArgumentGroup = parser.add_argument_group(
@@ -97,7 +97,7 @@ def __get_args() -> argparse.Namespace:
         mutually_exclusive_group_a: argparse._MutuallyExclusiveGroup = \
             arg_group_a.add_mutually_exclusive_group(required=True)
         help_msg =  '[1つのみ必須] {0}\n' + \
-                    '指定した場合は{1}のTwitterリストを生成します'
+                    '指定した場合は{1}のリストを生成します'
         mutually_exclusive_group_a.add_argument(
             '-followee', '--generate_followee_list',
             action='store_true',
@@ -109,7 +109,7 @@ def __get_args() -> argparse.Namespace:
         
         # 任意の引数
         help_msg =  '[任意] フォロイー(フォロワー)数 (デフォルト：%(default)s)\n' + \
-                    'Twitterリストに追加したいフォロイー(フォロワー)の人数\n' + \
+                    'リストに追加したいフォロイー(フォロワー)の人数\n' + \
                     '3000人を超過した場合はレート制限により3000人ごとに15分の待機時間が発生します'
         parser.add_argument('-f', '--num_of_followxxs', type=int, default=3000, help=help_msg)
         
@@ -129,10 +129,10 @@ def __validate_args(args: argparse.Namespace) -> bool:
         # ロガーの取得
         lg = pyl.get_logger(__name__)
         
-        # 検証：TwitterユーザIDが4文字以上であること
-        if len(args.twitter_user_id) < 4:
-            pyl.log_war(lg, f'TwitterユーザIDが4文字以上ではありません。' +
-                            f'(twitter_user_id:{args.twitter_user_id})')
+        # 検証：ユーザIDが4文字以上であること
+        if len(args.user_id) < 4:
+            pyl.log_war(lg, f'ユーザIDが4文字以上ではありません。' +
+                            f'(user_id:{args.user_id})')
             return False
         
         # 検証：フォロイー(フォロワー)数が1人以上であること
