@@ -46,6 +46,9 @@ def main() -> int:
         
         # ロジック(TwitterAPI認証)の実行
         twitter_api_auth.do_logic_that_generate_api_by_oauth_1_user_using_pin()
+    except KeyboardInterrupt as e:
+        if lg is not None:
+            pyl.log_inf(lg, f'処理を中断しました。')
     except Exception as e:
         if lg is not None:
             pyl.log_exc(lg, '')

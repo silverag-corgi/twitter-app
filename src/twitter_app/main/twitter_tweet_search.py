@@ -54,6 +54,9 @@ def main() -> int:
         
         # ロジック(Twitterツイート検索)の実行
         twitter_tweet_search.do_logic(api, args.query, args.num_of_tweets)
+    except KeyboardInterrupt as e:
+        if lg is not None:
+            pyl.log_inf(lg, f'処理を中断しました。')
     except Exception as e:
         if lg is not None:
             pyl.log_exc(lg, '')
