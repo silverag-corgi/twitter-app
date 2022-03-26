@@ -80,10 +80,10 @@ def __get_args() -> argparse.Namespace:
             '両方とも空文字の場合は全てのレート制限を表示します')
         help_msg =  '[必須] リソース群\n' + \
                     '例：application'
-        arg_group_a.add_argument('resource_family', help=help_msg)
+        arg_group_a.add_argument('resource_family', type=str, help=help_msg)
         help_msg =  '[必須] エンドポイント\n' + \
                     '例：/application/rate_limit_status'
-        arg_group_a.add_argument('endpoint', help=help_msg)
+        arg_group_a.add_argument('endpoint', type=str, help=help_msg)
         
         args: argparse.Namespace = parser.parse_args()
     except Exception as e:

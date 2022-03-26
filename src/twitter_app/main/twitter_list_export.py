@@ -18,23 +18,23 @@ def main() -> int:
     Summary:
         コマンドラインから実行する。
         
-        引数を検証して問題ない場合、指定したTwitterリストをTwitterからエクスポートする。
+        引数を検証して問題ない場合、指定したリストをTwitterからエクスポートする。
     
     Args:
         -
     
     Args on cmd line:
-        show_twitter_list (bool)    : [グループAで1つのみ必須] Twitterリスト表示要否
-        export_twitter_list (bool)  : [グループAで1つのみ必須] Twitterリストエクスポート要否
-        all_twitter_list (bool)     : [グループBで1つのみ必須] 全てのTwitterリスト
-        twitter_list_id (str)       : [グループBで1つのみ必須] TwitterリストID(csv形式)
-        twitter_list_name (str)     : [グループBで1つのみ必須] Twitterリスト名(csv形式)
+        show_list (bool)    : [グループAで1つのみ必須] リスト表示要否
+        export_list (bool)  : [グループAで1つのみ必須] リストエクスポート要否
+        all_list (bool)     : [グループBで1つのみ必須] 全てのリスト
+        list_id (str)       : [グループBで1つのみ必須] リストID(csv形式)
+        list_name (str)     : [グループBで1つのみ必須] リスト名(csv形式)
     
     Returns:
         int: 終了コード(0：正常、1：異常)
     
     Destinations:
-        Twitterリストファイル: ./dest/twitter_list/twitter_list_[Twitterリスト名].csv
+        リストメンバーファイル: ./dest/list_member/[リスト名].csv
     '''
     
     lg: Optional[Logger] = None
@@ -56,45 +56,45 @@ def main() -> int:
         api: tweepy.API = twitter_api_auth.do_logic_that_generate_api_by_oauth_1_user()
         
         # ロジックの実行
-        if bool(args.show_twitter_list) == True:
+        if bool(args.show_list) == True:
             # ロジック(Twitterリスト表示)の実行
-            if bool(args.all_twitter_list) == True:
-                twitter_list_export.do_logic_that_show_twitter_list(
+            if bool(args.all_list) == True:
+                twitter_list_export.do_logic_that_show_list(
                         api,
-                        twitter_list_export.TWITTER_LIST_PROC_TARGET.ALL,
+                        twitter_list_export.EnumOfListProcTarget.ALL,
                         ''
                     )
-            elif args.twitter_list_id is not None:
-                twitter_list_export.do_logic_that_show_twitter_list(
+            elif args.list_id is not None:
+                twitter_list_export.do_logic_that_show_list(
                         api,
-                        twitter_list_export.TWITTER_LIST_PROC_TARGET.ID,
-                        args.twitter_list_id
+                        twitter_list_export.EnumOfListProcTarget.ID,
+                        args.list_id
                     )
-            elif args.twitter_list_name is not None:
-                twitter_list_export.do_logic_that_show_twitter_list(
+            elif args.list_name is not None:
+                twitter_list_export.do_logic_that_show_list(
                         api,
-                        twitter_list_export.TWITTER_LIST_PROC_TARGET.NAME,
-                        args.twitter_list_name
+                        twitter_list_export.EnumOfListProcTarget.NAME,
+                        args.list_name
                     )
-        elif bool(args.export_twitter_list) == True:
+        elif bool(args.export_list) == True:
             # ロジック(Twitterリストエクスポート)の実行
-            if bool(args.all_twitter_list) == True:
-                twitter_list_export.do_logic_that_export_twitter_list(
+            if bool(args.all_list) == True:
+                twitter_list_export.do_logic_that_export_list(
                         api,
-                        twitter_list_export.TWITTER_LIST_PROC_TARGET.ALL,
+                        twitter_list_export.EnumOfListProcTarget.ALL,
                         ''
                     )
-            elif args.twitter_list_id is not None:
-                twitter_list_export.do_logic_that_export_twitter_list(
+            elif args.list_id is not None:
+                twitter_list_export.do_logic_that_export_list(
                         api,
-                        twitter_list_export.TWITTER_LIST_PROC_TARGET.ID,
-                        args.twitter_list_id
+                        twitter_list_export.EnumOfListProcTarget.ID,
+                        args.list_id
                     )
-            elif args.twitter_list_name is not None:
-                twitter_list_export.do_logic_that_export_twitter_list(
+            elif args.list_name is not None:
+                twitter_list_export.do_logic_that_export_list(
                         api,
-                        twitter_list_export.TWITTER_LIST_PROC_TARGET.NAME,
-                        args.twitter_list_name
+                        twitter_list_export.EnumOfListProcTarget.NAME,
+                        args.list_name
                     )
     except Exception as e:
         if lg is not None:
@@ -110,7 +110,7 @@ def __get_args() -> argparse.Namespace:
     try:
         parser: pyl.CustomArgumentParser = pyl.CustomArgumentParser(
                 description='Twitterリストエクスポート\n' +
-                            '指定したTwitterリストをTwitterからエクスポートします',
+                            '指定したリストをTwitterからエクスポートします',
                 formatter_class=argparse.RawTextHelpFormatter,
                 exit_on_error=True
             )
@@ -124,36 +124,36 @@ def __get_args() -> argparse.Namespace:
             arg_group_a.add_mutually_exclusive_group(required=True)
         help_msg =  '[1つのみ必須] {0}\n{1}'
         mutually_exclusive_group_a.add_argument(
-            '-s', '--show_twitter_list',
+            '-s', '--show_list',
             action='store_true',
             help=help_msg.format(
-                'Twitterリスト表示要否', '指定した場合はTwitterリストを表示します'))
+                'リスト表示要否', '指定した場合はリストを表示します'))
         mutually_exclusive_group_a.add_argument(
-            '-e', '--export_twitter_list',
+            '-e', '--export_list',
             action='store_true',
             help=help_msg.format(
-                'Twitterリストエクスポート要否', '指定した場合はTwitterリストをエクスポートします'))
+                'リストエクスポート要否', '指定した場合はリストをエクスポートします'))
         
         # グループBの引数
         arg_group_b: argparse._ArgumentGroup = parser.add_argument_group(
-            'options in this group', '処理対象のTwitterリストを指定します')
+            'options in this group', '処理対象のリストを指定します')
         mutually_exclusive_group_b: argparse._MutuallyExclusiveGroup = \
             arg_group_b.add_mutually_exclusive_group(required=True)
         help_msg =  '[1つのみ必須] {0}\n{1}'
         mutually_exclusive_group_b.add_argument(
-            '-all', '--all_twitter_list',
+            '-all', '--all_list',
             action='store_true',
-            help=help_msg.format('全てのTwitterリスト', ''))
+            help=help_msg.format('全てのリスト', ''))
         mutually_exclusive_group_b.add_argument(
-            '-id', '--twitter_list_id',
+            '-id', '--list_id',
             type=str,
             help=help_msg.format(
-                'TwitterリストID(csv形式)', '例："0123456789111111111, 0123456789222222222"'))
+                'リストID(csv形式)', '例："0123456789111111111, 0123456789222222222"'))
         mutually_exclusive_group_b.add_argument(
-            '-name', '--twitter_list_name',
+            '-name', '--list_name',
             type=str,
             help=help_msg.format(
-                'Twitterリスト名(csv形式)', '例："Google関連アカウント, Microsoft関連アカウント"'))
+                'リスト名(csv形式)', '例："Google関連アカウント, Microsoft関連アカウント"'))
         
         args: argparse.Namespace = parser.parse_args()
     except Exception as e:
@@ -172,15 +172,15 @@ def __validate_args(args: argparse.Namespace) -> bool:
         lg = pyl.get_logger(__name__)
         
         # 検証：グループBの引数が指定された場合は1文字以上であること
-        if args.twitter_list_id is not None \
-            and not (len(args.twitter_list_id) >= 1):
-            pyl.log_war(lg, f'TwitterリストIDが1文字以上ではありません。' +
-                            f'(twitter_list_id:{args.twitter_list_id})')
+        if args.list_id is not None \
+            and not (len(args.list_id) >= 1):
+            pyl.log_war(lg, f'リストIDが1文字以上ではありません。' +
+                            f'(list_id:{args.list_id})')
             return False
-        elif args.twitter_list_name is not None \
-            and not (len(args.twitter_list_name) >= 1):
-            pyl.log_war(lg, f'Twitterリスト名が1文字以上ではありません。' +
-                            f'(twitter_list_name:{args.twitter_list_name})')
+        elif args.list_name is not None \
+            and not (len(args.list_name) >= 1):
+            pyl.log_war(lg, f'リスト名が1文字以上ではありません。' +
+                            f'(list_name:{args.list_name})')
             return False
     except Exception as e:
         raise(e)

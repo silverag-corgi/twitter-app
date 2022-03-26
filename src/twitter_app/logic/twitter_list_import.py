@@ -13,60 +13,58 @@ from twitter_app.util.twitter_api_v1_1.standard import twitter_users_util
 
 def do_logic(
         api: tweepy.API,
-        twitter_list_csv_file_path_with_wildcard: str,
+        list_member_file_path_with_wildcard: str,
         header_line_num: int
     ) -> None:
     
     '''ロジック実行'''
     
     lg: Optional[Logger] = None
-    twitter_list: Any = None
+    list_: Any = None
     
     try:
         # ロガーの取得
         lg = pyl.get_logger(__name__)
         pyl.log_inf(lg, f'Twitterリストインポートを開始します。')
         
-        # TwitterリストCSVファイルパスの取得
-        twitter_list_csv_file_paths: list[str] = glob.glob(twitter_list_csv_file_path_with_wildcard)
+        # リストメンバーファイルパスの取得
+        list_member_file_paths: list[str] = glob.glob(list_member_file_path_with_wildcard)
         
-        # TwitterリストCSVファイルの件数が0件の場合
-        if len(twitter_list_csv_file_paths) == 0:
-            pyl.log_inf(lg, f'TwitterリストCSVファイルの件数が0件です。' +
-                            f'(twitter_list_csv_file_path:' +
-                            f'{twitter_list_csv_file_path_with_wildcard})')
+        # リストメンバーファイルの件数が0件の場合
+        if len(list_member_file_paths) == 0:
+            pyl.log_inf(lg, f'リストメンバーファイルの件数が0件です。' +
+                            f'(list_member_file_path:{list_member_file_path_with_wildcard})')
         else:
             # TwitterAPIの実行
-            for twitter_list_csv_file_path in twitter_list_csv_file_paths:
-                # Twitterリスト名の生成
-                twitter_list_name: str = \
-                    os.path.splitext(os.path.basename(twitter_list_csv_file_path))[0]
+            for list_member_file_path in list_member_file_paths:
+                # リスト名の生成
+                list_name: str = os.path.splitext(os.path.basename(list_member_file_path))[0]
                 
-                # Twitterリストの破棄
-                twitter_users_util.destroy_twitter_list(api, twitter_list_name)
+                # リストの破棄
+                twitter_users_util.destroy_list(api, list_name)
                 
-                # Twitterリストの生成
-                twitter_list = twitter_users_util.generate_twitter_list(api, twitter_list_name)
+                # リストの生成
+                list_ = twitter_users_util.generate_list(api, list_name)
                 
-                # Twitterリストデータフレームの取得(TwitterリストCSVファイルの読み込み)
-                twitter_list_df: pd.DataFrame = \
-                    pandas_util.read_twitter_list_file(twitter_list_csv_file_path, header_line_num)
+                # リストメンバーデータフレームの取得(リストメンバーファイルの読み込み)
+                list_member_df: pd.DataFrame = \
+                    pandas_util.read_list_member_file(list_member_file_path, header_line_num)
                 
-                # Twitterユーザの追加
-                twitter_users_util.add_twitter_users_to_twitter_list(
+                # ユーザの追加
+                twitter_users_util.add_users_to_list(
                         api,
-                        twitter_list.id,
-                        [str(twitter_list_row[const_util.TWITTER_LIST_HEADER[0]])
-                            for _, twitter_list_row in twitter_list_df.iterrows()],
-                        [str(twitter_list_row[const_util.TWITTER_LIST_HEADER[1]])
-                            for _, twitter_list_row in twitter_list_df.iterrows()]
+                        list_.id,
+                        [str(list_member[const_util.LIST_MEMBER_HEADER[0]])
+                            for _, list_member in list_member_df.iterrows()],
+                        [str(list_member[const_util.LIST_MEMBER_HEADER[1]])
+                            for _, list_member in list_member_df.iterrows()]
                     )
         
         pyl.log_inf(lg, f'Twitterリストインポートを終了します。')
     except Exception as e:
-        # Twitterリストの破棄
-        if twitter_list is not None:
-            twitter_users_util.destroy_twitter_list(api, twitter_list.name)
+        # リストの破棄
+        if list_ is not None:
+            twitter_users_util.destroy_list(api, list_.name)
         
         raise(e)
     

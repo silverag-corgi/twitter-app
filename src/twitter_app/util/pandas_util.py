@@ -3,15 +3,15 @@ import pandas as pd
 from twitter_app.util import const_util
 
 
-def save_twitter_list_df(
-        twitter_list_df: pd.DataFrame,
-        twitter_list_file_path: str
+def save_list_member_df(
+        list_member_df: pd.DataFrame,
+        list_member_file_path: str
     ) -> None:
     
-    '''Twitterリストデータフレーム保存'''
+    '''リストメンバーデータフレーム保存'''
     
-    twitter_list_df.to_csv(
-            twitter_list_file_path,
+    list_member_df.to_csv(
+            list_member_file_path,
             header=True,
             index=False,
             mode='w',
@@ -21,24 +21,24 @@ def save_twitter_list_df(
     return None
 
 
-def read_twitter_list_file(
-        twitter_list_csv_file_path: str,
+def read_list_member_file(
+        list_member_file_path: str,
         header_line_num: int
     ) -> pd.DataFrame:
     
-    '''TwitterリストCSVファイル読み込み'''
+    '''リストメンバーファイル読み込み'''
     
-    twitter_list_df: pd.DataFrame = pd.read_csv(
-            twitter_list_csv_file_path,
+    list_member_df: pd.DataFrame = pd.read_csv(
+            list_member_file_path,
             header=None,
-            names=const_util.TWITTER_LIST_HEADER,
+            names=const_util.LIST_MEMBER_HEADER,
             index_col=None,
             usecols=[0, 1],
             skiprows=header_line_num,
             encoding=const_util.ENCODING
         )
     
-    return twitter_list_df
+    return list_member_df
 
 
 def save_tweet_search_result_df(

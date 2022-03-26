@@ -18,14 +18,14 @@ def main() -> int:
     Summary:
         コマンドラインから実行する。
         
-        引数を検証して問題ない場合、指定したCSVファイルをTwitterリストとしてTwitterにインポートする。
+        引数を検証して問題ない場合、指定したCSVファイルをリストとしてTwitterにインポートする。
     
     Args:
         -
     
     Args on cmd line:
-        twitter_list_csv_file_path (str)    : [任意] TwitterリストCSVファイルパス
-        header_line_num (int)               : [任意] ヘッダ行番号
+        list_member_file_path (str) : [任意] リストメンバーファイルパス
+        header_line_num (int)       : [任意] ヘッダ行番号
     
     Returns:
         int: 終了コード(0：正常、1：異常)
@@ -52,7 +52,7 @@ def main() -> int:
         # ロジック(Twitterリストインポート)の実行
         twitter_list_import.do_logic(
                 api,
-                args.twitter_list_csv_file_path,
+                args.list_member_file_path,
                 int(args.header_line_num)
             )
     except Exception as e:
@@ -69,7 +69,7 @@ def __get_args() -> argparse.Namespace:
     try:
         parser: pyl.CustomArgumentParser = pyl.CustomArgumentParser(
                 description='Twitterリストインポート\n' +
-                            '指定したCSVファイルをTwitterリストとしてTwitterにインポートします',
+                            '指定したCSVファイルをリストとしてTwitterにインポートします',
                 formatter_class=argparse.RawTextHelpFormatter,
                 exit_on_error=True
             )
@@ -77,10 +77,10 @@ def __get_args() -> argparse.Namespace:
         help_msg: str = ''
         
         # 任意の引数
-        help_msg =  '[任意] TwitterリストCSVファイルパス (デフォルト：%(default)s)\n' + \
+        help_msg =  '[任意] リストメンバーファイルパス (デフォルト：%(default)s)\n' + \
                     'ワイルドカード可'
         parser.add_argument(
-            '-t', '--twitter_list_csv_file_path', type=str, default='input/*.csv', help=help_msg)
+            '-l', '--list_member_file_path', type=str, default='input/*.csv', help=help_msg)
         help_msg =  '[任意] ヘッダ行番号 (デフォルト：%(default)s)\n' + \
                     '0：ヘッダなし、1~：ヘッダとなるファイルの行番号'
         parser.add_argument(
@@ -102,12 +102,12 @@ def __validate_args(args: argparse.Namespace) -> bool:
         # ロガーの取得
         lg = pyl.get_logger(__name__)
         
-        # 検証：TwitterリストCSVファイルパスがCSVファイルのパスであること
-        twitter_list_csv_file_path: tuple[str, str] = \
-            os.path.splitext(args.twitter_list_csv_file_path)
-        if twitter_list_csv_file_path[1] != '.csv':
-            pyl.log_war(lg, f'TwitterリストCSVファイルパスがCSVファイルのパスではありません。' +
-                            f'(twitter_list_csv_file_path:{args.twitter_list_csv_file_path})')
+        # 検証：リストメンバーファイルパスがCSVファイルのパスであること
+        list_member_file_path_and_ext: tuple[str, str] = \
+            os.path.splitext(args.list_member_file_path)
+        if list_member_file_path_and_ext[1] != '.csv':
+            pyl.log_war(lg, f'リストメンバーファイルパスがCSVファイルのパスではありません。' +
+                            f'(list_member_file_path:{args.list_member_file_path})')
             return False
         
         # 検証：ヘッダ行番号が0以上であること

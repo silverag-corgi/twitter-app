@@ -11,22 +11,22 @@ from twitter_app.util import const_util
 from twitter_app.util.twitter_api_v1_1.standard import twitter_developer_util, twitter_users_util
 
 
-class Pages(IntEnum):
+class EnumOfFollowxxList(IntEnum):
     FOLLOWEE_LIST = auto()
     FOLLOWER_LIST = auto()
 
 
 def do_logic(
         api: tweepy.API,
-        twitter_user_id: str,
+        user_id: str,
         num_of_followxxs: int,
-        kind_of_pages: Pages
+        enum_of_followxx_list: EnumOfFollowxxList
     ) -> None:
     
     '''ロジック実行'''
     
     lg: Optional[Logger] = None
-    twitter_list: Any = None
+    list_: Any = None
     
     try:
         # ロガーの取得
@@ -35,8 +35,8 @@ def do_logic(
         
         # フォロイー(フォロワー)の個別処理
         followxx_pages: list[ResultSet] = []
-        twitter_list_name_format: str = ''
-        if kind_of_pages == Pages.FOLLOWEE_LIST:
+        list_name_format: str = ''
+        if enum_of_followxx_list == EnumOfFollowxxList.FOLLOWEE_LIST:
             # 想定処理時間の表示
             util.show_estimated_proc_time(
                     num_of_followxxs,
@@ -49,11 +49,11 @@ def do_logic(
             
             # フォロイーページの取得
             followxx_pages = twitter_users_util.get_followee_pages(
-                api, twitter_user_id, num_of_data=num_of_followxxs)
+                api, user_id, num_of_data=num_of_followxxs)
             
-            # Twitterリスト名フォーマットの決定
-            twitter_list_name_format = const_util.FOLLOWEE_TWITTER_LIST_NAME
-        elif kind_of_pages == Pages.FOLLOWER_LIST:
+            # リスト名フォーマットの決定
+            list_name_format = const_util.FOLLOWEE_LIST_NAME
+        elif enum_of_followxx_list == EnumOfFollowxxList.FOLLOWER_LIST:
             # 想定処理時間の表示
             util.show_estimated_proc_time(
                     num_of_followxxs,
@@ -66,31 +66,30 @@ def do_logic(
             
             # フォロワーページの取得
             followxx_pages = twitter_users_util.get_follower_pages(
-                api, twitter_user_id, num_of_data=num_of_followxxs)
+                api, user_id, num_of_data=num_of_followxxs)
             
-            # Twitterリスト名フォーマットの決定
-            twitter_list_name_format = const_util.FOLLOWER_TWITTER_LIST_NAME
+            # リスト名フォーマットの決定
+            list_name_format = const_util.FOLLOWER_LIST_NAME
         
         # フォロイー(フォロワー)のリストページの件数が0件の場合
         if len(followxx_pages) == 0:
             pyl.log_inf(lg, f'フォロイー(フォロワー)リストページの件数が0件です。' +
-                            f'(twitter_user_id:{twitter_user_id})')
+                            f'(user_id:{user_id})')
         else:
-            # Twitterリスト名の生成
-            user_info: Any = twitter_users_util.get_user_info(api, twitter_user_id)
-            twitter_list_name: str = \
-                twitter_list_name_format.format(user_info.screen_name, user_info.name)
+            # リスト名の生成
+            user_info: Any = twitter_users_util.get_user_info(api, user_id)
+            list_name: str = list_name_format.format(user_info.screen_name, user_info.name)
             
-            # Twitterリストの破棄
-            twitter_users_util.destroy_twitter_list(api, twitter_list_name)
+            # リストの破棄
+            twitter_users_util.destroy_list(api, list_name)
             
-            # Twitterリストの生成
-            twitter_list = twitter_users_util.generate_twitter_list(api, twitter_list_name)
+            # リストの生成
+            list_ = twitter_users_util.generate_list(api, list_name)
             
             # フォロイー(フォロワー)の追加
-            twitter_users_util.add_twitter_users_to_twitter_list(
+            twitter_users_util.add_users_to_list(
                     api,
-                    twitter_list.id,
+                    list_.id,
                     [str(followxx.screen_name)
                         for followxxs_by_page in followxx_pages
                         for followxx in followxxs_by_page],
@@ -100,16 +99,16 @@ def do_logic(
                 )
         
         # レート制限の表示
-        if kind_of_pages == Pages.FOLLOWEE_LIST:
+        if enum_of_followxx_list == EnumOfFollowxxList.FOLLOWEE_LIST:
             twitter_developer_util.show_rate_limit_of_friends_list(api)
-        elif kind_of_pages == Pages.FOLLOWER_LIST:
+        elif enum_of_followxx_list == EnumOfFollowxxList.FOLLOWER_LIST:
             twitter_developer_util.show_rate_limit_of_followers_list(api)
         
         pyl.log_inf(lg, f'Twitterフォロイー(フォロワー)リスト生成を終了します。')
     except Exception as e:
-        # Twitterリストの破棄
-        if twitter_list is not None:
-            twitter_users_util.destroy_twitter_list(api, twitter_list.name)
+        # リストの破棄
+        if list_ is not None:
+            twitter_users_util.destroy_list(api, list_.name)
         
         raise(e)
     
