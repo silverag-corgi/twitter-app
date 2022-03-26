@@ -9,7 +9,7 @@ FOLLOWER_LIST_NAME: Final[str] = \
     'follower_{0}_{1}'
 
 LIST_MEMBER_FILE_PATH: Final[str] = \
-    './dest/twitter_list/{0}.csv'
+    './dest/list_member/{0}.csv'
 TWEET_SEARCH_RESULT_FILE_PATH: Final[str] = \
     './dest/tweet_search_result/{0}.csv'
 
