@@ -419,7 +419,6 @@ def get_lists(
             - https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/create-manage-lists/overview
             - https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/create-manage-lists/api-reference/get-lists-list
         - レスポンス
-            - https://developer.twitter.com/en/docs/twitter-api/data-dictionary/object-model/lists
             - https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/create-manage-lists/api-reference/get-lists-show#example-response
     '''  # noqa: E501
     

@@ -5,7 +5,7 @@ from typing import Any, Optional
 
 import python_lib_for_me as pyl
 import tweepy
-from tweepy.models import ResultSet
+from tweepy.models import SearchResults
 
 from twitter_app.util import const_util
 
@@ -35,7 +35,7 @@ def search_tweets_in_past_7day(
         num_of_data: int = EnumOfTweetsInPast7Day.EnumOfOauth1User.MAX_NUM_OF_DATA_PER_15MIN.value,
         num_of_data_per_request: int =
         EnumOfTweetsInPast7Day.EnumOfOauth1User.MAX_NUM_OF_DATA_PER_REQUEST.value
-    ) -> list[ResultSet]:
+    ) -> list[SearchResults]:
     
     '''
     ツイート検索(過去7日間)
@@ -48,7 +48,7 @@ def search_tweets_in_past_7day(
         num_of_data_per_request (int, optional)     : リクエストごとのデータ数
     
     Returns:
-        list[ResultSet] : ツイート検索結果ページ (list[ResultSet[tweepy.models.SearchResults]])
+        list[SearchResults] : ツイート検索結果ページ (list[SearchResults[tweepy.models.Status]])
     
     Notes:
         - 認証
@@ -73,11 +73,12 @@ def search_tweets_in_past_7day(
         - パラメータ
             - https://developer.twitter.com/en/docs/twitter-api/v1/tweets/search/guides/standard-operators
         - レスポンス
+            - https://developer.twitter.com/en/docs/twitter-api/v1/tweets/search/api-reference/get-search-tweets#example-response
             - https://developer.twitter.com/en/docs/twitter-api/v1/data-dictionary/object-model/tweet
     '''  # noqa: E501
     
     lg: Optional[Logger] = None
-    tweet_search_result_pages: list[ResultSet] = []
+    tweet_search_result_pages: list[SearchResults] = []
     
     # 認証方式の確認
     if not (isinstance(api.auth, tweepy.OAuth1UserHandler) == True
