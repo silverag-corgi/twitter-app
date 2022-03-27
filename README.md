@@ -456,7 +456,7 @@ options:
 
 ```cmd
 > poetry run tweet-stream -h
-usage: tweet-stream [-h] (-u USER_ID_FOR_FOLLOWEES | -l LIST_ID) [-k KEYWORD_OF_CSV_FORMAT]
+usage: tweet-stream [-h] (-ui USER_ID_FOR_FOLLOWEES | -li LIST_ID | -ln LIST_NAME) [-k KEYWORD_OF_CSV_FORMAT]
 
 Twitterツイート配信
 指定したキーワードのツイートを配信します
@@ -470,14 +470,17 @@ options:
                         カンマはOR検索(Google Docs OR Google Drive)
 
 options in this group:
-  処理対象のIDを指定します
+  処理対象の項目を指定します
 
-  -u USER_ID_FOR_FOLLOWEES, --user_id_for_followees USER_ID_FOR_FOLLOWEES
+  -ui USER_ID_FOR_FOLLOWEES, --user_id_for_followees USER_ID_FOR_FOLLOWEES
                         [1つのみ必須] ユーザID(フォロイー用)
                         指定したユーザIDのフォロイーのツイートを配信する
-  -l LIST_ID, --list_id LIST_ID
+  -li LIST_ID, --list_id LIST_ID
                         [1つのみ必須] リストID
                         指定したリストIDのツイートを配信する
+  -ln LIST_NAME, --list_name LIST_NAME
+                        [1つのみ必須] リスト名
+                        指定したリスト名のツイートを配信する
 ```
 
 
