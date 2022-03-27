@@ -55,45 +55,40 @@ def do_logic_that_show_list(
         for list_ in lists:
             # リスト情報の取得
             creation_datetime: str = pyl.convert_timestamp_to_jst(str(list_.created_at))
-            list_id: str = list_.id
+            list_id_by_api: str = list_.id
+            list_name_by_api: str = list_.name
             num_of_members: int = list_.member_count
-            list_name: str = list_.name
             
             # リスト情報の格納(リスト処理対象ごと)
             list_info_df: pd.DataFrame
             if enum_of_list_proc_target == EnumOfListProcTarget.ALL:
                 list_info_df = pd.DataFrame(
-                    [[creation_datetime, list_id, list_name, num_of_members]],
+                    [[creation_datetime, list_id_by_api, list_name_by_api, num_of_members]],
                     columns=const_util.LIST_HEADER)
                 list_df = pd.concat([list_df, list_info_df], ignore_index=True)
             elif enum_of_list_proc_target == EnumOfListProcTarget.ID:
-                # リストIDリスト(引数のCSVから)の生成
-                list_ids: list[str] = \
+                # リストID(複数)(引数から)の生成
+                list_ids_by_arg: list[str] = \
                     pyl.generate_str_list_from_csv(list_id_or_name_of_csv_format)
                 
-                # リストID(APIから)がリストIDリスト(引数のCSVから)に含まれている場合
-                if list_id in list_ids:
+                # リストID(APIから)がリストID(複数)(引数から)に存在する場合
+                if list_id_by_api in list_ids_by_arg:
                     list_info_df = pd.DataFrame(
-                        [[creation_datetime, list_id, list_name, num_of_members]],
+                        [[creation_datetime, list_id_by_api, list_name_by_api, num_of_members]],
                         columns=const_util.LIST_HEADER)
                     list_df = pd.concat([list_df, list_info_df], ignore_index=True)
             elif enum_of_list_proc_target == EnumOfListProcTarget.NAME:
-                # リスト名リスト(引数のCSVから)の生成
-                list_names: list[str] = \
+                # リスト名(複数)(引数から)の生成
+                list_names_by_arg: list[str] = \
                     pyl.generate_str_list_from_csv(list_id_or_name_of_csv_format)
                 
-                # リスト名(APIから)がリスト名リスト(引数のCSVから)に含まれている場合
-                match_with_list_names: bool = False
-                for name in list_names:
-                    if name in list_name:
-                        match_with_list_names = True
-                
-                # リスト名一致有無がTrueの場合
-                if match_with_list_names == True:
-                    list_info_df = pd.DataFrame(
-                        [[creation_datetime, list_id, list_name, num_of_members]],
-                        columns=const_util.LIST_HEADER)
-                    list_df = pd.concat([list_df, list_info_df], ignore_index=True)
+                # リスト名(引数から)がリスト名(APIから)に部分一致する場合
+                for list_name_by_arg in list_names_by_arg:
+                    if list_name_by_arg in list_name_by_api:
+                        list_info_df = pd.DataFrame(
+                            [[creation_datetime, list_id_by_api, list_name_by_api, num_of_members]],
+                            columns=const_util.LIST_HEADER)
+                        list_df = pd.concat([list_df, list_info_df], ignore_index=True)
         
         # リストデータフレームの表示
         pyl.log_inf(lg, f'リスト：\n{list_df}')
