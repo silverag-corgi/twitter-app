@@ -111,21 +111,54 @@ def search_tweets_in_past_7day(
 
 
 class CustomStream(tweepy.Stream):
+    def __init__(self, auth: Any, following_user_ids: Optional[list[str]], **kwargs: Any) -> None:
+        super().__init__(
+                auth.consumer_key,
+                auth.consumer_secret,
+                auth.access_token,
+                auth.access_token_secret,
+                **kwargs
+            )
+        self.__tweet_num = 0
+        self.__following_user_ids = following_user_ids
+    
     def on_status(self, tweet: Any) -> None:
         try:
             lg: Logger = pyl.get_logger(__name__)
             
-            tweet.created_at = pyl.convert_timestamp_to_jst(str(tweet.created_at))
-            tweet.text = str(tweet.text).replace('\n', '')
-            tweet_url: str = const_util.TWEET_URL.format(tweet.user.screen_name, tweet.id)
+            # ツイート表示要否の判定(通常ツイート、リツイート、リプライ)
+            display_tweet: bool = True
+            if hasattr(tweet, 'retweeted_status') == True:  # リツイートの場合
+                if self.__following_user_ids is not None:   # フォローユーザIDが存在する場合
+                    if tweet.user.id not in self.__following_user_ids:
+                        # ツイート元ユーザIDがフォローユーザID内に存在しない場合
+                        display_tweet = False
+                else:                                       # フォローユーザIDが存在しない場合
+                    display_tweet = False
+            elif tweet.in_reply_to_user_id is not None:     # リプライの場合
+                if self.__following_user_ids is not None:   # フォローユーザIDが存在する場合
+                    if tweet.in_reply_to_user_id not in self.__following_user_ids \
+                        or tweet.user.id not in self.__following_user_ids:
+                        # 返信先ユーザIDまたは、返信元ユーザIDがフォローユーザID内に存在しない場合
+                        display_tweet = False
+                else:                                       # フォローユーザIDが存在しない場合
+                    display_tweet = False
             
-            pyl.log_inf(lg, f'{tweet.created_at}, ' +
-                            f'{tweet.user.screen_name: <15}, ' +
-                            f'{tweet.user.name: <20}, ' +
-                            f'{tweet.text}, ' +
-                            f'{tweet_url}')
+            # ツイートの表示
+            if display_tweet == True:
+                self.__tweet_num += 1
+                user_name: str = tweet.user.name
+                user_id: str = tweet.user.screen_name
+                text: str = str(tweet.text).replace('\n', '\n    ')
+                creation_timestamp: str = pyl.convert_timestamp_to_jst(str(tweet.created_at))
+                url: str = const_util.TWEET_URL.format(tweet.user.screen_name, tweet.id)
+                pyl.log_inf(lg, f'ツイート番号：{self.__tweet_num:04}\n' +
+                                f'    {user_name} (@{user_id})\n' +
+                                f'    {text}\n' +
+                                f'    {creation_timestamp}\n' +
+                                f'    {url}')
         except Exception as e:
-            pass
+            raise(e)
 
 
 class EnumOfStream(IntEnum):
@@ -181,12 +214,9 @@ def stream_tweets(
         lg = pyl.get_logger(__name__)
         
         # ストリームの生成
-        auth: Any = api.auth
         stream: CustomStream = CustomStream(
-                auth.consumer_key,
-                auth.consumer_secret,
-                auth.access_token,
-                auth.access_token_secret
+                api.auth,
+                following_user_ids
             )
         
         # ツイートの配信
