@@ -1,3 +1,4 @@
+from enum import IntEnum, auto
 from logging import Logger
 from typing import Any, Optional
 
@@ -8,11 +9,17 @@ from tweepy.models import ResultSet
 from twitter_app.util.twitter_api_v1_1.standard import twitter_tweets_util, twitter_users_util
 
 
+class EnumOfItemProcTarget(IntEnum):
+    USER_ID = auto()
+    LIST_ID = auto()
+    LIST_NAME = auto()
+
+
 def do_logic(
         api: tweepy.API,
-        id: str,
+        enum_of_item_proc_target: EnumOfItemProcTarget,
+        item: str,
         keyword_of_csv_format: str,
-        stream_by_list_id: bool = False
     ) -> None:
     
     lg: Optional[Logger] = None
@@ -23,17 +30,28 @@ def do_logic(
         pyl.log_inf(lg, f'Twitterツイート配信を開始します。')
         
         # ユーザページの取得
-        user_pages: list[ResultSet]
-        if stream_by_list_id == False:
+        user_pages: list[ResultSet] = []
+        if enum_of_item_proc_target == EnumOfItemProcTarget.USER_ID:
             # 指定したユーザIDのフォロイーのツイートを配信する場合
             user_pages = twitter_users_util.get_followee_pages(
                     api,
-                    user_id=id,
+                    user_id=item,
                     num_of_data=twitter_tweets_util.EnumOfStream.MAX_NUM_OF_FOLLOWING.value
                 )
-        else:
+        elif enum_of_item_proc_target == EnumOfItemProcTarget.LIST_ID:
             # 指定したリストIDのツイートを配信する場合
-            user_pages = twitter_users_util.get_list_member_pages(api, list_id=id)
+            user_pages = twitter_users_util.get_list_member_pages(api, list_id=item)
+        elif enum_of_item_proc_target == EnumOfItemProcTarget.LIST_NAME:
+            # 指定したリスト名のツイートを配信する場合
+            can_stream_by_list_name: bool = False
+            lists: ResultSet = twitter_users_util.get_lists(api)
+            for list_ in lists:
+                if list_.name == item:
+                    user_pages = twitter_users_util.get_list_member_pages(api, list_id=list_.id)
+                    can_stream_by_list_name = True
+                    break
+            if can_stream_by_list_name == False:
+                raise(pyl.CustomError(f'リスト取得に失敗しました。(list_name:{item})'))
         
         # フォローユーザIDの生成
         following_user_ids: list[str] = [

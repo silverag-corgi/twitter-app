@@ -26,6 +26,7 @@ def main() -> int:
     Args on cmd line:
         user_id_for_followees (str) : [グループAで1つのみ必須] ユーザID(フォロイー用)
         list_id (str)               : [グループAで1つのみ必須] リストID
+        list_name (str)             : [グループAで1つのみ必須] リスト名
         keyword_of_csv_format (str) : [任意] キーワード(csv形式)
     
     Returns:
@@ -54,16 +55,23 @@ def main() -> int:
         if args.user_id_for_followees is not None:
             twitter_tweet_stream.do_logic(
                     api,
+                    twitter_tweet_stream.EnumOfItemProcTarget.USER_ID,
                     args.user_id_for_followees,
-                    args.keyword_of_csv_format,
-                    stream_by_list_id=False
+                    args.keyword_of_csv_format
                 )
         elif args.list_id is not None:
             twitter_tweet_stream.do_logic(
                     api,
+                    twitter_tweet_stream.EnumOfItemProcTarget.LIST_ID,
                     args.list_id,
-                    args.keyword_of_csv_format,
-                    stream_by_list_id=True
+                    args.keyword_of_csv_format
+                )
+        elif args.list_name is not None:
+            twitter_tweet_stream.do_logic(
+                    api,
+                    twitter_tweet_stream.EnumOfItemProcTarget.LIST_NAME,
+                    args.list_name,
+                    args.keyword_of_csv_format
                 )
     except KeyboardInterrupt as e:
         if lg is not None:
@@ -91,20 +99,25 @@ def __get_args() -> argparse.Namespace:
         
         # グループAの引数
         arg_group_a: argparse._ArgumentGroup = parser.add_argument_group(
-            'options in this group', '処理対象のIDを指定します')
+            'options in this group', '処理対象の項目を指定します')
         mutually_exclusive_group_a: argparse._MutuallyExclusiveGroup = \
             arg_group_a.add_mutually_exclusive_group(required=True)
         help_msg =  '[1つのみ必須] {0}\n{1}'
         mutually_exclusive_group_a.add_argument(
-            '-u', '--user_id_for_followees',
+            '-ui', '--user_id_for_followees',
             type=str,
             help=help_msg.format(
                 'ユーザID(フォロイー用)', '指定したユーザIDのフォロイーのツイートを配信する'))
         mutually_exclusive_group_a.add_argument(
-            '-l', '--list_id',
+            '-li', '--list_id',
             type=str,
             help=help_msg.format(
                 'リストID', '指定したリストIDのツイートを配信する'))
+        mutually_exclusive_group_a.add_argument(
+            '-ln', '--list_name',
+            type=str,
+            help=help_msg.format(
+                'リスト名', '指定したリスト名のツイートを配信する'))
         
         # 任意の引数
         help_msg =  '[任意] キーワード(csv形式)\n' + \
@@ -139,6 +152,11 @@ def __validate_args(args: argparse.Namespace) -> bool:
             and not (len(args.list_id) >= 1):
             pyl.log_war(lg, f'リストIDが1文字以上ではありません。' +
                             f'(list_id:{args.list_id})')
+            return False
+        elif args.list_name is not None \
+            and not (len(args.list_name) >= 1):
+            pyl.log_war(lg, f'リスト名が1文字以上ではありません。' +
+                            f'(list_name:{args.list_name})')
             return False
     except Exception as e:
         raise(e)
