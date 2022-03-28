@@ -4,23 +4,88 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python: twitter_list_import",
+            "name": "Poetry: followxx-gen",
             "type": "python",
             "request": "launch",
-            "module": "twitter_app.main.twitter_list_import",
+            "module": "poetry",
             "args": [
-                "-t", "input/*.csv"
-            ]
+                "run",
+                "followxx-gen",
+                "-h",
+            ],
+            "justMyCode": true,
         },
         {
-            "name": "Python: twitter_followxx_list_gen",
+            "name": "Poetry: list-exp",
             "type": "python",
             "request": "launch",
-            "module": "twitter_app.main.twitter_followxx_list_gen",
+            "module": "poetry",
             "args": [
-                "silverag_corgi",
-                "-followee"
-            ]
-        }
+                "run",
+                "list-exp",
+                "-h",
+            ],
+            "justMyCode": true,
+        },
+        {
+            "name": "Poetry: list-imp",
+            "type": "python",
+            "request": "launch",
+            "module": "poetry",
+            "args": [
+                "run",
+                "list-imp",
+                "-h",
+            ],
+            "justMyCode": true,
+        },
+        {
+            "name": "Poetry: pin-auth",
+            "type": "python",
+            "request": "launch",
+            "module": "poetry",
+            "args": [
+                "run",
+                "pin-auth",
+                "-h",
+            ],
+            "justMyCode": true,
+        },
+        {
+            "name": "Poetry: limit-show",
+            "type": "python",
+            "request": "launch",
+            "module": "poetry",
+            "args": [
+                "run",
+                "limit-show",
+                "-h",
+            ],
+            "justMyCode": true,
+        },
+        {
+            "name": "Poetry: tweet-search",
+            "type": "python",
+            "request": "launch",
+            "module": "poetry",
+            "args": [
+                "run",
+                "tweet-search",
+                "-h",
+            ],
+            "justMyCode": true,
+        },
+        {
+            "name": "Poetry: tweet-stream",
+            "type": "python",
+            "request": "launch",
+            "module": "poetry",
+            "args": [
+                "run",
+                "tweet-stream",
+                "-h",
+            ],
+            "justMyCode": true,
+        },
     ]
 }
