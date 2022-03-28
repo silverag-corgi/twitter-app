@@ -82,7 +82,7 @@ def search_tweets(
     tweet_search_result_pages: list[ResultSet] = []
     
     # 認証方式の確認
-    if not (isinstance(api.auth, tweepy.OAuth2AppHandler) == True):
+    if isinstance(api.auth, (tweepy.OAuth2AppHandler)) == False:
         raise(pyl.CustomError(
             f'この認証方式ではTwitterAPIにアクセスできません。(Auth:{type(api.auth)})'))
     

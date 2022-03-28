@@ -81,8 +81,7 @@ def search_tweets_in_past_7day(
     tweet_search_result_pages: list[SearchResults] = []
     
     # 認証方式の確認
-    if not (isinstance(api.auth, tweepy.OAuth1UserHandler) == True
-            or isinstance(api.auth, tweepy.OAuth2AppHandler) == True):
+    if isinstance(api.auth, (tweepy.OAuth1UserHandler, tweepy.OAuth2AppHandler)) == False:
         raise(pyl.CustomError(
             f'この認証方式ではTwitterAPIにアクセスできません。(Auth:{type(api.auth)})'))
     
@@ -119,29 +118,29 @@ class CustomStream(tweepy.Stream):
                 auth.access_token_secret,
                 **kwargs
             )
-        self.__tweet_num = 0
         self.__following_user_ids = following_user_ids
+        self.__tweet_num = 0
     
     def on_status(self, tweet: Any) -> None:
         try:
             lg: Logger = pyl.get_logger(__name__)
             
-            # ツイート表示要否の判定(通常ツイート、リツイート、リプライ)
+            # ツイート表示要否の判定(通常ツイート、リツイート、リプライの場合)
             display_tweet: bool = True
             if hasattr(tweet, 'retweeted_status') == True:  # リツイートの場合
-                if self.__following_user_ids is not None:   # フォローユーザIDが存在する場合
-                    if tweet.user.id not in self.__following_user_ids:
-                        # ツイート元ユーザIDがフォローユーザID内に存在しない場合
-                        display_tweet = False
-                else:                                       # フォローユーザIDが存在しない場合
+                if self.__following_user_ids is None:
+                    # フォローユーザIDが存在しない場合
+                    display_tweet = False
+                elif tweet.user.id not in self.__following_user_ids:
+                    # ツイート元ユーザIDがフォローユーザID内に存在しない場合
                     display_tweet = False
             elif tweet.in_reply_to_user_id is not None:     # リプライの場合
-                if self.__following_user_ids is not None:   # フォローユーザIDが存在する場合
-                    if tweet.in_reply_to_user_id not in self.__following_user_ids \
-                        or tweet.user.id not in self.__following_user_ids:
-                        # 返信先ユーザIDまたは、返信元ユーザIDがフォローユーザID内に存在しない場合
-                        display_tweet = False
-                else:                                       # フォローユーザIDが存在しない場合
+                if self.__following_user_ids is None:
+                    # フォローユーザIDが存在しない場合
+                    display_tweet = False
+                elif tweet.in_reply_to_user_id not in self.__following_user_ids \
+                    or tweet.user.id not in self.__following_user_ids:
+                    # 返信先ユーザIDまたは、返信元ユーザIDがフォローユーザID内に存在しない場合
                     display_tweet = False
             
             # ツイートの表示
@@ -206,7 +205,7 @@ def stream_tweets(
     lg: Optional[Logger] = None
     
     # 認証方式の確認
-    if not (isinstance(api.auth, tweepy.OAuth1UserHandler) == True):
+    if isinstance(api.auth, (tweepy.OAuth1UserHandler)) == False:
         raise(pyl.CustomError(
             f'この認証方式ではTwitterAPIにアクセスできません。(Auth:{type(api.auth)})'))
     
