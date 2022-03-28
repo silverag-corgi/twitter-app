@@ -4,11 +4,10 @@ import sys
 from logging import Logger
 from typing import Optional
 
-import pandas as pd
 import python_lib_for_me as pyl
 import tweepy
 
-from twitter_app.logic import twitter_api_auth, twitter_list_export, twitter_list_show
+from twitter_app.logic import twitter_api_auth, twitter_list_show
 
 
 def main() -> int:
@@ -19,7 +18,7 @@ def main() -> int:
     Summary:
         コマンドラインから実行する。
         
-        引数を検証して問題ない場合、指定したリストをTwitterからエクスポートする。
+        引数を検証して問題ない場合、指定したリストを表示する。
     
     Args:
         -
@@ -31,9 +30,6 @@ def main() -> int:
     
     Returns:
         int: 終了コード(0：正常、1：異常)
-    
-    Destinations:
-        リストメンバーファイル: ./dest/list_member/[リスト名].csv
     '''
     
     lg: Optional[Logger] = None
@@ -55,28 +51,24 @@ def main() -> int:
         api: tweepy.API = twitter_api_auth.do_logic_that_generate_api_by_oauth_1_user()
         
         # ロジック(Twitterリスト表示)の実行
-        list_df: pd.DataFrame = pd.DataFrame()
         if bool(args.all_list) == True:
-            list_df = twitter_list_show.do_logic(
+            twitter_list_show.do_logic(
                     api,
                     twitter_list_show.EnumOfListProcTarget.ALL,
                     ''
                 )
         elif args.list_id is not None:
-            list_df = twitter_list_show.do_logic(
+            twitter_list_show.do_logic(
                     api,
                     twitter_list_show.EnumOfListProcTarget.ID,
                     args.list_id
                 )
         elif args.list_name is not None:
-            list_df = twitter_list_show.do_logic(
+            twitter_list_show.do_logic(
                     api,
                     twitter_list_show.EnumOfListProcTarget.NAME,
                     args.list_name
                 )
-        
-        # ロジック(Twitterリストエクスポート)の実行
-        twitter_list_export.do_logic(api, list_df)
     except KeyboardInterrupt as e:
         if lg is not None:
             pyl.log_inf(lg, f'処理を中断しました。')
@@ -93,8 +85,8 @@ def __get_args() -> argparse.Namespace:
     
     try:
         parser: pyl.CustomArgumentParser = pyl.CustomArgumentParser(
-                description='Twitterリストエクスポート\n' +
-                            '指定したリストをTwitterからエクスポートします',
+                description='Twitterリスト表示\n' +
+                            '指定したリストを表示します',
                 formatter_class=argparse.RawTextHelpFormatter,
                 exit_on_error=True
             )
