@@ -106,12 +106,12 @@ def __validate_args(args: argparse.Namespace) -> bool:
         lg = pyl.get_logger(__name__)
         
         # 検証：クエリが1文字以上であること
-        if len(args.query) < 1:
+        if not (len(args.query) >= 1):
             pyl.log_war(lg, f'クエリが1文字以上ではありません。(query:{args.query})')
             return False
         
         # 検証：ツイート数が1件以上であること
-        if int(args.num_of_tweets) < 1:
+        if not (int(args.num_of_tweets) >= 1):
             pyl.log_war(lg, f'ツイート数が1件以上ではありません。(num_of_tweets:{args.num_of_tweets})')
             return False
     except Exception as e:
