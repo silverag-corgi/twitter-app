@@ -26,11 +26,11 @@
     - [6.4.1. プログラムの実行](#641-プログラムの実行)
   - [6.5. Twitterツイート検索](#65-twitterツイート検索)
     - [6.5.1. プログラムの実行](#651-プログラムの実行)
-  - [6.6. Twitterレート制限表示](#66-twitterレート制限表示)
+  - [6.6. Twitterツイート配信](#66-twitterツイート配信)
     - [6.6.1. プログラムの実行](#661-プログラムの実行)
-  - [6.7. TwitterPIN認証](#67-twitterpin認証)
+  - [6.7. Twitterレート制限表示](#67-twitterレート制限表示)
     - [6.7.1. プログラムの実行](#671-プログラムの実行)
-  - [6.8. Twitterツイート配信](#68-twitterツイート配信)
+  - [6.8. TwitterPIN認証](#68-twitterpin認証)
     - [6.8.1. プログラムの実行](#681-プログラムの実行)
 - [7. 実行コマンド一覧](#7-実行コマンド一覧)
 - [8. 連絡先](#8-連絡先)
@@ -56,12 +56,12 @@ TwitterAPIを利用したアプリケーション。
   - 指定したユーザのフォロイー(フォロワー)のリストを生成する
 - Twitterツイート検索
   - 指定したクエリでツイートを検索し、ツイート検索結果ファイルを生成する
+- Twitterツイート配信
+  - 指定したキーワードのツイートを配信する
 - Twitterレート制限表示
   - 指定したリソース群とエンドポイントのレート制限を表示する
 - TwitterPIN認証
   - コンシューマーキーとPINコードを基にアクセストークンを生成し、認証情報ファイルに保存する
-- Twitterツイート配信
-  - 指定したキーワードのツイートを配信する
 
 
 # 3. 動作確認済み環境
@@ -138,7 +138,7 @@ Bの手順は5分程度で完了するが、Twitter社が突然公開を停止�
 まで完了した後に、上記項目を用いて
 [5.3. TwitterAPI認証情報の設定](#53-twitterapi認証情報の設定)
 及び
-[6.7. TwitterPIN認証](#67-twitterpin認証)
+[6.8. TwitterPIN認証](#68-twitterpin認証)
 を実行する。
 
 
@@ -410,10 +410,55 @@ options:
 ```
 
 
-## 6.6. Twitterレート制限表示
+## 6.6. Twitterツイート配信
 
 
 ### 6.6.1. プログラムの実行
+
+下記コマンドを実行する。
+
+実行例：
+```cmd
+> cd twitter-app
+> poetry run tweet-stream -u Google
+```
+
+また、ヘルプを呼び出す時は下記コマンドを実行する。
+
+```cmd
+> poetry run tweet-stream -h
+usage: tweet-stream [-h] (-ui USER_ID_FOR_FOLLOWEES | -li LIST_ID | -ln LIST_NAME) [-k KEYWORD_OF_CSV_FORMAT]
+
+Twitterツイート配信
+指定したキーワードのツイートを配信します
+
+options:
+  -h, --help            show this help message and exit
+  -k KEYWORD_OF_CSV_FORMAT, --keyword_of_csv_format KEYWORD_OF_CSV_FORMAT
+                        [任意] キーワード(csv形式)
+                        例："Google Docs, Google Drive"
+                        スペースはAND検索(Google AND Docs)
+                        カンマはOR検索(Google Docs OR Google Drive)
+
+options in this group:
+  処理対象の項目を指定します
+
+  -ui USER_ID_FOR_FOLLOWEES, --user_id_for_followees USER_ID_FOR_FOLLOWEES
+                        [1つのみ必須] ユーザID(フォロイー用)
+                        指定したユーザIDのフォロイーのツイートを配信する
+  -li LIST_ID, --list_id LIST_ID
+                        [1つのみ必須] リストID
+                        指定したリストIDのツイートを配信する
+  -ln LIST_NAME, --list_name LIST_NAME
+                        [1つのみ必須] リスト名
+                        指定したリスト名のツイートを配信する
+```
+
+
+## 6.7. Twitterレート制限表示
+
+
+### 6.7.1. プログラムの実行
 
 下記コマンドを実行する。
 
@@ -446,10 +491,10 @@ positional arguments in this group:
 ```
 
 
-## 6.7. TwitterPIN認証
+## 6.8. TwitterPIN認証
 
 
-### 6.7.1. プログラムの実行
+### 6.8.1. プログラムの実行
 
 下記コマンドを実行する。
 
@@ -470,51 +515,6 @@ TwitterPIN認証
 
 options:
   -h, --help  show this help message and exit
-```
-
-
-## 6.8. Twitterツイート配信
-
-
-### 6.8.1. プログラムの実行
-
-下記コマンドを実行する。
-
-実行例：
-```cmd
-> cd twitter-app
-> poetry run tweet-stream -u silverag_corgi
-```
-
-また、ヘルプを呼び出す時は下記コマンドを実行する。
-
-```cmd
-> poetry run tweet-stream -h
-usage: tweet-stream [-h] (-ui USER_ID_FOR_FOLLOWEES | -li LIST_ID | -ln LIST_NAME) [-k KEYWORD_OF_CSV_FORMAT]
-
-Twitterツイート配信
-指定したキーワードのツイートを配信します
-
-options:
-  -h, --help            show this help message and exit
-  -k KEYWORD_OF_CSV_FORMAT, --keyword_of_csv_format KEYWORD_OF_CSV_FORMAT
-                        [任意] キーワード(csv形式)
-                        例："Google Docs, Google Drive"
-                        スペースはAND検索(Google AND Docs)
-                        カンマはOR検索(Google Docs OR Google Drive)
-
-options in this group:
-  処理対象の項目を指定します
-
-  -ui USER_ID_FOR_FOLLOWEES, --user_id_for_followees USER_ID_FOR_FOLLOWEES
-                        [1つのみ必須] ユーザID(フォロイー用)
-                        指定したユーザIDのフォロイーのツイートを配信する
-  -li LIST_ID, --list_id LIST_ID
-                        [1つのみ必須] リストID
-                        指定したリストIDのツイートを配信する
-  -ln LIST_NAME, --list_name LIST_NAME
-                        [1つのみ必須] リスト名
-                        指定したリスト名のツイートを配信する
 ```
 
 
