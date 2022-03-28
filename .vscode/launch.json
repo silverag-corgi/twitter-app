@@ -40,6 +40,18 @@
             "justMyCode": true,
         },
         {
+            "name": "Poetry: list-show",
+            "type": "python",
+            "request": "launch",
+            "module": "poetry",
+            "args": [
+                "run",
+                "list-show",
+                "-h",
+            ],
+            "justMyCode": true,
+        },
+        {
             "name": "Poetry: pin-auth",
             "type": "python",
             "request": "launch",
