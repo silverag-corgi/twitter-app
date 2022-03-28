@@ -18,18 +18,20 @@
   - [6.1. Twitterリストインポート](#61-twitterリストインポート)
     - [6.1.1. リストメンバーファイルの作成](#611-リストメンバーファイルの作成)
     - [6.1.2. プログラムの実行](#612-プログラムの実行)
-  - [6.2. Twitterリストエクスポート](#62-twitterリストエクスポート)
+  - [6.2. Twitterリスト表示](#62-twitterリスト表示)
     - [6.2.1. プログラムの実行](#621-プログラムの実行)
-  - [6.3. Twitterフォロイー(フォロワー)リスト生成](#63-twitterフォロイーフォロワーリスト生成)
+  - [6.3. Twitterリストエクスポート](#63-twitterリストエクスポート)
     - [6.3.1. プログラムの実行](#631-プログラムの実行)
-  - [6.4. Twitterツイート検索](#64-twitterツイート検索)
+  - [6.4. Twitterフォロイー(フォロワー)リスト生成](#64-twitterフォロイーフォロワーリスト生成)
     - [6.4.1. プログラムの実行](#641-プログラムの実行)
-  - [6.5. Twitterレート制限表示](#65-twitterレート制限表示)
+  - [6.5. Twitterツイート検索](#65-twitterツイート検索)
     - [6.5.1. プログラムの実行](#651-プログラムの実行)
-  - [6.6. TwitterPIN認証](#66-twitterpin認証)
+  - [6.6. Twitterレート制限表示](#66-twitterレート制限表示)
     - [6.6.1. プログラムの実行](#661-プログラムの実行)
-  - [6.7. Twitterツイート配信](#67-twitterツイート配信)
+  - [6.7. TwitterPIN認証](#67-twitterpin認証)
     - [6.7.1. プログラムの実行](#671-プログラムの実行)
+  - [6.8. Twitterツイート配信](#68-twitterツイート配信)
+    - [6.8.1. プログラムの実行](#681-プログラムの実行)
 - [7. 実行コマンド一覧](#7-実行コマンド一覧)
 - [8. 連絡先](#8-連絡先)
 - [9. ライセンス](#9-ライセンス)
@@ -46,6 +48,8 @@ TwitterAPIを利用したアプリケーション。
 
 - Twitterリストインポート
   - 指定したCSVファイルをリストとしてTwitterにインポートする
+- Twitterリスト表示
+  - 指定したリストを表示する
 - Twitterリストエクスポート
   - 指定したリストをTwitterからエクスポートする
 - Twitterフォロイー(フォロワー)リスト生成
@@ -134,7 +138,7 @@ Bの手順は5分程度で完了するが、Twitter社が突然公開を停止�
 まで完了した後に、上記項目を用いて
 [5.3. TwitterAPI認証情報の設定](#53-twitterapi認証情報の設定)
 及び
-[6.6. TwitterPIN認証](#66-twitterpin認証)
+[6.7. TwitterPIN認証](#67-twitterpin認証)
 を実行する。
 
 
@@ -217,7 +221,7 @@ googlemaps,Google Maps
 ```
 
 また、後述の
-[6.2. Twitterリストエクスポート](#62-twitterリストエクスポート)
+[6.3. Twitterリストエクスポート](#63-twitterリストエクスポート)
 の出力ファイルがリストメンバーファイルであるため、入力ファイルになる。
 
 
@@ -251,7 +255,7 @@ options:
 ```
 
 
-## 6.2. Twitterリストエクスポート
+## 6.2. Twitterリスト表示
 
 
 ### 6.2.1. プログラムの実行
@@ -261,28 +265,20 @@ options:
 実行例：
 ```cmd
 > cd twitter-app
-> poetry run list-exp -s -name "Google関連アカウント, Microsoft関連アカウント"
+> poetry run list-show -all
 ```
 
 また、ヘルプを呼び出す時は下記コマンドを実行する。
 
 ```cmd
-> poetry run list-exp -h
-usage: list-exp [-h] (-s | -e) (-all | -id LIST_ID | -name LIST_NAME)
+> poetry run list-show -h
+usage: list-show [-h] (-all | -id LIST_ID | -name LIST_NAME)
 
-Twitterリストエクスポート
-指定したリストをTwitterからエクスポートします
+Twitterリスト表示
+指定したリストを表示します
 
 options:
   -h, --help            show this help message and exit
-
-options in this group:
-  実行する処理を指定します
-
-  -s, --show_list       [1つのみ必須] リスト表示要否
-                        指定した場合はリストを表示します
-  -e, --export_list     [1つのみ必須] リストエクスポート要否
-                        指定した場合はリストをエクスポートします
 
 options in this group:
   処理対象のリストを指定します
@@ -297,10 +293,48 @@ options in this group:
 ```
 
 
-## 6.3. Twitterフォロイー(フォロワー)リスト生成
+## 6.3. Twitterリストエクスポート
 
 
 ### 6.3.1. プログラムの実行
+
+下記コマンドを実行する。
+
+実行例：
+```cmd
+> cd twitter-app
+> poetry run list-exp -all
+```
+
+また、ヘルプを呼び出す時は下記コマンドを実行する。
+
+```cmd
+> poetry run list-exp -h
+usage: list-exp [-h] (-all | -id LIST_ID | -name LIST_NAME)
+
+Twitterリストエクスポート
+指定したリストをTwitterからエクスポートします
+
+options:
+  -h, --help            show this help message and exit
+
+options in this group:
+  処理対象のリストを指定します
+
+  -all, --all_list      [1つのみ必須] 全てのリスト
+  -id LIST_ID, --list_id LIST_ID
+                        [1つのみ必須] リストID(csv形式)
+                        例："0123456789111111111, 0123456789222222222"
+  -name LIST_NAME, --list_name LIST_NAME
+                        [1つのみ必須] リスト名(csv形式)
+                        例："Google関連アカウント, Microsoft関連アカウント"
+```
+
+
+## 6.4. Twitterフォロイー(フォロワー)リスト生成
+
+
+### 6.4.1. プログラムの実行
 
 下記コマンドを実行する。
 
@@ -341,10 +375,10 @@ options in this group:
 ```
 
 
-## 6.4. Twitterツイート検索
+## 6.5. Twitterツイート検索
 
 
-### 6.4.1. プログラムの実行
+### 6.5.1. プログラムの実行
 
 下記コマンドを実行する。
 
@@ -376,10 +410,10 @@ options:
 ```
 
 
-## 6.5. Twitterレート制限表示
+## 6.6. Twitterレート制限表示
 
 
-### 6.5.1. プログラムの実行
+### 6.6.1. プログラムの実行
 
 下記コマンドを実行する。
 
@@ -412,10 +446,10 @@ positional arguments in this group:
 ```
 
 
-## 6.6. TwitterPIN認証
+## 6.7. TwitterPIN認証
 
 
-### 6.6.1. プログラムの実行
+### 6.7.1. プログラムの実行
 
 下記コマンドを実行する。
 
@@ -439,10 +473,10 @@ options:
 ```
 
 
-## 6.7. Twitterツイート配信
+## 6.8. Twitterツイート配信
 
 
-### 6.7.1. プログラムの実行
+### 6.8.1. プログラムの実行
 
 下記コマンドを実行する。
 
