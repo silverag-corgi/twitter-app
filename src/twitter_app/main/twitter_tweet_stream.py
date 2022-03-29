@@ -24,10 +24,12 @@ def main() -> int:
         -
     
     Args on cmd line:
-        user_id_for_followees (str) : [グループAで1つのみ必須] ユーザID(フォロイー用)
-        list_id (str)               : [グループAで1つのみ必須] リストID
-        list_name (str)             : [グループAで1つのみ必須] リスト名
-        keyword_of_csv_format (str) : [任意] キーワード(csv形式)
+        user_id_for_followees (str)     : [グループAで1つのみ必須] ユーザID(フォロイー用)
+        list_id (str)                   : [グループAで1つのみ必須] リストID
+        list_name (str)                 : [グループAで1つのみ必須] リスト名
+        following_user_file_path (str)  : [グループAで1つのみ必須] フォローユーザファイルパス
+        keyword_of_csv_format (str)     : [任意] キーワード(csv形式)
+        header_line_num (int)           : [任意] ヘッダ行番号
     
     Returns:
         int: 終了コード(0：正常、1：異常)
@@ -57,21 +59,32 @@ def main() -> int:
                     api,
                     twitter_tweet_stream.EnumOfItemProcTarget.USER_ID,
                     args.user_id_for_followees,
-                    args.keyword_of_csv_format
+                    args.keyword_of_csv_format,
+                    int(args.header_line_num)
                 )
         elif args.list_id is not None:
             twitter_tweet_stream.do_logic(
                     api,
                     twitter_tweet_stream.EnumOfItemProcTarget.LIST_ID,
                     args.list_id,
-                    args.keyword_of_csv_format
+                    args.keyword_of_csv_format,
+                    int(args.header_line_num)
                 )
         elif args.list_name is not None:
             twitter_tweet_stream.do_logic(
                     api,
                     twitter_tweet_stream.EnumOfItemProcTarget.LIST_NAME,
                     args.list_name,
-                    args.keyword_of_csv_format
+                    args.keyword_of_csv_format,
+                    int(args.header_line_num)
+                )
+        elif args.following_user_file_path is not None:
+            twitter_tweet_stream.do_logic(
+                    api,
+                    twitter_tweet_stream.EnumOfItemProcTarget.FILE_PATH,
+                    args.following_user_file_path,
+                    args.keyword_of_csv_format,
+                    int(args.header_line_num)
                 )
     except KeyboardInterrupt as e:
         if lg is not None:
@@ -118,6 +131,12 @@ def __get_args() -> argparse.Namespace:
             type=str,
             help=help_msg.format(
                 'リスト名', '指定したリスト名のツイートを配信する'))
+        mutually_exclusive_group_a.add_argument(
+            '-fp', '--following_user_file_path',
+            type=str,
+            help=help_msg.format(
+                'フォローユーザファイルパス (csvファイル)',
+                '指定したファイルに記載されているユーザのツイートを配信する'))
         
         # 任意の引数
         help_msg =  '[任意] キーワード(csv形式)\n' + \
@@ -125,6 +144,10 @@ def __get_args() -> argparse.Namespace:
                     'スペースはAND検索(Google AND Docs)\n' + \
                     'カンマはOR検索(Google Docs OR Google Drive)'
         parser.add_argument('-k', '--keyword_of_csv_format', type=str, default='', help=help_msg)
+        help_msg =  '[任意] ヘッダ行番号 (デフォルト：%(default)s)\n' + \
+                    'フォローユーザファイルパスのヘッダ行番号\n' + \
+                    '0：ヘッダなし、1~：ヘッダとなるファイルの行番号'
+        parser.add_argument('-hd', '--header_line_num', type=int, default='1', help=help_msg)
         
         args: argparse.Namespace = parser.parse_args()
     except Exception as e:
@@ -157,6 +180,31 @@ def __validate_args(args: argparse.Namespace) -> bool:
             and not (len(args.list_name) >= 1):
             pyl.log_war(lg, f'リスト名が1文字以上ではありません。' +
                             f'(list_name:{args.list_name})')
+            return False
+        elif args.following_user_file_path is not None \
+            and not (len(args.following_user_file_path) >= 1):
+            pyl.log_war(lg, f'フォローユーザファイルパスが1文字以上ではありません。' +
+                            f'(following_user_file_path:{args.following_user_file_path})')
+            return False
+        
+        # 検証：フォローユーザファイルパスがcsvファイルのパスであること
+        if args.following_user_file_path is not None \
+            and not (os.path.splitext(args.following_user_file_path)[1] == '.csv'):
+            pyl.log_war(lg, f'フォローユーザファイルパスがcsvファイルのパスではありません。' +
+                            f'(following_user_file_path:{args.following_user_file_path})')
+            return False
+        
+        # 検証：フォローユーザファイルパスのファイルが存在すること
+        if args.following_user_file_path is not None \
+            and not (os.path.isfile(args.following_user_file_path) == True):
+            pyl.log_war(lg, f'フォローユーザファイルパスのファイルが存在しません。' +
+                            f'(following_user_file_path:{args.following_user_file_path})')
+            return False
+        
+        # 検証：ヘッダ行番号が0以上であること
+        if not (int(args.header_line_num) >= 0):
+            pyl.log_war(lg, f'ヘッダ行番号が0以上ではありません。' +
+                            f'(header_line_num:{args.header_line_num})')
             return False
     except Exception as e:
         raise(e)
