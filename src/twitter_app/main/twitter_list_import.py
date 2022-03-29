@@ -18,7 +18,7 @@ def main() -> int:
     Summary:
         コマンドラインから実行する。
         
-        引数を検証して問題ない場合、指定したCSVファイルをリストとしてTwitterにインポートする。
+        引数を検証して問題ない場合、指定したcsvファイルをリストとしてTwitterにインポートする。
     
     Args:
         -
@@ -72,7 +72,7 @@ def __get_args() -> argparse.Namespace:
     try:
         parser: pyl.CustomArgumentParser = pyl.CustomArgumentParser(
                 description='Twitterリストインポート\n' +
-                            '指定したCSVファイルをリストとしてTwitterにインポートします',
+                            '指定したcsvファイルをリストとしてTwitterにインポートします',
                 formatter_class=argparse.RawTextHelpFormatter,
                 exit_on_error=True
             )
@@ -80,7 +80,7 @@ def __get_args() -> argparse.Namespace:
         help_msg: str = ''
         
         # 任意の引数
-        help_msg =  '[任意] リストメンバーファイルパス (デフォルト：%(default)s)\n' + \
+        help_msg =  '[任意] リストメンバーファイルパス (csvファイル) (デフォルト：%(default)s)\n' + \
                     'ワイルドカード可'
         parser.add_argument(
             '-l', '--list_member_file_path', type=str, default='input/*.csv', help=help_msg)
@@ -105,11 +105,11 @@ def __validate_args(args: argparse.Namespace) -> bool:
         # ロガーの取得
         lg = pyl.get_logger(__name__)
         
-        # 検証：リストメンバーファイルパスがCSVファイルのパスであること
+        # 検証：リストメンバーファイルパスがcsvファイルのパスであること
         list_member_file_path_and_ext: tuple[str, str] = \
             os.path.splitext(args.list_member_file_path)
         if not (list_member_file_path_and_ext[1] == '.csv'):
-            pyl.log_war(lg, f'リストメンバーファイルパスがCSVファイルのパスではありません。' +
+            pyl.log_war(lg, f'リストメンバーファイルパスがcsvファイルのパスではありません。' +
                             f'(list_member_file_path:{args.list_member_file_path})')
             return False
         
