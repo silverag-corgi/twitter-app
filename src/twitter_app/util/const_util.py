@@ -3,10 +3,10 @@ from typing import Final
 TWITTER_API_AUTH_INFO_FILE_PATH: Final[str] = \
     'config/twitter_api_auth_info.json'
 
-FOLLOWEE_LIST_NAME: Final[str] = \
-    'followee_{0}_{1}'
-FOLLOWER_LIST_NAME: Final[str] = \
-    'follower_{0}_{1}'
+FOLLOWEE_FILE_PATH: Final[str] = \
+    './dest/followee/{0}_{1}.csv'
+FOLLOWER_FILE_PATH: Final[str] = \
+    './dest/follower/{0}_{1}.csv'
 
 LIST_MEMBER_FILE_PATH: Final[str] = \
     './dest/list_member/{0}.csv'
