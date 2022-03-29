@@ -2,10 +2,12 @@ from enum import IntEnum, auto
 from logging import Logger
 from typing import Optional
 
+import pandas as pd
 import python_lib_for_me as pyl
 import tweepy
 from tweepy.models import ResultSet
 
+from twitter_app.util import const_util, pandas_util
 from twitter_app.util.twitter_api_v1_1.standard import twitter_tweets_util, twitter_users_util
 
 
@@ -13,6 +15,7 @@ class EnumOfItemProcTarget(IntEnum):
     USER_ID = auto()
     LIST_ID = auto()
     LIST_NAME = auto()
+    FILE_PATH = auto()
 
 
 def do_logic(
@@ -20,6 +23,7 @@ def do_logic(
         enum_of_item_proc_target: EnumOfItemProcTarget,
         item: str,
         keyword_of_csv_format: str,
+        header_line_num: int
     ) -> None:
     
     lg: Optional[Logger] = None
@@ -48,6 +52,12 @@ def do_logic(
                 if list_.name == item:
                     user_pages = twitter_users_util.get_list_member_pages(api, list_id=list_.id)
                     break
+        elif enum_of_item_proc_target == EnumOfItemProcTarget.FILE_PATH:
+            # 指定したファイルに記載されているユーザのツイートを配信する場合
+            list_member_df: pd.DataFrame = pandas_util.read_list_member_file(item, header_line_num)
+            user_ids: list[str] = [str(list_member[const_util.LIST_MEMBER_HEADER[0]])
+                                    for _, list_member in list_member_df.iterrows()]
+            user_pages = twitter_users_util.lookup_users(api, user_ids)
         
         # フォローユーザIDの生成
         following_user_ids: list[str] = \
