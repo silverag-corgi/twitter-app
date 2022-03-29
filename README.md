@@ -47,7 +47,7 @@ TwitterAPIを利用したアプリケーション。
 アプリケーションとしてコマンドラインから実行できる。
 
 - Twitterリストインポート
-  - 指定したCSVファイルをリストとしてTwitterにインポートする
+  - 指定したcsvファイルをリストとしてTwitterにインポートする
 - Twitterリスト表示
   - 指定したリストを表示する
 - Twitterリストエクスポート
@@ -209,7 +209,7 @@ C:\Git\python\twitter-app\.venv
 1. リストメンバーサンプルファイル`input/list_member.csv.sample`をコピペする
 2. 拡張子`.sample`を削除する
 3. 作成したいリスト名にリネームする
-4. CSV形式でリストに追加したいユーザ(ユーザID、ユーザ名)を記入する
+4. csv形式でリストに追加したいユーザ(ユーザID、ユーザ名)を記入する
 
 リストメンバーサンプルファイル：
 ```cmd
@@ -243,7 +243,7 @@ googlemaps,Google Maps
 usage: list-imp [-h] [-l LIST_MEMBER_FILE_PATH] [-hd HEADER_LINE_NUM]
 
 Twitterリストインポート
-指定したCSVファイルをリストとしてTwitterにインポートします
+指定したcsvファイルをリストとしてTwitterにインポートします
 
 options:
   -h, --help            show this help message and exit
