@@ -25,8 +25,8 @@ def main() -> int:
         -
     
     Args on cmd line:
-        resource_family (str)   : [必須] リソース群
-        endpoint (str)          : [必須] エンドポイント
+        resource_family (str)   : [グループA][必須] リソース群
+        endpoint (str)          : [グループA][必須] エンドポイント
     
     Returns:
         int: 終了コード(0：正常、1：異常)
@@ -74,19 +74,20 @@ def __get_args() -> argparse.Namespace:
                 exit_on_error=True
             )
         
-        help_msg: str = ''
+        help_: str = ''
         
-        # グループAの引数
+        # グループAの引数(全て必須な引数)
         arg_group_a: argparse._ArgumentGroup = parser.add_argument_group(
-            'positional arguments in this group',
+            'Group A - all required arguments',
+            '全て必須な引数\n' +
             '表示するレート制限を指定します\n' +
             '両方とも空文字の場合は全てのレート制限を表示します')
-        help_msg =  '[必須] リソース群\n' + \
-                    '例：application'
-        arg_group_a.add_argument('resource_family', type=str, help=help_msg)
-        help_msg =  '[必須] エンドポイント\n' + \
-                    '例：/application/rate_limit_status'
-        arg_group_a.add_argument('endpoint', type=str, help=help_msg)
+        help_ = 'リソース群\n' + \
+                '例：friends'
+        arg_group_a.add_argument('resource_family', type=str, help=help_)
+        help_ = 'エンドポイント\n' + \
+                '例：/friends/list'
+        arg_group_a.add_argument('endpoint', type=str, help=help_)
         
         args: argparse.Namespace = parser.parse_args()
     except Exception as e:
