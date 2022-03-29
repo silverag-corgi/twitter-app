@@ -25,9 +25,9 @@ def main() -> int:
         -
     
     Args on cmd line:
-        all_list (bool)     : [グループAで1つのみ必須] 全てのリスト
-        list_id (str)       : [グループAで1つのみ必須] リストID(csv形式)
-        list_name (str)     : [グループAで1つのみ必須] リスト名(csv形式)
+        all_list (bool) : [グループB][1つのみ必須] 全てのリスト
+        list_id (str)   : [グループB][1つのみ必須] リストID(csv形式)
+        list_name (str) : [グループB][1つのみ必須] リスト名(csv形式)
     
     Returns:
         int: 終了コード(0：正常、1：異常)
@@ -99,28 +99,27 @@ def __get_args() -> argparse.Namespace:
                 exit_on_error=True
             )
         
-        help_msg: str = ''
+        help_: str = ''
         
-        # グループAの引数
+        # グループBの引数(1つのみ必須な引数)
         arg_group_b: argparse._ArgumentGroup = parser.add_argument_group(
-            'options in this group', '処理対象のリストを指定します')
+            'Group B - only one required arguments',
+            '1つのみ必須な引数\n処理対象のリストを指定します')
         mutually_exclusive_group_b: argparse._MutuallyExclusiveGroup = \
             arg_group_b.add_mutually_exclusive_group(required=True)
-        help_msg =  '[1つのみ必須] {0}\n{1}'
+        help_ = '{0}\n{1}'
         mutually_exclusive_group_b.add_argument(
             '-all', '--all_list',
             action='store_true',
-            help=help_msg.format('全てのリスト', ''))
+            help=help_.format('全てのリスト', ''))
         mutually_exclusive_group_b.add_argument(
             '-id', '--list_id',
             type=str,
-            help=help_msg.format(
-                'リストID(csv形式)', '例："0123456789111111111, 0123456789222222222"'))
+            help=help_.format('リストID(csv形式)', '例："0123456789111111111, 0123456789222222222"'))
         mutually_exclusive_group_b.add_argument(
             '-name', '--list_name',
             type=str,
-            help=help_msg.format(
-                'リスト名(csv形式)', '例："Google関連アカウント, Microsoft関連アカウント"'))
+            help=help_.format('リスト名(csv形式)', '例："Google関連, Microsoft関連"'))
         
         args: argparse.Namespace = parser.parse_args()
     except Exception as e:
@@ -138,7 +137,7 @@ def __validate_args(args: argparse.Namespace) -> bool:
         # ロガーの取得
         lg = pyl.get_logger(__name__)
         
-        # 検証：グループAの引数が指定された場合は1文字以上であること
+        # 検証：グループBの引数が指定された場合は1文字以上であること
         if args.list_id is not None \
             and not (len(args.list_id) >= 1):
             pyl.log_war(lg, f'リストIDが1文字以上ではありません。' +

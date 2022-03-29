@@ -24,10 +24,10 @@ def main() -> int:
         -
     
     Args on cmd line:
-        user_id (str)           : [必須] ユーザID
-        followee (bool)         : [グループAで1つのみ必須] フォロイー
-        follower (bool)         : [グループAで1つのみ必須] フォロワー
-        num_of_followxxs (int)  : [任意] フォロイー(フォロワー)数
+        user_id (str)           : [グループA][必須] ユーザID
+        followee (bool)         : [グループB][1つのみ必須] フォロイー
+        follower (bool)         : [グループB][1つのみ必須] フォロワー
+        num_of_followxxs (int)  : [グループC][任意] フォロイー(フォロワー)数
     
     Returns:
         int: 終了コード(0：正常、1：異常)
@@ -94,31 +94,37 @@ def __get_args() -> argparse.Namespace:
                 exit_on_error=True
             )
         
-        # 必須の引数
-        help_msg = '[必須] ユーザID'
-        parser.add_argument('user_id', help=help_msg)
+        help_: str = ''
         
-        # グループAの引数
+        # グループAの引数(全て必須な引数)
         arg_group_a: argparse._ArgumentGroup = parser.add_argument_group(
-            'options in this group', '処理対象の項目を指定します')
-        mutually_exclusive_group_a: argparse._MutuallyExclusiveGroup = \
-            arg_group_a.add_mutually_exclusive_group(required=True)
-        help_msg =  '[1つのみ必須] {0}\n' + \
-                    '{1}をエクスポートします'
-        mutually_exclusive_group_a.add_argument(
+            'Group A - all required arguments', '全て必須な引数')
+        help_ = 'ユーザID'
+        arg_group_a.add_argument('user_id', help=help_)
+        
+        # グループBの引数(1つのみ必須な引数)
+        arg_group_b: argparse._ArgumentGroup = parser.add_argument_group(
+            'Group B - only one required arguments',
+            '1つのみ必須な引数\n処理対象の項目を指定します')
+        mutually_exclusive_group_b: argparse._MutuallyExclusiveGroup = \
+            arg_group_b.add_mutually_exclusive_group(required=True)
+        help_ = '{0}\n{1}をエクスポートします'
+        mutually_exclusive_group_b.add_argument(
             '-e', '--followee',
             action='store_true',
-            help=help_msg.format('フォロイー', 'フォロイー(指定したユーザがフォローしているユーザ)'))
-        mutually_exclusive_group_a.add_argument(
+            help=help_.format('フォロイー', 'フォロイー(指定したユーザがフォローしているユーザ)'))
+        mutually_exclusive_group_b.add_argument(
             '-r', '--follower',
             action='store_true',
-            help=help_msg.format('フォロワー', 'フォロワー(指定したユーザをフォローしているユーザ)'))
+            help=help_.format('フォロワー', 'フォロワー(指定したユーザをフォローしているユーザ)'))
         
-        # 任意の引数
-        help_msg =  '[任意] フォロイー(フォロワー)数 (デフォルト：%(default)s)\n' + \
-                    'エクスポートしたいフォロイー(フォロワー)の人数\n' + \
-                    '3000人を超過した場合はレート制限により3000人ごとに15分の待機時間が発生します'
-        parser.add_argument('-f', '--num_of_followxxs', type=int, default=3000, help=help_msg)
+        # グループCの引数(任意の引数)
+        arg_group_c: argparse._ArgumentGroup = parser.add_argument_group(
+            'Group C - optional arguments', '任意の引数')
+        help_ = 'フォロイー(フォロワー)数 (デフォルト：%(default)s)\n' + \
+                'エクスポートしたいフォロイー(フォロワー)の人数\n' + \
+                '3000人を超過した場合はレート制限により3000人ごとに15分の待機時間が発生します'
+        arg_group_c.add_argument('-f', '--num_of_followxxs', type=int, default=3000, help=help_)
         
         args: argparse.Namespace = parser.parse_args()
     except Exception as e:

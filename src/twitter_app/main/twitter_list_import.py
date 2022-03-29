@@ -24,8 +24,8 @@ def main() -> int:
         -
     
     Args on cmd line:
-        list_member_file_path (str) : [任意] リストメンバーファイルパス
-        header_line_num (int)       : [任意] ヘッダ行番号
+        list_member_file_path (str) : [グループC][任意] リストメンバーファイルパス
+        header_line_num (int)       : [グループC][任意] ヘッダ行番号
     
     Returns:
         int: 終了コード(0：正常、1：異常)
@@ -77,17 +77,19 @@ def __get_args() -> argparse.Namespace:
                 exit_on_error=True
             )
         
-        help_msg: str = ''
+        help_: str = ''
         
-        # 任意の引数
-        help_msg =  '[任意] リストメンバーファイルパス (csvファイル) (デフォルト：%(default)s)\n' + \
-                    'ワイルドカード可'
-        parser.add_argument(
-            '-l', '--list_member_file_path', type=str, default='input/*.csv', help=help_msg)
-        help_msg =  '[任意] ヘッダ行番号 (デフォルト：%(default)s)\n' + \
-                    '0：ヘッダなし、1~：ヘッダとなるファイルの行番号'
-        parser.add_argument(
-            '-hd', '--header_line_num', type=int, default='1', help=help_msg)
+        # グループCの引数(任意の引数)
+        arg_group_c: argparse._ArgumentGroup = parser.add_argument_group(
+            'Group C - optional arguments', '任意の引数')
+        help_ = 'リストメンバーファイルパス (csvファイル) (デフォルト：%(default)s)\n' + \
+                'ワイルドカード可'
+        arg_group_c.add_argument(
+            '-l', '--list_member_file_path', type=str, default='input/*.csv', help=help_)
+        help_ = 'ヘッダ行番号 (デフォルト：%(default)s)\n' + \
+                '0：ヘッダなし、1~：ヘッダとなるファイルの行番号'
+        arg_group_c.add_argument(
+            '-hd', '--header_line_num', type=int, default='1', help=help_)
         
         args: argparse.Namespace = parser.parse_args()
     except Exception as e:

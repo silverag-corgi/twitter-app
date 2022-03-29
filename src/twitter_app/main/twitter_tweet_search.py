@@ -24,8 +24,8 @@ def main() -> int:
         -
     
     Args on cmd line:
-        query (str)             : [必須] クエリ
-        num_of_tweets (int)     : [任意] ツイート数(デフォルト：18000)
+        query (str)             : [グループA][必須] クエリ
+        num_of_tweets (int)     : [グループC][任意] ツイート数(デフォルト：18000)
     
     Returns:
         int: 終了コード(0：正常、1：異常)
@@ -76,18 +76,22 @@ def __get_args() -> argparse.Namespace:
                 exit_on_error=True
             )
         
-        help_msg: str = ''
+        help_: str = ''
         
-        # 必須の引数
-        help_msg =  '[必須] クエリ\n' + \
-                    'RTと返信はデフォルトで除外します'
-        parser.add_argument('query', help=help_msg)
+        # グループAの引数(全て必須な引数)
+        arg_group_a: argparse._ArgumentGroup = parser.add_argument_group(
+            'Group A - all required arguments', '全て必須な引数')
+        help_ = 'クエリ\n' + \
+                'RTと返信はデフォルトで除外します'
+        arg_group_a.add_argument('query', help=help_)
         
-        # 任意の引数
-        help_msg =  '[任意] ツイート数 (デフォルト：%(default)s)\n' + \
-                    '表示したいツイートの数\n' + \
-                    '18000件を超過した場合はレート制限により18000件ごとに15分の待機時間が発生します'
-        parser.add_argument('-t', '--num_of_tweets', type=int, default=100, help=help_msg)
+        # グループCの引数(任意の引数)
+        arg_group_c: argparse._ArgumentGroup = parser.add_argument_group(
+            'Group C - optional arguments', '任意の引数')
+        help_ = 'ツイート数 (デフォルト：%(default)s)\n' + \
+                '表示したいツイートの数\n' + \
+                '18000件を超過した場合はレート制限により18000件ごとに15分の待機時間が発生します'
+        arg_group_c.add_argument('-t', '--num_of_tweets', type=int, default=100, help=help_)
         
         args: argparse.Namespace = parser.parse_args()
     except Exception as e:

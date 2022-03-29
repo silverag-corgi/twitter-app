@@ -24,12 +24,12 @@ def main() -> int:
         -
     
     Args on cmd line:
-        user_id_for_followees (str)     : [グループAで1つのみ必須] ユーザID(フォロイー用)
-        list_id (str)                   : [グループAで1つのみ必須] リストID
-        list_name (str)                 : [グループAで1つのみ必須] リスト名
-        following_user_file_path (str)  : [グループAで1つのみ必須] フォローユーザファイルパス
-        keyword_of_csv_format (str)     : [任意] キーワード(csv形式)
-        header_line_num (int)           : [任意] ヘッダ行番号
+        user_id_for_followees (str)     : [グループB][1つのみ必須] ユーザID(フォロイー用)
+        list_id (str)                   : [グループB][1つのみ必須] リストID
+        list_name (str)                 : [グループB][1つのみ必須] リスト名
+        following_user_file_path (str)  : [グループB][1つのみ必須] フォローユーザファイルパス
+        keyword_of_csv_format (str)     : [グループC][任意] キーワード(csv形式)
+        header_line_num (int)           : [グループC][任意] ヘッダ行番号
     
     Returns:
         int: 終了コード(0：正常、1：異常)
@@ -108,46 +108,49 @@ def __get_args() -> argparse.Namespace:
                 exit_on_error=True
             )
         
-        help_msg: str = ''
+        help_: str = ''
         
-        # グループAの引数
-        arg_group_a: argparse._ArgumentGroup = parser.add_argument_group(
-            'options in this group', '処理対象の項目を指定します')
+        # グループBの引数(1つのみ必須な引数)
+        arg_group_b: argparse._ArgumentGroup = parser.add_argument_group(
+            'Group B - only one required arguments',
+            '1つのみ必須な引数\n処理対象の項目を指定します')
         mutually_exclusive_group_a: argparse._MutuallyExclusiveGroup = \
-            arg_group_a.add_mutually_exclusive_group(required=True)
-        help_msg =  '[1つのみ必須] {0}\n{1}'
+            arg_group_b.add_mutually_exclusive_group(required=True)
+        help_ = '{0}\n{1}'
         mutually_exclusive_group_a.add_argument(
             '-ui', '--user_id_for_followees',
             type=str,
-            help=help_msg.format(
+            help=help_.format(
                 'ユーザID(フォロイー用)', '指定したユーザIDのフォロイーのツイートを配信する'))
         mutually_exclusive_group_a.add_argument(
             '-li', '--list_id',
             type=str,
-            help=help_msg.format(
+            help=help_.format(
                 'リストID', '指定したリストIDのツイートを配信する'))
         mutually_exclusive_group_a.add_argument(
             '-ln', '--list_name',
             type=str,
-            help=help_msg.format(
+            help=help_.format(
                 'リスト名', '指定したリスト名のツイートを配信する'))
         mutually_exclusive_group_a.add_argument(
             '-fp', '--following_user_file_path',
             type=str,
-            help=help_msg.format(
+            help=help_.format(
                 'フォローユーザファイルパス (csvファイル)',
                 '指定したファイルに記載されているユーザのツイートを配信する'))
         
-        # 任意の引数
-        help_msg =  '[任意] キーワード(csv形式)\n' + \
-                    '例："Google Docs, Google Drive"\n' + \
-                    'スペースはAND検索(Google AND Docs)\n' + \
-                    'カンマはOR検索(Google Docs OR Google Drive)'
-        parser.add_argument('-k', '--keyword_of_csv_format', type=str, default='', help=help_msg)
-        help_msg =  '[任意] ヘッダ行番号 (デフォルト：%(default)s)\n' + \
-                    'フォローユーザファイルパスのヘッダ行番号\n' + \
-                    '0：ヘッダなし、1~：ヘッダとなるファイルの行番号'
-        parser.add_argument('-hd', '--header_line_num', type=int, default='1', help=help_msg)
+        # グループCの引数(任意の引数)
+        arg_group_c: argparse._ArgumentGroup = parser.add_argument_group(
+            'Group C - optional arguments', '任意の引数')
+        help_ = 'キーワード(csv形式)\n' + \
+                '例："Google Docs, Google Drive"\n' + \
+                'スペースはAND検索(Google AND Docs)\n' + \
+                'カンマはOR検索(Google Docs OR Google Drive)'
+        arg_group_c.add_argument('-k', '--keyword_of_csv_format', type=str, default='', help=help_)
+        help_ = 'ヘッダ行番号 (デフォルト：%(default)s)\n' + \
+                'フォローユーザファイルパスのヘッダ行番号\n' + \
+                '0：ヘッダなし、1~：ヘッダとなるファイルの行番号'
+        arg_group_c.add_argument('-hd', '--header_line_num', type=int, default='1', help=help_)
         
         args: argparse.Namespace = parser.parse_args()
     except Exception as e:
