@@ -18,19 +18,23 @@ def main() -> int:
     Summary:
         コマンドラインから実行する。
         
-        引数を検証して問題ない場合、指定したユーザのフォロイー(フォロワー)のリストを生成する。
+        引数を検証して問題ない場合、指定したユーザのフォロイー(フォロワー)をエクスポートする。
     
     Args:
         -
     
     Args on cmd line:
-        user_id (str)                   : [必須] ユーザID
-        generate_followee_list (bool)   : [グループAで1つのみ必須] フォロイーリスト生成
-        generate_follower_list (bool)   : [グループAで1つのみ必須] フォロワーリスト生成
-        num_of_followxxs (int)          : [任意] フォロイー(フォロワー)数
+        user_id (str)           : [必須] ユーザID
+        followee (bool)         : [グループAで1つのみ必須] フォロイー
+        follower (bool)         : [グループAで1つのみ必須] フォロワー
+        num_of_followxxs (int)  : [任意] フォロイー(フォロワー)数
     
     Returns:
         int: 終了コード(0：正常、1：異常)
+    
+    Destinations:
+        フォロイーファイル: ./dest/followee/[ユーザID].csv
+        フォロワーファイル: ./dest/follower/[ユーザID].csv
     '''
     
     lg: Optional[Logger] = None
@@ -51,22 +55,22 @@ def main() -> int:
         # ロジック(TwitterAPI認証)の実行
         api: tweepy.API = twitter_api_auth.do_logic_that_generate_api_by_oauth_1_user()
         
-        # ロジック(Twitterフォロイー(フォロワー)リスト生成)の実行
-        if bool(args.generate_followee_list) == True:
-            # ロジック(Twitterフォロイーリスト生成)の実行
+        # ロジック(Twitterフォロイー(フォロワー)エクスポート)の実行
+        if bool(args.followee) == True:
+            # ロジック(Twitterフォロイーエクスポート)の実行
             twitter_followxx_export.do_logic(
                     api,
                     args.user_id,
                     args.num_of_followxxs,
-                    twitter_followxx_export.EnumOfFollowxxList.FOLLOWEE_LIST
+                    twitter_followxx_export.EnumOfItemProcTarget.FOLLOWEE
                 )
-        elif bool(args.generate_follower_list) == True:
-            # ロジック(Twitterフォロワーリスト生成)の実行
+        elif bool(args.follower) == True:
+            # ロジック(Twitterフォロワーエクスポート)の実行
             twitter_followxx_export.do_logic(
                     api,
                     args.user_id,
                     args.num_of_followxxs,
-                    twitter_followxx_export.EnumOfFollowxxList.FOLLOWER_LIST
+                    twitter_followxx_export.EnumOfItemProcTarget.FOLLOWER
                 )
     except KeyboardInterrupt as e:
         if lg is not None:
@@ -84,8 +88,8 @@ def __get_args() -> argparse.Namespace:
     
     try:
         parser: pyl.CustomArgumentParser = pyl.CustomArgumentParser(
-                description='Twitterフォロイー(フォロワー)リスト生成\n' +
-                            '指定したユーザのフォロイー(フォロワー)のリストを生成します',
+                description='Twitterフォロイー(フォロワー)エクスポート\n' +
+                            '指定したユーザのフォロイー(フォロワー)をエクスポートします',
                 formatter_class=argparse.RawTextHelpFormatter,
                 exit_on_error=True
             )
@@ -96,23 +100,23 @@ def __get_args() -> argparse.Namespace:
         
         # グループAの引数
         arg_group_a: argparse._ArgumentGroup = parser.add_argument_group(
-            'options in this group', '実行する処理を指定します')
+            'options in this group', '処理対象の項目を指定します')
         mutually_exclusive_group_a: argparse._MutuallyExclusiveGroup = \
             arg_group_a.add_mutually_exclusive_group(required=True)
         help_msg =  '[1つのみ必須] {0}\n' + \
-                    '指定した場合は{1}のリストを生成します'
+                    '{1}をエクスポートします'
         mutually_exclusive_group_a.add_argument(
-            '-followee', '--generate_followee_list',
+            '-e', '--followee',
             action='store_true',
-            help=help_msg.format('フォロイーリスト生成', 'フォロイー'))
+            help=help_msg.format('フォロイー', 'フォロイー(指定したユーザがフォローしているユーザ)'))
         mutually_exclusive_group_a.add_argument(
-            '-follower', '--generate_follower_list',
+            '-r', '--follower',
             action='store_true',
-            help=help_msg.format('フォロワーリスト生成', 'フォロワー'))
+            help=help_msg.format('フォロワー', 'フォロワー(指定したユーザをフォローしているユーザ)'))
         
         # 任意の引数
         help_msg =  '[任意] フォロイー(フォロワー)数 (デフォルト：%(default)s)\n' + \
-                    'リストに追加したいフォロイー(フォロワー)の人数\n' + \
+                    'エクスポートしたいフォロイー(フォロワー)の人数\n' + \
                     '3000人を超過した場合はレート制限により3000人ごとに15分の待機時間が発生します'
         parser.add_argument('-f', '--num_of_followxxs', type=int, default=3000, help=help_msg)
         
