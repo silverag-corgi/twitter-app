@@ -247,11 +247,15 @@ Twitterリストインポート
 
 options:
   -h, --help            show this help message and exit
+
+Group C - optional arguments:
+  任意の引数
+
   -l LIST_MEMBER_FILE_PATH, --list_member_file_path LIST_MEMBER_FILE_PATH
-                        [任意] リストメンバーファイルパス (デフォルト：input/*.csv)
+                        リストメンバーファイルパス (csvファイル) (デフォルト：input/*.csv)
                         ワイルドカード可
   -hd HEADER_LINE_NUM, --header_line_num HEADER_LINE_NUM
-                        [任意] ヘッダ行番号 (デフォルト：1)
+                        ヘッダ行番号 (デフォルト：1)
                         0：ヘッダなし、1~：ヘッダとなるファイルの行番号
 ```
 
@@ -281,16 +285,17 @@ Twitterリスト表示
 options:
   -h, --help            show this help message and exit
 
-options in this group:
+Group B - only one required arguments:
+  1つのみ必須な引数
   処理対象のリストを指定します
 
-  -all, --all_list      [1つのみ必須] 全てのリスト
+  -all, --all_list      全てのリスト
   -id LIST_ID, --list_id LIST_ID
-                        [1つのみ必須] リストID(csv形式)
+                        リストID(csv形式)
                         例："0123456789111111111, 0123456789222222222"
   -name LIST_NAME, --list_name LIST_NAME
-                        [1つのみ必須] リスト名(csv形式)
-                        例："Google関連アカウント, Microsoft関連アカウント"
+                        リスト名(csv形式)
+                        例："Google関連, Microsoft関連"
 ```
 
 
@@ -319,16 +324,17 @@ Twitterリストエクスポート
 options:
   -h, --help            show this help message and exit
 
-options in this group:
+Group B - only one required arguments:
+  1つのみ必須な引数
   処理対象のリストを指定します
 
-  -all, --all_list      [1つのみ必須] 全てのリスト
+  -all, --all_list      全てのリスト
   -id LIST_ID, --list_id LIST_ID
-                        [1つのみ必須] リストID(csv形式)
+                        リストID(csv形式)
                         例："0123456789111111111, 0123456789222222222"
   -name LIST_NAME, --list_name LIST_NAME
-                        [1つのみ必須] リスト名(csv形式)
-                        例："Google関連アカウント, Microsoft関連アカウント"
+                        リスト名(csv形式)
+                        例："Google関連, Microsoft関連"
 ```
 
 
@@ -354,23 +360,30 @@ usage: followxx-exp [-h] (-e | -r) [-f NUM_OF_FOLLOWXXS] user_id
 Twitterフォロイー(フォロワー)エクスポート
 指定したユーザのフォロイー(フォロワー)をエクスポートします
 
-positional arguments:
-  user_id               [必須] ユーザID
-
 options:
   -h, --help            show this help message and exit
-  -f NUM_OF_FOLLOWXXS, --num_of_followxxs NUM_OF_FOLLOWXXS
-                        [任意] フォロイー(フォロワー)数 (デフォルト：3000)
-                        エクスポートしたいフォロイー(フォロワー)の人数
-                        3000人を超過した場合はレート制限により3000人ごとに15分の待機時間が発生します
 
-options in this group:
+Group A - all required arguments:
+  全て必須な引数
+
+  user_id               ユーザID
+
+Group B - only one required arguments:
+  1つのみ必須な引数
   処理対象の項目を指定します
 
-  -e, --followee        [1つのみ必須] フォロイー
+  -e, --followee        フォロイー
                         フォロイー(指定したユーザがフォローしているユーザ)をエクスポートします
-  -r, --follower        [1つのみ必須] フォロワー
+  -r, --follower        フォロワー
                         フォロワー(指定したユーザをフォローしているユーザ)をエクスポートします
+
+Group C - optional arguments:
+  任意の引数
+
+  -f NUM_OF_FOLLOWXXS, --num_of_followxxs NUM_OF_FOLLOWXXS
+                        フォロイー(フォロワー)数 (デフォルト：3000)
+                        エクスポートしたいフォロイー(フォロワー)の人数
+                        3000人を超過した場合はレート制限により3000人ごとに15分の待機時間が発生します
 ```
 
 
@@ -396,14 +409,20 @@ usage: tweet-search [-h] [-t NUM_OF_TWEETS] query
 Twitterツイート検索
 指定したクエリでツイートを検索し、ツイート検索結果ファイルを生成します
 
-positional arguments:
-  query                 [必須] クエリ
-                        RTと返信はデフォルトで除外します
-
 options:
   -h, --help            show this help message and exit
+
+Group A - all required arguments:
+  全て必須な引数
+
+  query                 クエリ
+                        RTと返信はデフォルトで除外します
+
+Group C - optional arguments:
+  任意の引数
+
   -t NUM_OF_TWEETS, --num_of_tweets NUM_OF_TWEETS
-                        [任意] ツイート数 (デフォルト：100)
+                        ツイート数 (デフォルト：100)
                         表示したいツイートの数
                         18000件を超過した場合はレート制限により18000件ごとに15分の待機時間が発生します
 ```
@@ -433,31 +452,36 @@ Twitterツイート配信
 
 options:
   -h, --help            show this help message and exit
+
+Group B - only one required arguments:
+  1つのみ必須な引数
+  処理対象の項目を指定します
+
+  -ui USER_ID_FOR_FOLLOWEES, --user_id_for_followees USER_ID_FOR_FOLLOWEES
+                        ユーザID(フォロイー用)
+                        指定したユーザIDのフォロイーのツイートを配信する
+  -li LIST_ID, --list_id LIST_ID
+                        リストID
+                        指定したリストIDのツイートを配信する
+  -ln LIST_NAME, --list_name LIST_NAME
+                        リスト名
+                        指定したリスト名のツイートを配信する
+  -fp FOLLOWING_USER_FILE_PATH, --following_user_file_path FOLLOWING_USER_FILE_PATH
+                        フォローユーザファイルパス (csvファイル)
+                        指定したファイルに記載されているユーザのツイートを配信する
+
+Group C - optional arguments:
+  任意の引数
+
   -k KEYWORD_OF_CSV_FORMAT, --keyword_of_csv_format KEYWORD_OF_CSV_FORMAT
-                        [任意] キーワード(csv形式)
+                        キーワード(csv形式)
                         例："Google Docs, Google Drive"
                         スペースはAND検索(Google AND Docs)
                         カンマはOR検索(Google Docs OR Google Drive)
   -hd HEADER_LINE_NUM, --header_line_num HEADER_LINE_NUM
-                        [任意] ヘッダ行番号 (デフォルト：1)
+                        ヘッダ行番号 (デフォルト：1)
                         フォローユーザファイルパスのヘッダ行番号
                         0：ヘッダなし、1~：ヘッダとなるファイルの行番号
-
-options in this group:
-  処理対象の項目を指定します
-
-  -ui USER_ID_FOR_FOLLOWEES, --user_id_for_followees USER_ID_FOR_FOLLOWEES
-                        [1つのみ必須] ユーザID(フォロイー用)
-                        指定したユーザIDのフォロイーのツイートを配信する
-  -li LIST_ID, --list_id LIST_ID
-                        [1つのみ必須] リストID
-                        指定したリストIDのツイートを配信する
-  -ln LIST_NAME, --list_name LIST_NAME
-                        [1つのみ必須] リスト名
-                        指定したリスト名のツイートを配信する
-  -fp FOLLOWING_USER_FILE_PATH, --following_user_file_path FOLLOWING_USER_FILE_PATH
-                        [1つのみ必須] フォローユーザファイルパス (csvファイル)
-                        指定したファイルに記載されているユーザのツイートを配信する
 ```
 
 
@@ -486,14 +510,15 @@ Twitterレート制限表示
 options:
   -h, --help       show this help message and exit
 
-positional arguments in this group:
+Group A - all required arguments:
+  全て必須な引数
   表示するレート制限を指定します
   両方とも空文字の場合は全てのレート制限を表示します
 
-  resource_family  [必須] リソース群
-                   例：application
-  endpoint         [必須] エンドポイント
-                   例：/application/rate_limit_status
+  resource_family  リソース群
+                   例：friends
+  endpoint         エンドポイント
+                   例：/friends/list
 ```
 
 
@@ -528,6 +553,7 @@ options:
 
 ```cmd
 > poetry run list-imp     -h
+> poetry run list-show    -h
 > poetry run list-exp     -h
 > poetry run followxx-exp -h
 > poetry run tweet-search -h
