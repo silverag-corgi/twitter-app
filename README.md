@@ -22,7 +22,7 @@
     - [6.2.1. プログラムの実行](#621-プログラムの実行)
   - [6.3. Twitterリストエクスポート](#63-twitterリストエクスポート)
     - [6.3.1. プログラムの実行](#631-プログラムの実行)
-  - [6.4. Twitterフォロイー(フォロワー)リスト生成](#64-twitterフォロイーフォロワーリスト生成)
+  - [6.4. Twitterフォロイー(フォロワー)エクスポート](#64-twitterフォロイーフォロワーエクスポート)
     - [6.4.1. プログラムの実行](#641-プログラムの実行)
   - [6.5. Twitterツイート検索](#65-twitterツイート検索)
     - [6.5.1. プログラムの実行](#651-プログラムの実行)
@@ -52,8 +52,8 @@ TwitterAPIを利用したアプリケーション。
   - 指定したリストを表示する
 - Twitterリストエクスポート
   - 指定したリストをTwitterからエクスポートする
-- Twitterフォロイー(フォロワー)リスト生成
-  - 指定したユーザのフォロイー(フォロワー)のリストを生成する
+- Twitterフォロイー(フォロワー)エクスポート
+  - 指定したユーザのフォロイー(フォロワー)をエクスポートする
 - Twitterツイート検索
   - 指定したクエリでツイートを検索し、ツイート検索結果ファイルを生成する
 - Twitterツイート配信
@@ -221,7 +221,8 @@ googlemaps,Google Maps
 ```
 
 また、後述の
-[6.3. Twitterリストエクスポート](#63-twitterリストエクスポート)
+[6.3. Twitterリストエクスポート](#63-twitterリストエクスポート)、
+[6.4. Twitterフォロイー(フォロワー)エクスポート](#64-twitterフォロイーフォロワーエクスポート)
 の出力ファイルがリストメンバーファイルであるため、入力ファイルになる。
 
 
@@ -331,7 +332,7 @@ options in this group:
 ```
 
 
-## 6.4. Twitterフォロイー(フォロワー)リスト生成
+## 6.4. Twitterフォロイー(フォロワー)エクスポート
 
 
 ### 6.4.1. プログラムの実行
@@ -341,17 +342,17 @@ options in this group:
 実行例：
 ```cmd
 > cd twitter-app
-> poetry run followxx-gen Google -followee
+> poetry run followxx-exp Google -e
 ```
 
 また、ヘルプを呼び出す時は下記コマンドを実行する。
 
 ```cmd
-> poetry run followxx-gen -h
-usage: followxx-gen [-h] (-followee | -follower) [-f NUM_OF_FOLLOWXXS] user_id
+> poetry run followxx-exp -h
+usage: followxx-exp [-h] (-e | -r) [-f NUM_OF_FOLLOWXXS] user_id
 
-Twitterフォロイー(フォロワー)リスト生成
-指定したユーザのフォロイー(フォロワー)のリストを生成します
+Twitterフォロイー(フォロワー)エクスポート
+指定したユーザのフォロイー(フォロワー)をエクスポートします
 
 positional arguments:
   user_id               [必須] ユーザID
@@ -360,18 +361,16 @@ options:
   -h, --help            show this help message and exit
   -f NUM_OF_FOLLOWXXS, --num_of_followxxs NUM_OF_FOLLOWXXS
                         [任意] フォロイー(フォロワー)数 (デフォルト：3000)
-                        リストに追加したいフォロイー(フォロワー)の人数
+                        エクスポートしたいフォロイー(フォロワー)の人数
                         3000人を超過した場合はレート制限により3000人ごとに15分の待機時間が発生します
 
 options in this group:
-  実行する処理を指定します
+  処理対象の項目を指定します
 
-  -followee, --generate_followee_list
-                        [1つのみ必須] フォロイーリスト生成
-                        指定した場合はフォロイーのリストを生成します
-  -follower, --generate_follower_list
-                        [1つのみ必須] フォロワーリスト生成
-                        指定した場合はフォロワーのリストを生成します
+  -e, --followee        [1つのみ必須] フォロイー
+                        フォロイー(指定したユーザがフォローしているユーザ)をエクスポートします
+  -r, --follower        [1つのみ必須] フォロワー
+                        フォロワー(指定したユーザをフォローしているユーザ)をエクスポートします
 ```
 
 
@@ -523,7 +522,7 @@ options:
 ```cmd
 > poetry run list-imp     -h
 > poetry run list-exp     -h
-> poetry run followxx-gen -h
+> poetry run followxx-exp -h
 > poetry run tweet-search -h
 > poetry run limit-show   -h
 > poetry run pin-auth     -h
