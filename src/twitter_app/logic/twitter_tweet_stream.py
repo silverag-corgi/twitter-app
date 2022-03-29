@@ -1,6 +1,6 @@
 from enum import IntEnum, auto
 from logging import Logger
-from typing import Any, Optional
+from typing import Optional
 
 import python_lib_for_me as pyl
 import tweepy
@@ -43,23 +43,19 @@ def do_logic(
             user_pages = twitter_users_util.get_list_member_pages(api, list_id=item)
         elif enum_of_item_proc_target == EnumOfItemProcTarget.LIST_NAME:
             # 指定したリスト名のツイートを配信する場合
-            can_stream_by_list_name: bool = False
             lists: ResultSet = twitter_users_util.get_lists(api)
             for list_ in lists:
                 if list_.name == item:
                     user_pages = twitter_users_util.get_list_member_pages(api, list_id=list_.id)
-                    can_stream_by_list_name = True
                     break
-            if can_stream_by_list_name == False:
-                raise(pyl.CustomError(f'リスト取得に失敗しました。(list_name:{item})'))
         
         # フォローユーザIDの生成
-        following_user_ids: list[str] = [
-            user.id
-            for users_by_page in user_pages
-            for user in users_by_page]
-        auth_user_info : Any = twitter_users_util.get_auth_user_info(api)
-        following_user_ids.append(auth_user_info.id)
+        following_user_ids: list[str] = \
+            [user.id for users_by_page in user_pages for user in users_by_page]
+        if len(following_user_ids) > 0:
+            pyl.log_inf(lg, f'配信対象：{len(following_user_ids)}人')
+        else:
+            raise(pyl.CustomError(f'フォローユーザが存在しません。'))
         
         # キーワードリストの生成
         keywords: list[str] = pyl.generate_str_list_from_csv(keyword_of_csv_format)
