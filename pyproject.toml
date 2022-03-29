@@ -28,7 +28,7 @@ isort = "^5.10.1"
 mypy = "^0.931"
 
 [tool.poetry.scripts]
-followxx-gen    = "twitter_app.main.twitter_followxx_list_gen:main"
+followxx-exp    = "twitter_app.main.twitter_followxx_export:main"
 list-exp        = "twitter_app.main.twitter_list_export:main"
 list-imp        = "twitter_app.main.twitter_list_import:main"
 list-show       = "twitter_app.main.twitter_list_show:main"
