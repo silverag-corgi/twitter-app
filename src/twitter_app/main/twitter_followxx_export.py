@@ -7,7 +7,7 @@ from typing import Optional
 import python_lib_for_me as pyl
 import tweepy
 
-from twitter_app.logic import twitter_api_auth, twitter_followxx_list_gen
+from twitter_app.logic import twitter_api_auth, twitter_followxx_export
 
 
 def main() -> int:
@@ -54,19 +54,19 @@ def main() -> int:
         # ロジック(Twitterフォロイー(フォロワー)リスト生成)の実行
         if bool(args.generate_followee_list) == True:
             # ロジック(Twitterフォロイーリスト生成)の実行
-            twitter_followxx_list_gen.do_logic(
+            twitter_followxx_export.do_logic(
                     api,
                     args.user_id,
                     args.num_of_followxxs,
-                    twitter_followxx_list_gen.EnumOfFollowxxList.FOLLOWEE_LIST
+                    twitter_followxx_export.EnumOfFollowxxList.FOLLOWEE_LIST
                 )
         elif bool(args.generate_follower_list) == True:
             # ロジック(Twitterフォロワーリスト生成)の実行
-            twitter_followxx_list_gen.do_logic(
+            twitter_followxx_export.do_logic(
                     api,
                     args.user_id,
                     args.num_of_followxxs,
-                    twitter_followxx_list_gen.EnumOfFollowxxList.FOLLOWER_LIST
+                    twitter_followxx_export.EnumOfFollowxxList.FOLLOWER_LIST
                 )
     except KeyboardInterrupt as e:
         if lg is not None:
