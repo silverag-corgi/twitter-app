@@ -426,7 +426,7 @@ options:
 
 ```cmd
 > poetry run tweet-stream -h
-usage: tweet-stream [-h] (-ui USER_ID_FOR_FOLLOWEES | -li LIST_ID | -ln LIST_NAME) [-k KEYWORD_OF_CSV_FORMAT]
+usage: tweet-stream [-h] (-ui USER_ID_FOR_FOLLOWEES | -li LIST_ID | -ln LIST_NAME | -fp FOLLOWING_USER_FILE_PATH) [-k KEYWORD_OF_CSV_FORMAT] [-hd HEADER_LINE_NUM]
 
 Twitterツイート配信
 指定したキーワードのツイートを配信します
@@ -438,6 +438,10 @@ options:
                         例："Google Docs, Google Drive"
                         スペースはAND検索(Google AND Docs)
                         カンマはOR検索(Google Docs OR Google Drive)
+  -hd HEADER_LINE_NUM, --header_line_num HEADER_LINE_NUM
+                        [任意] ヘッダ行番号 (デフォルト：1)
+                        フォローユーザファイルパスのヘッダ行番号
+                        0：ヘッダなし、1~：ヘッダとなるファイルの行番号
 
 options in this group:
   処理対象の項目を指定します
@@ -451,6 +455,9 @@ options in this group:
   -ln LIST_NAME, --list_name LIST_NAME
                         [1つのみ必須] リスト名
                         指定したリスト名のツイートを配信する
+  -fp FOLLOWING_USER_FILE_PATH, --following_user_file_path FOLLOWING_USER_FILE_PATH
+                        [1つのみ必須] フォローユーザファイルパス (csvファイル)
+                        指定したファイルに記載されているユーザのツイートを配信する
 ```
 
 
@@ -524,9 +531,9 @@ options:
 > poetry run list-exp     -h
 > poetry run followxx-exp -h
 > poetry run tweet-search -h
+> poetry run tweet-stream -h
 > poetry run limit-show   -h
 > poetry run pin-auth     -h
-> poetry run tweet-stream -h
 ```
 
 
