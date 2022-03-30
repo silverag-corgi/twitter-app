@@ -23,7 +23,7 @@ def do_logic(
         enum_of_item_proc_target: EnumOfItemProcTarget,
         item: str,
         keyword_of_csv_format: str,
-        header_line_num: int
+        header_line_num: int = -1
     ) -> None:
     
     lg: Optional[Logger] = None
