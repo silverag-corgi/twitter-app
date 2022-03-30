@@ -27,9 +27,8 @@ def main() -> int:
         user_id_for_followees (str)     : [グループB][1つのみ必須] ユーザID(フォロイー用)
         list_id (str)                   : [グループB][1つのみ必須] リストID
         list_name (str)                 : [グループB][1つのみ必須] リスト名
-        following_user_file_path (str)  : [グループB][1つのみ必須] フォローユーザファイルパス
+        following_user_file_path (str)  : [グループB][1つのみ必須] フォローユーザファイルパス, ヘッダ行番号
         keyword_of_csv_format (str)     : [グループC][任意] キーワード(csv形式)
-        header_line_num (int)           : [グループC][任意] ヘッダ行番号
     
     Returns:
         int: 終了コード(0：正常、1：異常)
@@ -118,17 +117,17 @@ def __get_args() -> argparse.Namespace:
             '-ui', '--user_id_for_followees',
             type=str,
             help=help_.format(
-                'ユーザID(フォロイー用)', '指定したユーザIDのフォロイーのツイートを配信する'))
+                'ユーザID(フォロイー用)', '指定したユーザIDのフォロイーのツイートを配信します'))
         mutually_exclusive_group_a.add_argument(
             '-li', '--list_id',
             type=str,
             help=help_.format(
-                'リストID', '指定したリストIDのツイートを配信する'))
+                'リストID', '指定したリストIDのツイートを配信します'))
         mutually_exclusive_group_a.add_argument(
             '-ln', '--list_name',
             type=str,
             help=help_.format(
-                'リスト名', '指定したリスト名のツイートを配信する'))
+                'リスト名', '指定したリスト名のツイートを配信します'))
         help_ = '{0}\n{1}\n{2}\n{3}'
         mutually_exclusive_group_a.add_argument(
             '-fp', '--following_user_file_path',
@@ -136,7 +135,7 @@ def __get_args() -> argparse.Namespace:
             nargs=2,
             help=help_.format(
                 'フォローユーザファイルパス (csvファイル)',
-                '指定したファイルに記載されているユーザのツイートを配信する',
+                '指定したファイルに記載されているユーザのツイートを配信します',
                 'ヘッダ行番号',
                 '0：ヘッダなし、1~：ヘッダとなるファイルの行番号'),
             metavar=('FILE_PATH', 'HEADER_LINE_NUM'))

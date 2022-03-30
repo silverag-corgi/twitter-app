@@ -96,7 +96,7 @@ def search_tweets_in_past_7day(
         tweet_search_result_pagination: tweepy.Cursor = tweepy.Cursor(
                 api.search_tweets,
                 q=query,
-                result_type=search_result_type,
+                result_type=search_result_type.value,
                 count=num_of_data_per_request
             )
         tweet_search_result_pages = list(tweet_search_result_pagination.pages(num_of_requests))

@@ -31,7 +31,7 @@ def main() -> int:
         int: 終了コード(0：正常、1：異常)
     
     Destinations:
-        ツイート検索結果ファイル: ./dest/tweet_search_result/tweet_search_result_[クエリ].csv
+        ツイート検索結果ファイル: ./dest/tweet_search_result/[クエリ].csv
     '''
     
     lg: Optional[Logger] = None
