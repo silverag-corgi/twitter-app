@@ -459,16 +459,16 @@ Group B - only one required arguments:
 
   -ui USER_ID_FOR_FOLLOWEES, --user_id_for_followees USER_ID_FOR_FOLLOWEES
                         ユーザID(フォロイー用)
-                        指定したユーザIDのフォロイーのツイートを配信する
+                        指定したユーザIDのフォロイーのツイートを配信します
   -li LIST_ID, --list_id LIST_ID
                         リストID
-                        指定したリストIDのツイートを配信する
+                        指定したリストIDのツイートを配信します
   -ln LIST_NAME, --list_name LIST_NAME
                         リスト名
-                        指定したリスト名のツイートを配信する
+                        指定したリスト名のツイートを配信します
   -fp FILE_PATH HEADER_LINE_NUM, --following_user_file_path FILE_PATH HEADER_LINE_NUM
                         フォローユーザファイルパス (csvファイル)
-                        指定したファイルに記載されているユーザのツイートを配信する
+                        指定したファイルに記載されているユーザのツイートを配信します
                         ヘッダ行番号
                         0：ヘッダなし、1~：ヘッダとなるファイルの行番号
 
