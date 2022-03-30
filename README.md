@@ -445,7 +445,7 @@ Group C - optional arguments:
 
 ```cmd
 > poetry run tweet-stream -h
-usage: tweet-stream [-h] (-ui USER_ID_FOR_FOLLOWEES | -li LIST_ID | -ln LIST_NAME | -fp FOLLOWING_USER_FILE_PATH) [-k KEYWORD_OF_CSV_FORMAT] [-hd HEADER_LINE_NUM]
+usage: tweet-stream [-h] (-ui USER_ID_FOR_FOLLOWEES | -li LIST_ID | -ln LIST_NAME | -fp FILE_PATH HEADER_LINE_NUM) [-k KEYWORD_OF_CSV_FORMAT]
 
 Twitterツイート配信
 指定したキーワードのツイートを配信します
@@ -466,9 +466,11 @@ Group B - only one required arguments:
   -ln LIST_NAME, --list_name LIST_NAME
                         リスト名
                         指定したリスト名のツイートを配信する
-  -fp FOLLOWING_USER_FILE_PATH, --following_user_file_path FOLLOWING_USER_FILE_PATH
+  -fp FILE_PATH HEADER_LINE_NUM, --following_user_file_path FILE_PATH HEADER_LINE_NUM
                         フォローユーザファイルパス (csvファイル)
                         指定したファイルに記載されているユーザのツイートを配信する
+                        ヘッダ行番号
+                        0：ヘッダなし、1~：ヘッダとなるファイルの行番号
 
 Group C - optional arguments:
   任意の引数
@@ -478,10 +480,6 @@ Group C - optional arguments:
                         例："Google Docs, Google Drive"
                         スペースはAND検索(Google AND Docs)
                         カンマはOR検索(Google Docs OR Google Drive)
-  -hd HEADER_LINE_NUM, --header_line_num HEADER_LINE_NUM
-                        ヘッダ行番号 (デフォルト：1)
-                        フォローユーザファイルパスのヘッダ行番号
-                        0：ヘッダなし、1~：ヘッダとなるファイルの行番号
 ```
 
 
