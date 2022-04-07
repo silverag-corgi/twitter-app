@@ -11,7 +11,7 @@ from twitter_app.util import const_util
 from twitter_app.util.twitter_api_v1_1.standard import twitter_users_util
 
 
-class EnumOfListProcTarget(IntEnum):
+class EnumOfProcTargetList(IntEnum):
     ALL = auto()
     ID = auto()
     NAME = auto()
@@ -19,7 +19,7 @@ class EnumOfListProcTarget(IntEnum):
 
 def do_logic(
         api: tweepy.API,
-        enum_of_list_proc_target: EnumOfListProcTarget,
+        enum_of_proc_target_list: EnumOfProcTargetList,
         list_id_or_name_of_csv_format: str
     ) -> pd.DataFrame:
     
@@ -61,12 +61,12 @@ def do_logic(
             
             # リスト情報の格納(リスト処理対象ごと)
             list_info_df: pd.DataFrame
-            if enum_of_list_proc_target == EnumOfListProcTarget.ALL:
+            if enum_of_proc_target_list == EnumOfProcTargetList.ALL:
                 list_info_df = pd.DataFrame(
                     [[creation_datetime, list_id_by_api, list_name_by_api, num_of_members]],
                     columns=const_util.LIST_HEADER)
                 list_df = pd.concat([list_df, list_info_df], ignore_index=True)
-            elif enum_of_list_proc_target == EnumOfListProcTarget.ID:
+            elif enum_of_proc_target_list == EnumOfProcTargetList.ID:
                 # リストID(複数)(引数から)の生成
                 list_ids_by_arg: list[str] = \
                     pyl.generate_str_list_from_csv(list_id_or_name_of_csv_format)
@@ -77,7 +77,7 @@ def do_logic(
                         [[creation_datetime, list_id_by_api, list_name_by_api, num_of_members]],
                         columns=const_util.LIST_HEADER)
                     list_df = pd.concat([list_df, list_info_df], ignore_index=True)
-            elif enum_of_list_proc_target == EnumOfListProcTarget.NAME:
+            elif enum_of_proc_target_list == EnumOfProcTargetList.NAME:
                 # リスト名(複数)(引数から)の生成
                 list_names_by_arg: list[str] = \
                     pyl.generate_str_list_from_csv(list_id_or_name_of_csv_format)

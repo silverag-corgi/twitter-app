@@ -54,19 +54,19 @@ def main() -> int:
         if bool(args.all_list) == True:
             twitter_list_show.do_logic(
                     api,
-                    twitter_list_show.EnumOfListProcTarget.ALL,
+                    twitter_list_show.EnumOfProcTargetList.ALL,
                     ''
                 )
         elif args.list_id is not None:
             twitter_list_show.do_logic(
                     api,
-                    twitter_list_show.EnumOfListProcTarget.ID,
+                    twitter_list_show.EnumOfProcTargetList.ID,
                     args.list_id
                 )
         elif args.list_name is not None:
             twitter_list_show.do_logic(
                     api,
-                    twitter_list_show.EnumOfListProcTarget.NAME,
+                    twitter_list_show.EnumOfProcTargetList.NAME,
                     args.list_name
                 )
     except KeyboardInterrupt as e:

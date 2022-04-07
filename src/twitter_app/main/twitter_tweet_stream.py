@@ -27,7 +27,7 @@ def main() -> int:
         user_id_for_followees (str)     : [グループB][1つのみ必須] ユーザID(フォロイー用)
         list_id (str)                   : [グループB][1つのみ必須] リストID
         list_name (str)                 : [グループB][1つのみ必須] リスト名
-        following_user_file_path (str)  : [グループB][1つのみ必須] フォローユーザファイルパス, ヘッダ行番号
+        following_user_file_path (str)  : [グループB][1つのみ必須] フォローユーザファイルパス(csvファイル)、ヘッダ行番号
         keyword_of_csv_format (str)     : [グループC][任意] キーワード(csv形式)
     
     Returns:
@@ -56,28 +56,28 @@ def main() -> int:
         if args.user_id_for_followees is not None:
             twitter_tweet_stream.do_logic(
                     api,
-                    twitter_tweet_stream.EnumOfItemProcTarget.USER_ID,
+                    twitter_tweet_stream.EnumOfProcTargetItem.USER_ID,
                     args.user_id_for_followees,
                     args.keyword_of_csv_format
                 )
         elif args.list_id is not None:
             twitter_tweet_stream.do_logic(
                     api,
-                    twitter_tweet_stream.EnumOfItemProcTarget.LIST_ID,
+                    twitter_tweet_stream.EnumOfProcTargetItem.LIST_ID,
                     args.list_id,
                     args.keyword_of_csv_format
                 )
         elif args.list_name is not None:
             twitter_tweet_stream.do_logic(
                     api,
-                    twitter_tweet_stream.EnumOfItemProcTarget.LIST_NAME,
+                    twitter_tweet_stream.EnumOfProcTargetItem.LIST_NAME,
                     args.list_name,
                     args.keyword_of_csv_format
                 )
         elif args.following_user_file_path is not None:
             twitter_tweet_stream.do_logic(
                     api,
-                    twitter_tweet_stream.EnumOfItemProcTarget.FILE_PATH,
+                    twitter_tweet_stream.EnumOfProcTargetItem.FILE_PATH,
                     args.following_user_file_path[0],
                     args.keyword_of_csv_format,
                     int(args.following_user_file_path[1])
@@ -112,32 +112,31 @@ def __get_args() -> argparse.Namespace:
             '1つのみ必須な引数\n処理対象の項目を指定します')
         mutually_exclusive_group_a: argparse._MutuallyExclusiveGroup = \
             arg_group_b.add_mutually_exclusive_group(required=True)
-        help_ = '{0}\n{1}'
+        help_ = '{0}\n' + \
+                '{1}のツイートを配信します'
         mutually_exclusive_group_a.add_argument(
             '-ui', '--user_id_for_followees',
             type=str,
-            help=help_.format(
-                'ユーザID(フォロイー用)', '指定したユーザIDのフォロイーのツイートを配信します'))
+            help=help_.format('ユーザID(フォロイー用)', '指定したユーザIDのフォロイー'))
         mutually_exclusive_group_a.add_argument(
             '-li', '--list_id',
             type=str,
-            help=help_.format(
-                'リストID', '指定したリストIDのツイートを配信します'))
+            help=help_.format('リストID', '指定したリストID'))
         mutually_exclusive_group_a.add_argument(
             '-ln', '--list_name',
             type=str,
-            help=help_.format(
-                'リスト名', '指定したリスト名のツイートを配信します'))
-        help_ = '{0}\n{1}\n{2}\n{3}'
+            help=help_.format('リスト名', '指定したリスト名'))
+        help_ = '{0} {1}\n' + \
+                '{2}のツイートを配信します\n' + \
+                '{3}'
         mutually_exclusive_group_a.add_argument(
             '-fp', '--following_user_file_path',
             type=str,
             nargs=2,
             help=help_.format(
-                'フォローユーザファイルパス (csvファイル)',
-                '指定したファイルに記載されているユーザのツイートを配信します',
-                'ヘッダ行番号',
-                '0：ヘッダなし、1~：ヘッダとなるファイルの行番号'),
+                'フォローユーザファイルパス(csvファイル)', 'ヘッダ行番号',
+                '指定したファイルに記載されているユーザ',
+                'ヘッダ行番号は 0：ヘッダなし 1~：ヘッダとなるファイルの行番号 です'),
             metavar=('FILE_PATH', 'HEADER_LINE_NUM'))
         
         # グループCの引数(任意の引数)

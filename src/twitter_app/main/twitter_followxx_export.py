@@ -25,8 +25,8 @@ def main() -> int:
     
     Args on cmd line:
         user_id (str)           : [グループA][必須] ユーザID
-        followee (bool)         : [グループB][1つのみ必須] フォロイー
-        follower (bool)         : [グループB][1つのみ必須] フォロワー
+        export_followee (bool)  : [グループB][1つのみ必須] フォロイーエクスポート要否
+        export_follower (bool)  : [グループB][1つのみ必須] フォロワーエクスポート要否
         num_of_followxxs (int)  : [グループC][任意] フォロイー(フォロワー)数
     
     Returns:
@@ -56,21 +56,21 @@ def main() -> int:
         api: tweepy.API = twitter_api_auth.do_logic_that_generate_api_by_oauth_1_user()
         
         # ロジック(Twitterフォロイー(フォロワー)エクスポート)の実行
-        if bool(args.followee) == True:
+        if bool(args.export_followee) == True:
             # ロジック(Twitterフォロイーエクスポート)の実行
             twitter_followxx_export.do_logic(
                     api,
+                    twitter_followxx_export.EnumOfProc.EXPORT_FOLLOWEE,
                     args.user_id,
-                    args.num_of_followxxs,
-                    twitter_followxx_export.EnumOfItemProcTarget.FOLLOWEE
+                    args.num_of_followxxs
                 )
-        elif bool(args.follower) == True:
+        elif bool(args.export_follower) == True:
             # ロジック(Twitterフォロワーエクスポート)の実行
             twitter_followxx_export.do_logic(
                     api,
+                    twitter_followxx_export.EnumOfProc.EXPORT_FOLLOWER,
                     args.user_id,
-                    args.num_of_followxxs,
-                    twitter_followxx_export.EnumOfItemProcTarget.FOLLOWER
+                    args.num_of_followxxs
                 )
     except KeyboardInterrupt as e:
         if lg is not None:
@@ -105,16 +105,17 @@ def __get_args() -> argparse.Namespace:
         # グループBの引数(1つのみ必須な引数)
         arg_group_b: argparse._ArgumentGroup = parser.add_argument_group(
             'Group B - only one required arguments',
-            '1つのみ必須な引数\n処理対象の項目を指定します')
+            '1つのみ必須な引数\n処理を指定します')
         mutually_exclusive_group_b: argparse._MutuallyExclusiveGroup = \
             arg_group_b.add_mutually_exclusive_group(required=True)
-        help_ = '{0}\n{1}をエクスポートします'
+        help_ = '{0}エクスポート要否\n' + \
+                '{1}をエクスポートします'
         mutually_exclusive_group_b.add_argument(
-            '-e', '--followee',
+            '-e', '--export_followee',
             action='store_true',
             help=help_.format('フォロイー', 'フォロイー(指定したユーザがフォローしているユーザ)'))
         mutually_exclusive_group_b.add_argument(
-            '-r', '--follower',
+            '-r', '--export_follower',
             action='store_true',
             help=help_.format('フォロワー', 'フォロワー(指定したユーザをフォローしているユーザ)'))
         
@@ -122,7 +123,7 @@ def __get_args() -> argparse.Namespace:
         arg_group_c: argparse._ArgumentGroup = parser.add_argument_group(
             'Group C - optional arguments', '任意の引数')
         help_ = 'フォロイー(フォロワー)数 (デフォルト：%(default)s)\n' + \
-                'エクスポートしたいフォロイー(フォロワー)の人数\n' + \
+                'エクスポートするフォロイー(フォロワー)の人数\n' + \
                 '3000人を超過した場合はレート制限により3000人ごとに15分の待機時間が発生します'
         arg_group_c.add_argument('-f', '--num_of_followxxs', type=int, default=3000, help=help_)
         
