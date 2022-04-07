@@ -228,16 +228,9 @@ googlemaps,Google Maps
 
 ### 6.1.2. プログラムの実行
 
-下記コマンドを実行する。
+下記コマンドでヘルプを呼び出す。
 
-実行例：
-```cmd
-> cd twitter-app
-> poetry run list-imp -l input/*.csv
-```
-
-また、ヘルプを呼び出す時は下記コマンドを実行する。
-
+ヘルプ：
 ```cmd
 > poetry run list-imp -h 
 usage: list-imp [-h] [-l LIST_MEMBER_FILE_PATH] [-hd HEADER_LINE_NUM]
@@ -252,11 +245,19 @@ Group C - optional arguments:
   任意の引数
 
   -l LIST_MEMBER_FILE_PATH, --list_member_file_path LIST_MEMBER_FILE_PATH
-                        リストメンバーファイルパス (csvファイル) (デフォルト：input/*.csv)
+                        リストメンバーファイルパス(csvファイル) (デフォルト：input/list_member/*.csv)
                         ワイルドカード可
   -hd HEADER_LINE_NUM, --header_line_num HEADER_LINE_NUM
                         ヘッダ行番号 (デフォルト：1)
                         0：ヘッダなし、1~：ヘッダとなるファイルの行番号
+```
+
+また、下記コマンドは実行例である。
+
+実行例：
+```cmd
+> cd twitter-app
+> poetry run list-imp -l "input/*.csv"
 ```
 
 
@@ -265,16 +266,9 @@ Group C - optional arguments:
 
 ### 6.2.1. プログラムの実行
 
-下記コマンドを実行する。
+下記コマンドでヘルプを呼び出す。
 
-実行例：
-```cmd
-> cd twitter-app
-> poetry run list-show -all
-```
-
-また、ヘルプを呼び出す時は下記コマンドを実行する。
-
+ヘルプ：
 ```cmd
 > poetry run list-show -h
 usage: list-show [-h] (-all | -id LIST_ID | -name LIST_NAME)
@@ -298,22 +292,23 @@ Group B - only one required arguments:
                         例："Google関連, Microsoft関連"
 ```
 
+また、下記コマンドは実行例である。
+
+実行例：
+```cmd
+> cd twitter-app
+> poetry run list-show -all
+```
+
 
 ## 6.3. Twitterリストエクスポート
 
 
 ### 6.3.1. プログラムの実行
 
-下記コマンドを実行する。
+下記コマンドでヘルプを呼び出す。
 
-実行例：
-```cmd
-> cd twitter-app
-> poetry run list-exp -all
-```
-
-また、ヘルプを呼び出す時は下記コマンドを実行する。
-
+ヘルプ：
 ```cmd
 > poetry run list-exp -h
 usage: list-exp [-h] (-all | -id LIST_ID | -name LIST_NAME)
@@ -337,22 +332,23 @@ Group B - only one required arguments:
                         例："Google関連, Microsoft関連"
 ```
 
+また、下記コマンドは実行例である。
+
+実行例：
+```cmd
+> cd twitter-app
+> poetry run list-exp -all
+```
+
 
 ## 6.4. Twitterフォロイー(フォロワー)エクスポート
 
 
 ### 6.4.1. プログラムの実行
 
-下記コマンドを実行する。
+下記コマンドでヘルプを呼び出す。
 
-実行例：
-```cmd
-> cd twitter-app
-> poetry run followxx-exp Google -e
-```
-
-また、ヘルプを呼び出す時は下記コマンドを実行する。
-
+ヘルプ：
 ```cmd
 > poetry run followxx-exp -h
 usage: followxx-exp [-h] (-e | -r) [-f NUM_OF_FOLLOWXXS] user_id
@@ -370,11 +366,13 @@ Group A - all required arguments:
 
 Group B - only one required arguments:
   1つのみ必須な引数
-  処理対象の項目を指定します
+  処理を指定します
 
-  -e, --followee        フォロイー
+  -e, --export_followee
+                        フォロイーエクスポート要否
                         フォロイー(指定したユーザがフォローしているユーザ)をエクスポートします
-  -r, --follower        フォロワー
+  -r, --export_follower
+                        フォロワーエクスポート要否
                         フォロワー(指定したユーザをフォローしているユーザ)をエクスポートします
 
 Group C - optional arguments:
@@ -382,8 +380,16 @@ Group C - optional arguments:
 
   -f NUM_OF_FOLLOWXXS, --num_of_followxxs NUM_OF_FOLLOWXXS
                         フォロイー(フォロワー)数 (デフォルト：3000)
-                        エクスポートしたいフォロイー(フォロワー)の人数
+                        エクスポートするフォロイー(フォロワー)の人数
                         3000人を超過した場合はレート制限により3000人ごとに15分の待機時間が発生します
+```
+
+また、下記コマンドは実行例である。
+
+実行例：
+```cmd
+> cd twitter-app
+> poetry run followxx-exp Google -e
 ```
 
 
@@ -392,16 +398,9 @@ Group C - optional arguments:
 
 ### 6.5.1. プログラムの実行
 
-下記コマンドを実行する。
+下記コマンドでヘルプを呼び出す。
 
-実行例：
-```cmd
-> cd twitter-app
-> poetry run tweet-search #FGO
-```
-
-また、ヘルプを呼び出す時は下記コマンドを実行する。
-
+ヘルプ：
 ```cmd
 > poetry run tweet-search -h
 usage: tweet-search [-h] [-t NUM_OF_TWEETS] query
@@ -423,8 +422,16 @@ Group C - optional arguments:
 
   -t NUM_OF_TWEETS, --num_of_tweets NUM_OF_TWEETS
                         ツイート数 (デフォルト：100)
-                        表示したいツイートの数
+                        表示するツイートの数
                         18000件を超過した場合はレート制限により18000件ごとに15分の待機時間が発生します
+```
+
+また、下記コマンドは実行例である。
+
+実行例：
+```cmd
+> cd twitter-app
+> poetry run tweet-search #FGO
 ```
 
 
@@ -433,16 +440,9 @@ Group C - optional arguments:
 
 ### 6.6.1. プログラムの実行
 
-下記コマンドを実行する。
+下記コマンドでヘルプを呼び出す。
 
-実行例：
-```cmd
-> cd twitter-app
-> poetry run tweet-stream -u Google
-```
-
-また、ヘルプを呼び出す時は下記コマンドを実行する。
-
+ヘルプ：
 ```cmd
 > poetry run tweet-stream -h
 usage: tweet-stream [-h] (-ui USER_ID_FOR_FOLLOWEES | -li LIST_ID | -ln LIST_NAME | -fp FILE_PATH HEADER_LINE_NUM) [-k KEYWORD_OF_CSV_FORMAT]
@@ -467,10 +467,9 @@ Group B - only one required arguments:
                         リスト名
                         指定したリスト名のツイートを配信します
   -fp FILE_PATH HEADER_LINE_NUM, --following_user_file_path FILE_PATH HEADER_LINE_NUM
-                        フォローユーザファイルパス (csvファイル)
+                        フォローユーザファイルパス(csvファイル) ヘッダ行番号
                         指定したファイルに記載されているユーザのツイートを配信します
-                        ヘッダ行番号
-                        0：ヘッダなし、1~：ヘッダとなるファイルの行番号
+                        ヘッダ行番号は 0：ヘッダなし 1~：ヘッダとなるファイルの行番号 です
 
 Group C - optional arguments:
   任意の引数
@@ -482,22 +481,23 @@ Group C - optional arguments:
                         カンマはOR検索(Google Docs OR Google Drive)
 ```
 
+また、下記コマンドは実行例である。
+
+実行例：
+```cmd
+> cd twitter-app
+> poetry run tweet-stream -ui Google
+```
+
 
 ## 6.7. Twitterレート制限表示
 
 
 ### 6.7.1. プログラムの実行
 
-下記コマンドを実行する。
+下記コマンドでヘルプを呼び出す。
 
-実行例：
-```cmd
-> cd twitter-app
-> poetry run limit-show "friends" "/friends/list"
-```
-
-また、ヘルプを呼び出す時は下記コマンドを実行する。
-
+ヘルプ：
 ```cmd
 > poetry run limit-show -h
 usage: limit-show [-h] resource_family endpoint
@@ -519,22 +519,23 @@ Group A - all required arguments:
                    例：/friends/list
 ```
 
+また、下記コマンドは実行例である。
+
+実行例：
+```cmd
+> cd twitter-app
+> poetry run limit-show "friends" "/friends/list"
+```
+
 
 ## 6.8. TwitterPIN認証
 
 
 ### 6.8.1. プログラムの実行
 
-下記コマンドを実行する。
+下記コマンドでヘルプを呼び出す。
 
-実行例：
-```cmd
-> cd twitter-app
-> poetry run pin-auth
-```
-
-また、ヘルプを呼び出す時は下記コマンドを実行する。
-
+ヘルプ：
 ```cmd
 > poetry run pin-auth -h
 usage: pin-auth [-h]
@@ -544,6 +545,14 @@ TwitterPIN認証
 
 options:
   -h, --help  show this help message and exit
+```
+
+また、下記コマンドは実行例である。
+
+実行例：
+```cmd
+> cd twitter-app
+> poetry run pin-auth
 ```
 
 
