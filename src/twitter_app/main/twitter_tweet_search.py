@@ -89,7 +89,7 @@ def __get_args() -> argparse.Namespace:
         arg_group_c: argparse._ArgumentGroup = parser.add_argument_group(
             'Group C - optional arguments', '任意の引数')
         help_ = 'ツイート数 (デフォルト：%(default)s)\n' + \
-                '表示したいツイートの数\n' + \
+                '表示するツイートの数\n' + \
                 '18000件を超過した場合はレート制限により18000件ごとに15分の待機時間が発生します'
         arg_group_c.add_argument('-t', '--num_of_tweets', type=int, default=100, help=help_)
         

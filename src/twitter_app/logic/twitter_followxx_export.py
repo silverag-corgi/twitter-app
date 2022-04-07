@@ -12,16 +12,16 @@ from twitter_app.util import const_util, pandas_util
 from twitter_app.util.twitter_api_v1_1.standard import twitter_developer_util, twitter_users_util
 
 
-class EnumOfItemProcTarget(IntEnum):
-    FOLLOWEE = auto()
-    FOLLOWER = auto()
+class EnumOfProc(IntEnum):
+    EXPORT_FOLLOWEE = auto()
+    EXPORT_FOLLOWER = auto()
 
 
 def do_logic(
         api: tweepy.API,
+        enum_of_proc: EnumOfProc,
         user_id: str,
-        num_of_followxxs: int,
-        enum_of_item_proc_target: EnumOfItemProcTarget
+        num_of_followxxs: int
     ) -> None:
     
     '''ロジック実行'''
@@ -39,7 +39,7 @@ def do_logic(
         # フォロイー(フォロワー)の個別処理
         followxx_pages: list[ResultSet] = []
         followxx_file_path_format: str = ''
-        if enum_of_item_proc_target == EnumOfItemProcTarget.FOLLOWEE:
+        if enum_of_proc == EnumOfProc.EXPORT_FOLLOWEE:
             # 想定処理時間の表示
             util.show_estimated_proc_time(
                     num_of_followxxs,
@@ -56,7 +56,7 @@ def do_logic(
             
             # フォロイーファイルパスフォーマットの決定
             followxx_file_path_format = const_util.FOLLOWEE_FILE_PATH
-        elif enum_of_item_proc_target == EnumOfItemProcTarget.FOLLOWER:
+        elif enum_of_proc == EnumOfProc.EXPORT_FOLLOWER:
             # 想定処理時間の表示
             util.show_estimated_proc_time(
                     num_of_followxxs,
@@ -107,9 +107,9 @@ def do_logic(
             pandas_util.save_list_member_df(followxx_df, followxx_file_path)
         
         # レート制限の表示
-        if enum_of_item_proc_target == EnumOfItemProcTarget.FOLLOWEE:
+        if enum_of_proc == EnumOfProc.EXPORT_FOLLOWEE:
             twitter_developer_util.show_rate_limit_of_friends_list(api)
-        elif enum_of_item_proc_target == EnumOfItemProcTarget.FOLLOWER:
+        elif enum_of_proc == EnumOfProc.EXPORT_FOLLOWER:
             twitter_developer_util.show_rate_limit_of_followers_list(api)
         
         pyl.log_inf(lg, f'Twitterフォロイー(フォロワー)エクスポートを終了します。')
