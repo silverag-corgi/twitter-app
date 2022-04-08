@@ -249,18 +249,23 @@ def get_friendship(
     return friendship
 
 
+class EnumOfUser(IntEnum):
+    MAX_NUM_OF_DATA_PER_REQUEST = 100
+
+
 def lookup_users(
         api: tweepy.API,
         user_ids: list[str],
-        num_of_data_per_request: int = 100
+        num_of_data_per_request: int = EnumOfUser.MAX_NUM_OF_DATA_PER_REQUEST.value
     ) -> list[ResultSet]:
     
     '''
     ユーザ検索
     
     Args:
-        api (tweepy.API)    : API
-        user_ids (str)      : ユーザID(複数)
+        api (tweepy.API)                        : API
+        user_ids (str)                          : ユーザID(複数)
+        num_of_data_per_request (int, optional) : リクエストごとのデータ数
     
     Returns:
         list[ResultSet]: ユーザ検索結果ページ (list[ResultSet[tweepy.models.User]])
@@ -273,9 +278,11 @@ def lookup_users(
             - GET users/lookup
         - レート制限
             - ユーザ認証(OAuth 1.0a)
+                - データ数／リクエスト : 100
                 - リクエスト数／１５分 : 900
                     - 超過した場合は15分の待機時間が発生する
             - アプリ認証(OAuth 2.0)
+                - データ数／リクエスト : 100
                 - リクエスト数／１５分 : 300
                     - 超過した場合は15分の待機時間が発生する
     
@@ -299,8 +306,7 @@ def lookup_users(
         lg = pyl.get_logger(__name__)
         
         # ユーザIDリスト(100人ごと)の生成
-        user_ids_list: list[list[str]] = \
-            pyl.split_list(user_ids, num_of_data_per_request)
+        user_ids_list: list[list[str]] = pyl.split_list(user_ids, num_of_data_per_request)
         
         # ユーザ(100人ごと)の検索
         for user_ids_by_element in user_ids_list:
@@ -707,17 +713,19 @@ def add_users_to_list(
         api: tweepy.API,
         list_id: str,
         user_ids: list[str],
-        user_names: list[str] = []
+        user_names: list[str] = [],
+        num_of_data_per_request: int = EnumOfUser.MAX_NUM_OF_DATA_PER_REQUEST.value
     ) -> None:
     
     '''
     ユーザ(複数)追加
     
     Args:
-        api (tweepy.API)        : API
-        list_id (str)           : リストID
-        user_ids (list[str])    : ユーザID(複数)
-        user_names (list[str])  : ユーザ名(複数)
+        api (tweepy.API)                        : API
+        list_id (str)                           : リストID
+        user_ids (list[str])                    : ユーザID(複数)
+        user_names (list[str])                  : ユーザ名(複数)
+        num_of_data_per_request (int, optional) : リクエストごとのデータ数
     
     Returns:
         -
@@ -729,6 +737,7 @@ def add_users_to_list(
             - POST lists/members/create_all
         - レート制限
             - ユーザ認証(OAuth 1.0a)
+                - データ数／リクエスト : 100
                 - リクエスト数／１５分 : (未公表)
         - 指定したユーザを全て追加できるようにするため、以下のアカウントを関数内部で除外する必要がある
             - 削除されたアカウント
@@ -746,7 +755,6 @@ def add_users_to_list(
     '''  # noqa: E501
     
     lg: Optional[Logger] = None
-    result: bool = False
     
     # 認証方式の確認
     if isinstance(api.auth, (tweepy.OAuth1UserHandler)) == False:
@@ -771,7 +779,7 @@ def add_users_to_list(
         # ユーザの分割(問題なし、問題あり)
         users: tuple[list[str], list[str], list[str]] = \
             __split_users_into_no_problems_and_problems(
-                api, user_ids, user_names)
+                api, user_ids, user_names, num_of_data_per_request)
         user_ids_without_problems: list[str] = users[0]
         user_ids_with_problems: list[str] = users[1]
         user_names_with_problems: list[str] = users[2]
@@ -785,8 +793,8 @@ def add_users_to_list(
                         f'(num_of_users:{len(user_ids_without_problems)})')
         
         # ユーザIDリスト
-        user_ids_list: list[list[str]] = \
-            pyl.split_list(user_ids_without_problems, 50)
+        user_ids_list: list[list[str]] = pyl.split_list(
+            user_ids_without_problems, num_of_data_per_request)
         
         # ユーザIDリストの要素ごと
         user_ids_by_element: list[str]
@@ -802,7 +810,8 @@ def add_users_to_list(
             
             # 待機
             if index != len(user_ids_list):
-                time.sleep(3)
+                pyl.log_inf(lg, f'具体的なレート制限は未公表ですが、他のTwitterAPIに沿って15分待機します。')
+                time.sleep(60*15)
     except Exception as e:
         if lg is not None:
             pyl.log_war(lg, f'ユーザ(複数)追加に失敗しました。' +
@@ -814,7 +823,8 @@ def add_users_to_list(
 def __split_users_into_no_problems_and_problems(
         api: tweepy.API,
         user_ids: list[str],
-        user_names: list[str]
+        user_names: list[str],
+        num_of_data_per_request: int
     ) -> tuple[list[str], list[str], list[str]]:
     
     lg: Optional[Logger] = None
@@ -834,7 +844,7 @@ def __split_users_into_no_problems_and_problems(
         ############################################################################################
         
         # ユーザの検索
-        user_pages: list[ResultSet] = lookup_users(api, user_ids)
+        user_pages: list[ResultSet] = lookup_users(api, user_ids, num_of_data_per_request)
         
         # ユーザID(未削除・未凍結・未保護アカウント)の生成
         user_ids_of_unprotected_account: list[str] = []
@@ -842,6 +852,8 @@ def __split_users_into_no_problems_and_problems(
             for user in users_by_page:
                 if user.protected == False:
                     user_ids_of_unprotected_account.append(user.screen_name)
+        
+        pyl.log_inf(lg, f'削除されたアカウント、凍結されたアカウント、保護されたアカウントの除外に成功しました。')
         
         ############################################################################################
         # 自分をブロックしたアカウントの除外
@@ -857,6 +869,8 @@ def __split_users_into_no_problems_and_problems(
                 api, user_id, auth_user_info.screen_name)
             if friendship[0].blocking is None or friendship[0].blocking == False:
                 user_ids_of_accounts_that_has_not_blocked_me.append(user_id)
+        
+        pyl.log_inf(lg, f'自分をブロックしたアカウントの除外に成功しました。')
         
         ############################################################################################
         # 自分がブロックしたアカウントの除外
@@ -875,6 +889,8 @@ def __split_users_into_no_problems_and_problems(
             if not(user_id in blocked_users):
                 user_ids_of_accounts_that_i_have_not_blocked.append(user_id)
         
+        pyl.log_inf(lg, f'自分がブロックしたアカウントの除外に成功しました。')
+        
         ############################################################################################
         # ユーザの分割
         ############################################################################################
@@ -888,6 +904,8 @@ def __split_users_into_no_problems_and_problems(
             if not(user_id in user_ids_without_problems):
                 user_ids_with_problems.append(user_id)
                 user_names_with_problems.append(user_names[index])
+        
+        pyl.log_inf(lg, f'ユーザの分割に成功しました。')
     except Exception as e:
         raise(e)
     
