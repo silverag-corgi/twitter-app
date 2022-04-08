@@ -31,7 +31,7 @@ def read_list_member_file(
     list_member_df: pd.DataFrame = pd.read_csv(
             list_member_file_path,
             header=None,
-            names=const_util.LIST_MEMBER_HEADER,
+            names=const_util.LIST_MEMBER_HEADER[0:2],
             index_col=None,
             usecols=[0, 1],
             skiprows=header_line_num,
