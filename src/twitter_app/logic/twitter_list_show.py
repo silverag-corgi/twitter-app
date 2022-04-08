@@ -55,7 +55,7 @@ def do_logic(
         for list_ in lists:
             # リスト情報の取得
             creation_datetime: str = pyl.convert_timestamp_to_jst(str(list_.created_at))
-            list_id_by_api: str = list_.id
+            list_id_by_api: str = list_.id_str
             list_name_by_api: str = list_.name
             num_of_members: int = list_.member_count
             
