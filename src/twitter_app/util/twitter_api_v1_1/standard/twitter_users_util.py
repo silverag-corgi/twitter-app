@@ -249,14 +249,14 @@ def get_friendship(
     return friendship
 
 
-class EnumOfUser(IntEnum):
+class EnumOfUserForLookup(IntEnum):
     MAX_NUM_OF_DATA_PER_REQUEST = 100
 
 
 def lookup_users(
         api: tweepy.API,
         user_ids: list[str],
-        num_of_data_per_request: int = EnumOfUser.MAX_NUM_OF_DATA_PER_REQUEST.value
+        num_of_data_per_request: int = EnumOfUserForLookup.MAX_NUM_OF_DATA_PER_REQUEST.value
     ) -> list[ResultSet]:
     
     '''
@@ -709,12 +709,16 @@ def add_user_to_list(
     return result
 
 
+class EnumOfUserForList(IntEnum):
+    MAX_NUM_OF_DATA_PER_REQUEST = 50
+
+
 def add_users_to_list(
         api: tweepy.API,
         list_id: str,
         user_ids: list[str],
         user_names: list[str] = [],
-        num_of_data_per_request: int = EnumOfUser.MAX_NUM_OF_DATA_PER_REQUEST.value
+        num_of_data_per_request: int = EnumOfUserForList.MAX_NUM_OF_DATA_PER_REQUEST.value
     ) -> None:
     
     '''
@@ -779,7 +783,7 @@ def add_users_to_list(
         # ユーザの分割(問題なし、問題あり)
         users: tuple[list[str], list[str], list[str]] = \
             __split_users_into_no_problems_and_problems(
-                api, user_ids, user_names, num_of_data_per_request)
+                api, user_ids, user_names, EnumOfUserForLookup.MAX_NUM_OF_DATA_PER_REQUEST.value)
         user_ids_without_problems: list[str] = users[0]
         user_ids_with_problems: list[str] = users[1]
         user_names_with_problems: list[str] = users[2]
