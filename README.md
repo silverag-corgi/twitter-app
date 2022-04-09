@@ -559,14 +559,14 @@ options:
 # 7. 実行コマンド一覧
 
 ```cmd
-> poetry run list-imp     -h
-> poetry run list-show    -h
-> poetry run list-exp     -h
+> poetry run list-imp -h
+> poetry run list-show -h
+> poetry run list-exp -h
 > poetry run followxx-exp -h
 > poetry run tweet-search -h
 > poetry run tweet-stream -h
-> poetry run limit-show   -h
-> poetry run pin-auth     -h
+> poetry run limit-show -h
+> poetry run pin-auth -h
 ```
 
 
