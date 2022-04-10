@@ -1,5 +1,6 @@
 import math
 import time
+from datetime import datetime, timedelta
 from enum import IntEnum
 from logging import Logger
 from typing import Any, Optional
@@ -7,6 +8,8 @@ from typing import Any, Optional
 import python_lib_for_me as pyl
 import tweepy
 from tweepy.models import ResultSet
+
+from twitter_app import util
 
 ####################################################################################################
 # Follow, search, and get users
@@ -774,7 +777,6 @@ def add_users_to_list(
     
     try:
         lg = pyl.get_logger(__name__)
-        pyl.log_inf(lg, f'時間がかかるため気長にお待ちください。')
         
         # ユーザ名の初期化
         if len(user_names) == 0:
@@ -793,8 +795,9 @@ def add_users_to_list(
                         f'(num_of_users:{len(user_ids_with_problems)})')
         pyl.log_inf(lg, f'ユーザID：{user_ids_with_problems}')
         pyl.log_inf(lg, f'ユーザ名：{user_names_with_problems}')
-        pyl.log_inf(lg, f'ユーザを追加します。' +
+        pyl.log_inf(lg, f'{num_of_data_per_request}人ごとにユーザを追加します。' +
                         f'(num_of_users:{len(user_ids_without_problems)})')
+        util.show_estimated_proc_time(len(user_ids_without_problems), num_of_data_per_request)
         
         # ユーザIDリスト
         user_ids_list: list[list[str]] = pyl.split_list(
@@ -802,24 +805,38 @@ def add_users_to_list(
         
         # ユーザIDリストの要素ごと
         user_ids_by_element: list[str]
+        sum_of_users_this_time: int = 0
+        sum_of_users_last_time: int = 0
+        num_of_users_this_time: int = 0
         for index, user_ids_by_element in enumerate(user_ids_list, start=1):
             # ユーザの追加
-            list_: Any = api.add_list_members(
-                list_id=list_id, screen_name=user_ids_by_element)
+            sum_of_users_last_time = sum_of_users_this_time
+            list_: Any = api.add_list_members(list_id=list_id, screen_name=user_ids_by_element)
+            sum_of_users_this_time = list_.member_count
+            num_of_users_this_time = sum_of_users_this_time - sum_of_users_last_time
+            
+            # 追加結果の確認
+            if num_of_users_this_time == 0:
+                raise(pyl.CustomError(f'HTTPステータスコードが正常(2xx)以外の可能性があります。'))
             
             # ログの出力
             pyl.log_inf(lg, f'ユーザ(複数)追加に成功しました。' +
-                            f'(num_of_users:' +
-                            f'{list_.member_count}/{len(user_ids_by_element)})')
+                        f'(num_of_users:{num_of_users_this_time}/{num_of_data_per_request}, ' +
+                        f'sum_of_users:{sum_of_users_this_time}/{len(user_ids_without_problems)})')
             
-            # 待機
+            # 15分待機
+            # 具体的なレート制限は未公表だが他のTwitterAPIに従う
             if index != len(user_ids_list):
-                pyl.log_inf(lg, f'具体的なレート制限は未公表ですが、他のTwitterAPIに沿って15分待機します。')
+                datetime01_after_15_min: str = \
+                    (datetime.now() + timedelta(minutes=15)).strftime('%Y-%m-%d %H:%M:%S')
+                pyl.log_inf(lg, f'15分後({datetime01_after_15_min})に後続の処理を実行します。')
                 time.sleep(60*15)
     except Exception as e:
         if lg is not None:
+            datetime02_after_15_min: str = \
+                (datetime.now() + timedelta(minutes=15)).strftime('%Y-%m-%d %H:%M:%S')
             pyl.log_war(lg, f'ユーザ(複数)追加に失敗しました。' +
-                            f'鍵付きや削除済みの可能性があります。', e)
+                            f'15分後({datetime02_after_15_min})に再実行してください。', e)
     
     return None
 
@@ -860,8 +877,10 @@ def __split_users_into_no_problems_and_problems(
         pyl.log_inf(lg, f'削除されたアカウント、凍結されたアカウント、保護されたアカウントの除外に成功しました。')
         
         ############################################################################################
-        # 自分をブロックしたアカウントの除外
+        # 自分をブロックしたアカウントの除外(1秒5人)
         ############################################################################################
+        
+        pyl.log_inf(lg, f'時間がかかるため気長にお待ちください。')
         
         # 認証ユーザ情報の取得
         auth_user_info : Any = get_auth_user_info(api)
@@ -869,8 +888,7 @@ def __split_users_into_no_problems_and_problems(
         # ユーザID(未ブロックアカウント)の生成
         user_ids_of_accounts_that_has_not_blocked_me: list[str] = []
         for user_id in user_ids_of_unprotected_account:
-            friendship: Any = get_friendship(
-                api, user_id, auth_user_info.screen_name)
+            friendship: Any = get_friendship(api, user_id, auth_user_info.screen_name)
             if friendship[0].blocking is None or friendship[0].blocking == False:
                 user_ids_of_accounts_that_has_not_blocked_me.append(user_id)
         
