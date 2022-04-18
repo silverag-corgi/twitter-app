@@ -167,42 +167,42 @@ def __validate_args(args: argparse.Namespace) -> bool:
         # 検証：グループAの引数が指定された場合は1文字以上であること
         if args.user_id_for_followees is not None \
             and not (len(args.user_id_for_followees) >= 1):
-            pyl.log_war(lg, f'ユーザID(フォロイー用)が1文字以上ではありません。' +
+            pyl.log_err(lg, f'ユーザID(フォロイー用)が1文字以上ではありません。' +
                             f'(user_id_for_followees:{args.user_id_for_followees})')
             return False
         elif args.list_id is not None \
             and not (len(args.list_id) >= 1):
-            pyl.log_war(lg, f'リストIDが1文字以上ではありません。' +
+            pyl.log_err(lg, f'リストIDが1文字以上ではありません。' +
                             f'(list_id:{args.list_id})')
             return False
         elif args.list_name is not None \
             and not (len(args.list_name) >= 1):
-            pyl.log_war(lg, f'リスト名が1文字以上ではありません。' +
+            pyl.log_err(lg, f'リスト名が1文字以上ではありません。' +
                             f'(list_name:{args.list_name})')
             return False
         elif args.following_user_file_path is not None \
             and not (len(args.following_user_file_path[0]) >= 1):
-            pyl.log_war(lg, f'フォローユーザファイルパスが1文字以上ではありません。' +
+            pyl.log_err(lg, f'フォローユーザファイルパスが1文字以上ではありません。' +
                             f'(following_user_file_path[0]:{args.following_user_file_path[0]})')
             return False
         
         # 検証：フォローユーザファイルパスがcsvファイルのパスであること
         if args.following_user_file_path is not None \
             and not (os.path.splitext(args.following_user_file_path[0])[1] == '.csv'):
-            pyl.log_war(lg, f'フォローユーザファイルパスがcsvファイルのパスではありません。' +
+            pyl.log_err(lg, f'フォローユーザファイルパスがcsvファイルのパスではありません。' +
                             f'(following_user_file_path[0]:{args.following_user_file_path[0]})')
             return False
         
         # 検証：フォローユーザファイルパスのファイルが存在すること
         if args.following_user_file_path is not None \
             and not (os.path.isfile(args.following_user_file_path[0]) == True):
-            pyl.log_war(lg, f'フォローユーザファイルパスのファイルが存在しません。' +
+            pyl.log_err(lg, f'フォローユーザファイルパスのファイルが存在しません。' +
                             f'(following_user_file_path[0]:{args.following_user_file_path[0]})')
             return False
         
         # 検証：ヘッダ行番号が0以上であること
         if not (args.following_user_file_path[1].isdecimal() == True):
-            pyl.log_war(lg, f'ヘッダ行番号が0以上ではありません。' +
+            pyl.log_err(lg, f'ヘッダ行番号が0以上ではありません。' +
                             f'(following_user_file_path[1]:{args.following_user_file_path[1]})')
             return False
     except Exception as e:

@@ -126,11 +126,10 @@ def search_tweets(
             )
         tweet_search_result_pages = list(tweet_search_result_pagination.pages(num_of_requests))
         
-        pyl.log_inf(lg, f'ツイート検索(過去30日以内／フルアーカイブ)に成功しました。' +
-                        f'(query:{query})')
+        pyl.log_inf(lg, f'ツイート検索(過去30日以内／フルアーカイブ)に成功しました。(query:{query})')
     except Exception as e:
         if lg is not None:
-            pyl.log_war(lg, f'ツイート検索(過去30日以内／フルアーカイブ)に失敗しました。' +
-                            f'(query:{query})', e)
+            pyl.log_err(lg, f'ツイート検索(過去30日以内／フルアーカイブ)に失敗しました。(query:{query})')
+        raise(e)
     
     return tweet_search_result_pages

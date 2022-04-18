@@ -126,13 +126,13 @@ def __validate_args(args: argparse.Namespace) -> bool:
         list_member_file_path_and_ext: tuple[str, str] = \
             os.path.splitext(args.list_member_file_path)
         if not (list_member_file_path_and_ext[1] == '.csv'):
-            pyl.log_war(lg, f'リストメンバーファイルパスがcsvファイルのパスではありません。' +
+            pyl.log_err(lg, f'リストメンバーファイルパスがcsvファイルのパスではありません。' +
                             f'(list_member_file_path:{args.list_member_file_path})')
             return False
         
         # 検証：ヘッダ行番号が0以上であること
         if not (int(args.header_line_num) >= 0):
-            pyl.log_war(lg, f'ヘッダ行番号が0以上ではありません。' +
+            pyl.log_err(lg, f'ヘッダ行番号が0以上ではありません。' +
                             f'(header_line_num:{args.header_line_num})')
             return False
     except Exception as e:

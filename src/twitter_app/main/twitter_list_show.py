@@ -132,12 +132,12 @@ def __validate_args(args: argparse.Namespace) -> bool:
         # 検証：グループBの引数が指定された場合は1文字以上であること
         if args.list_id is not None \
             and not (len(args.list_id) >= 1):
-            pyl.log_war(lg, f'リストIDが1文字以上ではありません。' +
+            pyl.log_err(lg, f'リストIDが1文字以上ではありません。' +
                             f'(list_id:{args.list_id})')
             return False
         elif args.list_name is not None \
             and not (len(args.list_name) >= 1):
-            pyl.log_war(lg, f'リスト名が1文字以上ではありません。' +
+            pyl.log_err(lg, f'リスト名が1文字以上ではありません。' +
                             f'(list_name:{args.list_name})')
             return False
     except Exception as e:
