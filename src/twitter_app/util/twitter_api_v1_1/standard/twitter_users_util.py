@@ -98,7 +98,8 @@ def get_followee_pages(
         pyl.log_inf(lg, f'フォロイーページ取得に成功しました。(user_id:{user_id})')
     except Exception as e:
         if lg is not None:
-            pyl.log_war(lg, f'フォロイーページ取得に失敗しました。(user_id:{user_id})', e)
+            pyl.log_err(lg, f'フォロイーページ取得に失敗しました。(user_id:{user_id})')
+        raise(e)
     
     return followee_pages
 
@@ -185,7 +186,8 @@ def get_follower_pages(
         pyl.log_inf(lg, f'フォロワーページ取得に成功しました。(user_id:{user_id})')
     except Exception as e:
         if lg is not None:
-            pyl.log_war(lg, f'フォロワーページ取得に失敗しました。(user_id:{user_id})', e)
+            pyl.log_err(lg, f'フォロワーページ取得に失敗しました。(user_id:{user_id})')
+        raise(e)
     
     return follower_pages
 
@@ -534,7 +536,8 @@ def get_list_member_pages(
         pyl.log_inf(lg, f'リストメンバーページ取得に成功しました。(list_id:{list_id})')
     except Exception as e:
         if lg is not None:
-            pyl.log_war(lg, f'リストメンバーページ取得に失敗しました。(list_id:{list_id})', e)
+            pyl.log_err(lg, f'リストメンバーページ取得に失敗しました。(list_id:{list_id})')
+        raise(e)
     
     return list_member_pages
 
@@ -647,67 +650,8 @@ def destroy_list(
                 result = True
     except Exception as e:
         if lg is not None:
-            pyl.log_war(lg, f'リスト破棄に失敗しました。(list_name:{list_name})', e)
-    
-    return result
-
-
-def add_user_to_list(
-        api: tweepy.API,
-        list_id: str,
-        user_id: str,
-        user_name: str = ''
-    ) -> bool:
-    
-    '''
-    ユーザ追加
-    
-    Args:
-        api (tweepy.API)            : API
-        list_id (str)               : リストID
-        user_id (str)               : ユーザID
-        user_name (str, optional)   : ユーザ名
-    
-    Returns:
-        bool: 実行結果 (True：成功、False：失敗)
-    
-    Notes:
-        - 認証
-            - ユーザ認証(OAuth 1.0a)
-        - エンドポイント
-            - POST lists/members/create
-        - レート制限
-            - ユーザ認証(OAuth 1.0a)
-                - リクエスト数／１５分 : (未公表)
-    
-    References:
-        - エンドポイント
-            - https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/create-manage-lists/overview
-            - https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/create-manage-lists/api-reference/post-lists-members-create
-        - レスポンス
-            - https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/create-manage-lists/api-reference/get-lists-show#example-response
-    '''  # noqa: E501
-    
-    lg: Optional[Logger] = None
-    result: bool = False
-    
-    # 認証方式の確認
-    if isinstance(api.auth, (tweepy.OAuth1UserHandler)) == False:
-        raise(pyl.CustomError(
-            f'この認証方式ではTwitterAPIにアクセスできません。(Auth:{type(api.auth)})'))
-    
-    try:
-        lg = pyl.get_logger(__name__)
-        
-        # ユーザの追加
-        api.add_list_member(list_id=list_id, screen_name=user_id)
-        pyl.log_deb(lg, f'ユーザ追加に成功しました。(user_id:{user_id: <15}, user_name:{user_name})')
-        
-        result = True
-    except Exception as e:
-        if lg is not None:
-            pyl.log_war(lg, f'ユーザ追加に失敗しました。鍵付きや削除済みの可能性があります。' +
-                            f'(user_id:{user_id: <15}, user_name:{user_name})', e)
+            pyl.log_err(lg, f'リスト破棄に失敗しました。(list_name:{list_name})')
+        raise(e)
     
     return result
 
@@ -868,7 +812,8 @@ def add_users_to_list(
                 time.sleep(60 * EnumOfUserForList.WINDOW_MINUTES.value)
     except Exception as e:
         if lg is not None:
-            pyl.log_war(lg, f'ユーザ(複数)追加に失敗しました。', e)
+            pyl.log_err(lg, f'ユーザ(複数)追加に失敗しました。')
+        raise(e)
     
     return None
 
@@ -1139,6 +1084,7 @@ def get_blocked_users_pages(
         pyl.log_inf(lg, f'ブロックユーザページ取得に成功しました。')
     except Exception as e:
         if lg is not None:
-            pyl.log_war(lg, f'ブロックユーザページ取得に失敗しました。', e)
+            pyl.log_err(lg, f'ブロックユーザページ取得に失敗しました。')
+        raise(e)
     
     return blocked_user_pages

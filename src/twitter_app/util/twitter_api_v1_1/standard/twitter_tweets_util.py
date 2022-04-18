@@ -104,7 +104,8 @@ def search_tweets_in_past_7day(
         pyl.log_inf(lg, f'ツイート検索(過去7日間)に成功しました。(query:{query})')
     except Exception as e:
         if lg is not None:
-            pyl.log_war(lg, f'ツイート検索(過去7日間)に失敗しました。(query:{query})', e)
+            pyl.log_err(lg, f'ツイート検索(過去7日間)に失敗しました。(query:{query})')
+        raise(e)
     
     return tweet_search_result_pages
 
