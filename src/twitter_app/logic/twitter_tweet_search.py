@@ -94,13 +94,14 @@ def do_logic(
         
         # レート制限の表示
         twitter_developer_util.show_rate_limit_of_search_tweets(api)
-        
-        pyl.log_inf(lg, f'Twitterツイート検索を終了します。')
     except Exception as e:
         # ツイート検索結果ファイルの削除
         if tweet_search_result_file_path != '' \
             and os.path.isfile(tweet_search_result_file_path) == True:
             os.remove(tweet_search_result_file_path)
+        
         raise(e)
+    finally:
+        pyl.log_inf(lg, f'Twitterツイート検索を終了します。')
     
     return None

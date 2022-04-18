@@ -111,9 +111,9 @@ def do_logic(
             twitter_developer_util.show_rate_limit_of_friends_list(api)
         elif enum_of_proc == EnumOfProc.EXPORT_FOLLOWER:
             twitter_developer_util.show_rate_limit_of_followers_list(api)
-        
-        pyl.log_inf(lg, f'Twitterフォロイー(フォロワー)エクスポートを終了します。')
     except Exception as e:
         raise(e)
+    finally:
+        pyl.log_inf(lg, f'Twitterフォロイー(フォロワー)エクスポートを終了します。')
     
     return None

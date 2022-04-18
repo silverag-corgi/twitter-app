@@ -75,9 +75,9 @@ def do_logic(
         
         # レート制限の表示
         twitter_developer_util.show_rate_limit_of_lists_members(api)
-        
-        pyl.log_inf(lg, f'Twitterリストエクスポートを終了します。')
     except Exception as e:
         raise(e)
+    finally:
+        pyl.log_inf(lg, f'Twitterリストエクスポートを終了します。')
     
     return None

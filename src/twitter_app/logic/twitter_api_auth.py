@@ -22,10 +22,10 @@ def do_logic_that_generate_api_by_oauth_1_user() -> tweepy.API:
             __get_twitter_api_auth_info()
         api: tweepy.API = twitter_api_auth_util.generate_api_by_oauth_1_user(
             twitter_api_auth_info, True)
-        
-        pyl.log_inf(lg, f'TwitterAPI認証を終了します。')
     except Exception as e:
         raise(e)
+    finally:
+        pyl.log_inf(lg, f'TwitterAPI認証を終了します。')
     
     return api
 
@@ -54,10 +54,10 @@ def do_logic_that_generate_api_by_oauth_1_user_using_pin() -> tweepy.API:
                 open(const_util.TWITTER_API_AUTH_INFO_FILE_PATH, 'w'),
                 indent=2
             )
-        
-        pyl.log_inf(lg, f'TwitterAPI認証を終了します。')
     except Exception as e:
         raise(e)
+    finally:
+        pyl.log_inf(lg, f'TwitterAPI認証を終了します。')
     
     return api
 
@@ -75,10 +75,10 @@ def do_logic_that_generate_api_by_oauth_2_app() -> tweepy.API:
             __get_twitter_api_auth_info()
         api: tweepy.API = twitter_api_auth_util.generate_api_by_oauth_2_app(
             twitter_api_auth_info, True)
-        
-        pyl.log_inf(lg, f'TwitterAPI認証を終了します。')
     except Exception as e:
         raise(e)
+    finally:
+        pyl.log_inf(lg, f'TwitterAPI認証を終了します。')
     
     return api
 

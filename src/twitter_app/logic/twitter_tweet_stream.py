@@ -72,9 +72,9 @@ def do_logic(
         
         # ツイートの配信
         twitter_tweets_util.stream_tweets(api, following_user_ids, keywords)
-        
-        pyl.log_inf(lg, f'Twitterツイート配信を終了します。')
     except Exception as e:
         raise(e)
+    finally:
+        pyl.log_inf(lg, f'Twitterツイート配信を終了します。')
     
     return None
