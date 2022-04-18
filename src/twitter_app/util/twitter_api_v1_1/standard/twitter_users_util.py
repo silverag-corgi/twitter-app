@@ -826,16 +826,17 @@ def add_users_to_list(
             sum_of_users_at_this_time = list_.member_count
             num_of_users_at_this_time = sum_of_users_at_this_time - sum_of_users_at_last_time
             
-            # 追加結果の確認
-            if num_of_users_at_this_time == 0:
-                raise(pyl.CustomError(f'HTTPステータスコードが正常(2xx)以外の可能性があります。'))
-            
             # ログの出力
-            pyl.log_inf(lg, f'ユーザ(複数)追加に成功しました。' +
+            num_of_users_by_element: int = len(user_ids_by_element)
+            pyl.log_inf(lg, f'ユーザを追加しました。' +
                             f'(num_of_users_at_this_time:' +
-                            f'{num_of_users_at_this_time}/{num_of_data_per_request}, ' +
+                            f'{num_of_users_at_this_time}/{num_of_users_by_element}, ' +
                             f'sum_of_users_at_this_time:' +
                             f'{sum_of_users_at_this_time}/{num_of_users_without_problems})')
+            
+            # 追加結果の確認
+            if num_of_users_at_this_time != num_of_users_by_element:
+                raise(pyl.CustomError(f'HTTPステータスコードが正常(2xx)以外の可能性があります。'))
             
             # 待機
             if index != len(user_ids_list):
