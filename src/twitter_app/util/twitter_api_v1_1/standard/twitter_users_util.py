@@ -714,6 +714,7 @@ def add_user_to_list(
 
 class EnumOfUserForList(IntEnum):
     MAX_NUM_OF_DATA_PER_REQUEST = 50
+    WINDOW_MINUTES = 15
 
 
 def add_users_to_list(
@@ -746,7 +747,7 @@ def add_users_to_list(
             - ユーザ認証(OAuth 1.0a)
                 - データ数／リクエスト : 100
                 - リクエスト数／１５分 : (未公表)
-        - 指定したユーザを全て追加できるようにするため、以下のアカウントを関数内部で除外する必要がある
+        - 指定したユーザを全て追加できるようにするため、以下のアカウントを除外する
             - 削除されたアカウント
             - 凍結されたアカウント
             - 保護されたアカウント
@@ -783,21 +784,31 @@ def add_users_to_list(
             user_names = ['-'] * len(user_ids)
         
         # ユーザの分割(問題なし、問題あり)
-        users: tuple[list[str], list[str], list[str]] = \
+        users_with_no_problems_and_problems: tuple[list[str], list[str], list[str], list[str]] = \
             __split_users_into_no_problems_and_problems(
-                api, user_ids, user_names, EnumOfUserForLookup.MAX_NUM_OF_DATA_PER_REQUEST.value)
-        user_ids_without_problems: list[str] = users[0]
-        user_ids_with_problems: list[str] = users[1]
-        user_names_with_problems: list[str] = users[2]
+                    api,
+                    user_ids,
+                    user_names,
+                    EnumOfUserForLookup.MAX_NUM_OF_DATA_PER_REQUEST.value
+                )
+        user_ids_without_problems: list[str] = users_with_no_problems_and_problems[0]
+        user_ids_with_problems: list[str] = users_with_no_problems_and_problems[2]
+        user_names_with_problems: list[str] = users_with_no_problems_and_problems[3]
+        num_of_users_without_problems: int = len(user_ids_without_problems)
+        num_of_users_with_problems: int = len(user_ids_with_problems)
         
         # ログの出力
         pyl.log_inf(lg, f'下記ユーザは問題があるため除外しました。' +
-                        f'(num_of_users:{len(user_ids_with_problems)})')
+                        f'(num_of_users_with_problems:{num_of_users_with_problems})')
         pyl.log_inf(lg, f'ユーザID：{user_ids_with_problems}')
         pyl.log_inf(lg, f'ユーザ名：{user_names_with_problems}')
         pyl.log_inf(lg, f'{num_of_data_per_request}人ごとにユーザを追加します。' +
-                        f'(num_of_users:{len(user_ids_without_problems)})')
-        util.show_estimated_proc_time(len(user_ids_without_problems), num_of_data_per_request)
+                        f'(num_of_users_without_problems:{num_of_users_without_problems})')
+        util.show_estimated_proc_time(
+                num_of_users_without_problems,
+                num_of_data_per_request,
+                windows_minutes=EnumOfUserForList.WINDOW_MINUTES
+            )
         
         # ユーザIDリスト
         user_ids_list: list[list[str]] = pyl.split_list(
@@ -805,38 +816,38 @@ def add_users_to_list(
         
         # ユーザIDリストの要素ごと
         user_ids_by_element: list[str]
-        sum_of_users_this_time: int = 0
-        sum_of_users_last_time: int = 0
-        num_of_users_this_time: int = 0
+        sum_of_users_at_this_time: int = 0
+        sum_of_users_at_last_time: int = 0
+        num_of_users_at_this_time: int = 0
         for index, user_ids_by_element in enumerate(user_ids_list, start=1):
             # ユーザの追加
-            sum_of_users_last_time = sum_of_users_this_time
+            sum_of_users_at_last_time = sum_of_users_at_this_time
             list_: Any = api.add_list_members(list_id=list_id, screen_name=user_ids_by_element)
-            sum_of_users_this_time = list_.member_count
-            num_of_users_this_time = sum_of_users_this_time - sum_of_users_last_time
+            sum_of_users_at_this_time = list_.member_count
+            num_of_users_at_this_time = sum_of_users_at_this_time - sum_of_users_at_last_time
             
             # 追加結果の確認
-            if num_of_users_this_time == 0:
+            if num_of_users_at_this_time == 0:
                 raise(pyl.CustomError(f'HTTPステータスコードが正常(2xx)以外の可能性があります。'))
             
             # ログの出力
             pyl.log_inf(lg, f'ユーザ(複数)追加に成功しました。' +
-                        f'(num_of_users:{num_of_users_this_time}/{num_of_data_per_request}, ' +
-                        f'sum_of_users:{sum_of_users_this_time}/{len(user_ids_without_problems)})')
+                            f'(num_of_users_at_this_time:' +
+                            f'{num_of_users_at_this_time}/{num_of_data_per_request}, ' +
+                            f'sum_of_users_at_this_time:' +
+                            f'{sum_of_users_at_this_time}/{num_of_users_without_problems})')
             
-            # 15分待機
-            # 具体的なレート制限は未公表だが他のTwitterAPIに従う
+            # 待機
             if index != len(user_ids_list):
-                datetime01_after_15_min: str = \
-                    (datetime.now() + timedelta(minutes=15)).strftime('%Y-%m-%d %H:%M:%S')
-                pyl.log_inf(lg, f'15分後({datetime01_after_15_min})に後続の処理を実行します。')
-                time.sleep(60*15)
+                datetime_dt: datetime = \
+                    (datetime.now() + timedelta(minutes=EnumOfUserForList.WINDOW_MINUTES.value))
+                datetime_str: str = datetime_dt.strftime('%Y-%m-%d %H:%M:%S')
+                pyl.log_inf(lg, f'{EnumOfUserForList.WINDOW_MINUTES.value}分後' +
+                                f'({datetime_str})に後続の処理を実行します。')
+                time.sleep(60 * EnumOfUserForList.WINDOW_MINUTES.value)
     except Exception as e:
         if lg is not None:
-            datetime02_after_15_min: str = \
-                (datetime.now() + timedelta(minutes=15)).strftime('%Y-%m-%d %H:%M:%S')
-            pyl.log_war(lg, f'ユーザ(複数)追加に失敗しました。' +
-                            f'15分後({datetime02_after_15_min})に再実行してください。', e)
+            pyl.log_war(lg, f'ユーザ(複数)追加に失敗しました。', e)
     
     return None
 
@@ -846,12 +857,16 @@ def __split_users_into_no_problems_and_problems(
         user_ids: list[str],
         user_names: list[str],
         num_of_data_per_request: int
-    ) -> tuple[list[str], list[str], list[str]]:
+    ) -> tuple[list[str], list[str], list[str], list[str]]:
+    
+    '''ユーザ分割(問題なし、問題あり)'''
     
     lg: Optional[Logger] = None
     
     # ユーザID(問題なし)
     user_ids_without_problems: list[str] = []
+    # ユーザ名(問題なし)
+    user_names_without_problems: list[str] = []
     # ユーザID(問題あり)
     user_ids_with_problems: list[str] = []
     # ユーザ名(問題あり)
@@ -860,33 +875,20 @@ def __split_users_into_no_problems_and_problems(
     try:
         lg = pyl.get_logger(__name__)
         
-        ############################################################################################
-        # 削除されたアカウント、凍結されたアカウント、保護されたアカウントの除外
-        ############################################################################################
-        
-        # ユーザの検索
-        user_pages: list[ResultSet] = lookup_users(api, user_ids, num_of_data_per_request)
-        
         # ユーザID(未削除・未凍結・未保護アカウント)の生成
         user_ids_of_unprotected_account: list[str] = []
+        user_pages: list[ResultSet] = lookup_users(api, user_ids, num_of_data_per_request)
         for users_by_page in user_pages:
             for user in users_by_page:
                 if user.protected == False:
                     user_ids_of_unprotected_account.append(user.screen_name)
         
         pyl.log_inf(lg, f'削除されたアカウント、凍結されたアカウント、保護されたアカウントの除外に成功しました。')
-        
-        ############################################################################################
-        # 自分をブロックしたアカウントの除外(1秒5人)
-        ############################################################################################
-        
         pyl.log_inf(lg, f'時間がかかるため気長にお待ちください。')
-        
-        # 認証ユーザ情報の取得
-        auth_user_info : Any = get_auth_user_info(api)
         
         # ユーザID(未ブロックアカウント)の生成
         user_ids_of_accounts_that_has_not_blocked_me: list[str] = []
+        auth_user_info : Any = get_auth_user_info(api)
         for user_id in user_ids_of_unprotected_account:
             friendship: Any = get_friendship(api, user_id, auth_user_info.screen_name)
             if friendship[0].blocking is None or friendship[0].blocking == False:
@@ -894,44 +896,36 @@ def __split_users_into_no_problems_and_problems(
         
         pyl.log_inf(lg, f'自分をブロックしたアカウントの除外に成功しました。')
         
-        ############################################################################################
-        # 自分がブロックしたアカウントの除外
-        ############################################################################################
-        
-        # ブロックユーザページの取得
+        # ユーザID(ブロック済みアカウント)の生成
+        user_ids_of_accounts_that_i_have_blocked: list[str] = []
         blocked_user_pages: list[ResultSet] = get_blocked_users_pages(api)
-        blocked_users: list[str] = []
         for blocked_users_by_page in blocked_user_pages:
             for blocked_user in blocked_users_by_page:
-                blocked_users.append(blocked_user.screen_name)
+                user_ids_of_accounts_that_i_have_blocked.append(blocked_user.screen_name)
         
         # ユーザID(未ブロックアカウント)の生成
         user_ids_of_accounts_that_i_have_not_blocked: list[str] = []
         for user_id in user_ids_of_accounts_that_has_not_blocked_me:
-            if not(user_id in blocked_users):
+            if not(user_id in user_ids_of_accounts_that_i_have_blocked):
                 user_ids_of_accounts_that_i_have_not_blocked.append(user_id)
         
         pyl.log_inf(lg, f'自分がブロックしたアカウントの除外に成功しました。')
         
-        ############################################################################################
-        # ユーザの分割
-        ############################################################################################
-        
-        # ユーザID(問題なし)の生成
-        for user_id in user_ids_of_accounts_that_i_have_not_blocked:
-            user_ids_without_problems.append(user_id)
-        
-        # ユーザID・名(問題あり)の生成
+        # ユーザID・名(問題なし・あり)の生成
         for index, user_id in enumerate(user_ids):
-            if not(user_id in user_ids_without_problems):
+            if not(user_id in user_ids_of_accounts_that_i_have_not_blocked):
                 user_ids_with_problems.append(user_id)
                 user_names_with_problems.append(user_names[index])
+            else:
+                user_ids_without_problems.append(user_id)
+                user_names_without_problems.append(user_names[index])
         
         pyl.log_inf(lg, f'ユーザの分割に成功しました。')
     except Exception as e:
         raise(e)
     
     return user_ids_without_problems, \
+            user_names_without_problems, \
             user_ids_with_problems, \
             user_names_with_problems
 
