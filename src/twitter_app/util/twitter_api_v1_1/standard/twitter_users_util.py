@@ -722,6 +722,7 @@ def add_users_to_list(
         list_id: str,
         user_ids: list[str],
         user_names: list[str] = [],
+        add_only_users_with_diff: bool = False,
         num_of_data_per_request: int = EnumOfUserForList.MAX_NUM_OF_DATA_PER_REQUEST.value
     ) -> None:
     
@@ -729,11 +730,12 @@ def add_users_to_list(
     ユーザ(複数)追加
     
     Args:
-        api (tweepy.API)                        : API
-        list_id (str)                           : リストID
-        user_ids (list[str])                    : ユーザID(複数)
-        user_names (list[str])                  : ユーザ名(複数)
-        num_of_data_per_request (int, optional) : リクエストごとのデータ数
+        api (tweepy.API)                            : API
+        list_id (str)                               : リストID
+        user_ids (list[str])                        : ユーザID(複数)
+        user_names (list[str])                      : ユーザ名(複数)
+        add_only_users_with_diff (bool, optional)   : 差分ユーザ追加
+        num_of_data_per_request (int, optional)     : リクエストごとのデータ数
     
     Returns:
         -
@@ -783,12 +785,26 @@ def add_users_to_list(
         if len(user_names) == 0:
             user_names = ['-'] * len(user_ids)
         
+        # ユーザの分割(未追加、追加済み)
+        users_of_unadded_and_added: tuple[list[str], list[str], list[str], list[str]] = \
+            __split_users_into_unadded_and_added(
+                    api,
+                    add_only_users_with_diff,
+                    list_id,
+                    user_ids,
+                    user_names
+                )
+        user_ids_of_unadded_account: list[str] = users_of_unadded_and_added[0]
+        user_names_of_unadded_account: list[str] = users_of_unadded_and_added[1]
+        user_ids_of_added_account: list[str] = users_of_unadded_and_added[2]
+        num_of_users_of_added_account: int = len(user_ids_of_added_account)
+        
         # ユーザの分割(問題なし、問題あり)
         users_with_no_problems_and_problems: tuple[list[str], list[str], list[str], list[str]] = \
             __split_users_into_no_problems_and_problems(
                     api,
-                    user_ids,
-                    user_names,
+                    user_ids_of_unadded_account,
+                    user_names_of_unadded_account,
                     EnumOfUserForLookup.MAX_NUM_OF_DATA_PER_REQUEST.value
                 )
         user_ids_without_problems: list[str] = users_with_no_problems_and_problems[0]
@@ -798,6 +814,9 @@ def add_users_to_list(
         num_of_users_with_problems: int = len(user_ids_with_problems)
         
         # ログの出力
+        if add_only_users_with_diff == True:
+            pyl.log_inf(lg, f'追加済みユーザを除外しました。' +
+                            f'(num_of_users_of_added_account:{num_of_users_of_added_account})')
         pyl.log_inf(lg, f'下記ユーザは問題があるため除外しました。' +
                         f'(num_of_users_with_problems:{num_of_users_with_problems})')
         pyl.log_inf(lg, f'ユーザID：{user_ids_with_problems}')
@@ -816,7 +835,7 @@ def add_users_to_list(
         
         # ユーザIDリストの要素ごと
         user_ids_by_element: list[str]
-        sum_of_users_at_this_time: int = 0
+        sum_of_users_at_this_time: int = num_of_users_of_added_account
         sum_of_users_at_last_time: int = 0
         num_of_users_at_this_time: int = 0
         for index, user_ids_by_element in enumerate(user_ids_list, start=1):
@@ -832,7 +851,8 @@ def add_users_to_list(
                             f'(num_of_users_at_this_time:' +
                             f'{num_of_users_at_this_time}/{num_of_users_by_element}, ' +
                             f'sum_of_users_at_this_time:' +
-                            f'{sum_of_users_at_this_time}/{num_of_users_without_problems})')
+                            f'{sum_of_users_at_this_time - num_of_users_of_added_account}' +
+                            f'/{num_of_users_without_problems})')
             
             # 追加結果の確認
             if num_of_users_at_this_time != num_of_users_by_element:
@@ -851,6 +871,61 @@ def add_users_to_list(
             pyl.log_war(lg, f'ユーザ(複数)追加に失敗しました。', e)
     
     return None
+
+
+def __split_users_into_unadded_and_added(
+        api: tweepy.API,
+        add_only_users_with_diff: bool,
+        list_id: str,
+        user_ids: list[str],
+        user_names: list[str]
+    ) -> tuple[list[str], list[str], list[str], list[str]]:
+    
+    '''ユーザ分割(未追加、追加済み)'''
+    
+    lg: Optional[Logger] = None
+    
+    # ユーザID(未追加)
+    user_ids_of_unadded_account: list[str] = []
+    # ユーザ名(未追加)
+    user_names_of_unadded_account: list[str] = []
+    # ユーザID(追加済み)
+    user_ids_of_added_account: list[str] = []
+    # ユーザID(追加済みTEMP)
+    user_ids_of_added_account_temp: list[str] = []
+    # ユーザ名(追加済み)
+    user_names_of_added_account: list[str] = []
+    
+    try:
+        lg = pyl.get_logger(__name__)
+        
+        if add_only_users_with_diff == True:
+            # ユーザID(追加済みアカウント)の生成
+            list_member_pages: list[ResultSet] = get_list_member_pages(api, list_id)
+            for list_members_by_page in list_member_pages:
+                for list_member in list_members_by_page:
+                    user_ids_of_added_account_temp.append(list_member.screen_name)
+            
+            # ユーザID・名(未追加・追加済みアカウント)の生成
+            for index, user_id in enumerate(user_ids):
+                if not(user_id in user_ids_of_added_account_temp):
+                    user_ids_of_unadded_account.append(user_id)
+                    user_names_of_unadded_account.append(user_names[index])
+                else:
+                    user_ids_of_added_account.append(user_id)
+                    user_names_of_added_account.append(user_names[index])
+            
+            pyl.log_inf(lg, f'追加済みユーザの除外に成功しました。')
+        else:
+            user_ids_of_unadded_account = user_ids
+            user_names_of_unadded_account = user_names
+    except Exception as e:
+        raise(e)
+    
+    return user_ids_of_unadded_account, \
+            user_names_of_unadded_account, \
+            user_ids_of_added_account, \
+            user_names_of_added_account
 
 
 def __split_users_into_no_problems_and_problems(
