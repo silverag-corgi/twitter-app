@@ -233,7 +233,7 @@ googlemaps,Google Maps
 ヘルプ：
 ```cmd
 > poetry run list-imp -h 
-usage: list-imp [-h] [-l LIST_MEMBER_FILE_PATH] [-hd HEADER_LINE_NUM]
+usage: list-imp [-h] [-l LIST_MEMBER_FILE_PATH] [-hd HEADER_LINE_NUM] [-d]
 
 Twitterリストインポート
 指定したcsvファイルをリストとしてTwitterにインポートします
@@ -250,6 +250,10 @@ Group C - optional arguments:
   -hd HEADER_LINE_NUM, --header_line_num HEADER_LINE_NUM
                         ヘッダ行番号 (デフォルト：1)
                         0：ヘッダなし、1~：ヘッダとなるファイルの行番号
+  -d, --add_only_users_with_diff
+                        差分ユーザ追加
+                        指定した場合は既存のリストに差分のあるユーザのみを追加します
+                        指定しない場合は既存のリストを削除して新しいリストにユーザを追加します
 ```
 
 また、下記コマンドは実行例である。
