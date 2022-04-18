@@ -24,8 +24,9 @@ def main() -> int:
         -
     
     Args on cmd line:
-        list_member_file_path (str) : [グループC][任意] リストメンバーファイルパス(csvファイル)
-        header_line_num (int)       : [グループC][任意] ヘッダ行番号
+        list_member_file_path (str)     : [グループC][任意] リストメンバーファイルパス(csvファイル)
+        header_line_num (int)           : [グループC][任意] ヘッダ行番号
+        add_only_users_with_diff (bool) : [グループC][任意] 差分ユーザ追加
     
     Returns:
         int: 終了コード(0：正常、1：異常)
@@ -53,7 +54,8 @@ def main() -> int:
         twitter_list_import.do_logic(
                 api,
                 args.list_member_file_path,
-                int(args.header_line_num)
+                int(args.header_line_num),
+                args.add_only_users_with_diff
             )
     except KeyboardInterrupt as e:
         if lg is not None:
@@ -95,6 +97,13 @@ def __get_args() -> argparse.Namespace:
             '-hd', '--header_line_num',
             type=int,
             default='1',
+            help=help_)
+        help_ = '差分ユーザ追加\n' + \
+                '指定した場合は既存のリストに差分のあるユーザのみを追加します\n' + \
+                '指定しない場合は既存のリストを削除して新しいリストにユーザを追加します'
+        arg_group_c.add_argument(
+            '-d', '--add_only_users_with_diff',
+            action='store_true',
             help=help_)
         
         args: argparse.Namespace = parser.parse_args()
