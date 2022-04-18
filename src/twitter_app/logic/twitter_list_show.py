@@ -92,9 +92,9 @@ def do_logic(
         
         # リストデータフレームの表示
         pyl.log_inf(lg, f'リスト：\n{list_df}')
-        
-        pyl.log_inf(lg, f'Twitterリスト表示を終了します。')
     except Exception as e:
         raise(e)
+    finally:
+        pyl.log_inf(lg, f'Twitterリスト表示を終了します。')
     
     return list_df

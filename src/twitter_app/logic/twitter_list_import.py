@@ -71,13 +71,13 @@ def do_logic(
                             for _, list_member in list_member_df.iterrows()],
                         add_only_users_with_diff
                     )
-        
-        pyl.log_inf(lg, f'Twitterリストインポートを終了します。')
     except Exception as e:
         # リストの破棄
         if list_ is not None:
             twitter_users_util.destroy_list(api, list_.name)
         
         raise(e)
+    finally:
+        pyl.log_inf(lg, f'Twitterリストインポートを終了します。')
     
     return None
