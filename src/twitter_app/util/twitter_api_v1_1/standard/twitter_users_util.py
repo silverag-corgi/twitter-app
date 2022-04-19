@@ -663,7 +663,7 @@ class EnumOfUserForList(IntEnum):
 
 def add_users_to_list(
         api: tweepy.API,
-        list_id: str,
+        target_list: Any,
         user_ids: list[str],
         user_names: list[str] = [],
         add_only_users_with_diff: bool = False,
@@ -675,7 +675,9 @@ def add_users_to_list(
     
     Args:
         api (tweepy.API)                            : API
-        list_id (str)                               : リストID
+        target_list (Any)                           : 対象リスト
+            id (str)                                : リストID
+            member_count (int)                      : ユーザ数
         user_ids (list[str])                        : ユーザID(複数)
         user_names (list[str])                      : ユーザ名(複数)
         add_only_users_with_diff (bool, optional)   : 差分ユーザ追加
@@ -734,7 +736,7 @@ def add_users_to_list(
             __split_users_into_unadded_and_added(
                     api,
                     add_only_users_with_diff,
-                    list_id,
+                    target_list.id,
                     user_ids,
                     user_names
                 )
@@ -779,13 +781,14 @@ def add_users_to_list(
         
         # ユーザIDリストの要素ごと
         user_ids_by_element: list[str]
-        sum_of_users_at_this_time: int = num_of_users_of_added_account
+        sum_of_users_at_this_time: int = target_list.member_count
         sum_of_users_at_last_time: int = 0
         num_of_users_at_this_time: int = 0
         for index, user_ids_by_element in enumerate(user_ids_list, start=1):
             # ユーザの追加
             sum_of_users_at_last_time = sum_of_users_at_this_time
-            list_: Any = api.add_list_members(list_id=list_id, screen_name=user_ids_by_element)
+            list_: Any = \
+                api.add_list_members(list_id=target_list.id, screen_name=user_ids_by_element)
             sum_of_users_at_this_time = list_.member_count
             num_of_users_at_this_time = sum_of_users_at_this_time - sum_of_users_at_last_time
             
@@ -795,7 +798,7 @@ def add_users_to_list(
                             f'(num_of_users_at_this_time:' +
                             f'{num_of_users_at_this_time}/{num_of_users_by_element}, ' +
                             f'sum_of_users_at_this_time:' +
-                            f'{sum_of_users_at_this_time - num_of_users_of_added_account}' +
+                            f'{sum_of_users_at_this_time - target_list.member_count}' +
                             f'/{num_of_users_without_problems})')
             
             # 追加結果の確認

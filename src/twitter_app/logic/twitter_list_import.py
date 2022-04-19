@@ -64,7 +64,7 @@ def do_logic(
                 # ユーザの追加
                 twitter_users_util.add_users_to_list(
                         api,
-                        list_.id,
+                        list_,
                         [str(list_member[const_util.LIST_MEMBER_HEADER[0]]).strip()
                             for _, list_member in list_member_df.iterrows()],
                         [str(list_member[const_util.LIST_MEMBER_HEADER[1]])
