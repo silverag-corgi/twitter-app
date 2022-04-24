@@ -803,7 +803,8 @@ def add_users_to_list(
             
             # 追加結果の確認
             if num_of_users_at_this_time != num_of_users_by_element:
-                raise(pyl.CustomError(f'HTTPステータスコードが正常(2xx)以外の可能性があります。'))
+                pyl.log_err(lg, f'HTTPステータスコードが正常(2xx)以外の可能性があるため、処理を中断します。')
+                break
             
             # 待機
             if index != len(user_ids_list):
