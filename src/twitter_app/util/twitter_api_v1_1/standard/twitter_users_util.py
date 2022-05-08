@@ -658,7 +658,7 @@ def destroy_list(
 
 class EnumOfUserForList(IntEnum):
     MAX_NUM_OF_DATA_PER_REQUEST = 50
-    WINDOW_MINUTES = 15
+    MINUTE_INTERVAL = 15
 
 
 def add_users_to_list(
@@ -772,7 +772,7 @@ def add_users_to_list(
         util.show_estimated_proc_time(
                 num_of_users_without_problems,
                 num_of_data_per_request,
-                windows_minutes=EnumOfUserForList.WINDOW_MINUTES
+                minute_interval=EnumOfUserForList.MINUTE_INTERVAL
             )
         
         # ユーザIDリスト
@@ -809,11 +809,11 @@ def add_users_to_list(
             # 待機
             if index != len(user_ids_list):
                 datetime_dt: datetime = \
-                    (datetime.now() + timedelta(minutes=EnumOfUserForList.WINDOW_MINUTES.value))
+                    (datetime.now() + timedelta(minutes=EnumOfUserForList.MINUTE_INTERVAL.value))
                 datetime_str: str = datetime_dt.strftime('%Y-%m-%d %H:%M:%S')
-                pyl.log_inf(lg, f'{EnumOfUserForList.WINDOW_MINUTES.value}分後' +
+                pyl.log_inf(lg, f'{EnumOfUserForList.MINUTE_INTERVAL.value}分後' +
                                 f'({datetime_str})に後続の処理を実行します。')
-                time.sleep(60 * EnumOfUserForList.WINDOW_MINUTES.value)
+                time.sleep(60 * EnumOfUserForList.MINUTE_INTERVAL.value)
     except Exception as e:
         if lg is not None:
             pyl.log_err(lg, f'ユーザ(複数)追加に失敗しました。')
