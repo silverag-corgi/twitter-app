@@ -656,9 +656,12 @@ def destroy_list(
     return result
 
 
-class EnumOfUserForList(IntEnum):
-    MAX_NUM_OF_DATA_PER_REQUEST = 50
-    MINUTE_INTERVAL = 15
+class EnumOfUserForList():
+    class EnumOfOauth1User(IntEnum):
+        MAX_NUM_OF_DATA_PER_REQUEST = 50
+        MAX_NUM_OF_REQUESTS_PER_DAY = 2
+        MAX_NUM_OF_DATA_PER_DAY = MAX_NUM_OF_DATA_PER_REQUEST * MAX_NUM_OF_REQUESTS_PER_DAY
+        MINUTE_INTERVAL = 30
 
 
 def add_users_to_list(
@@ -667,7 +670,11 @@ def add_users_to_list(
         user_ids: list[str],
         user_names: list[str] = [],
         add_only_users_with_diff: bool = False,
-        num_of_data_per_request: int = EnumOfUserForList.MAX_NUM_OF_DATA_PER_REQUEST.value
+        num_of_data_per_request: int = (EnumOfUserForList.EnumOfOauth1User.
+                                        MAX_NUM_OF_DATA_PER_REQUEST.value),
+        num_of_data_per_day: int = (EnumOfUserForList.EnumOfOauth1User.
+                                    MAX_NUM_OF_DATA_PER_DAY.value),
+        minute_interval: int = EnumOfUserForList.EnumOfOauth1User.MINUTE_INTERVAL.value
     ) -> None:
     
     '''
@@ -682,6 +689,8 @@ def add_users_to_list(
         user_names (list[str])                      : ユーザ名(複数)
         add_only_users_with_diff (bool, optional)   : 差分ユーザ追加
         num_of_data_per_request (int, optional)     : リクエストごとのデータ数
+        num_of_data_per_day (int, optional)         : 日ごとのデータ数
+        minute_interval (int, optional)             : 時間間隔
     
     Returns:
         -
@@ -772,7 +781,7 @@ def add_users_to_list(
         util.show_estimated_proc_time(
                 num_of_users_without_problems,
                 num_of_data_per_request,
-                minute_interval=EnumOfUserForList.MINUTE_INTERVAL
+                minute_interval=minute_interval
             )
         
         # ユーザIDリスト
@@ -801,19 +810,23 @@ def add_users_to_list(
                             f'{sum_of_users_at_this_time - target_list.member_count}' +
                             f'/{num_of_users_without_problems})')
             
-            # 追加結果の確認
-            if num_of_users_at_this_time != num_of_users_by_element:
-                pyl.log_err(lg, f'HTTPステータスコードが正常(2xx)以外の可能性があるため、処理を中断します。')
+            # 追加結果、ユーザ数の確認
+            if num_of_users_at_this_time != num_of_users_by_element \
+                or (index != len(user_ids_list)
+                    and (sum_of_users_at_this_time - target_list.member_count)
+                        >= num_of_data_per_day):
+                datetime_day_dt: datetime = (datetime.now() + timedelta(days=1))
+                datetime_day_str: str = datetime_day_dt.strftime('%Y-%m-%d %H:%M:%S')
+                pyl.log_war(lg, f'1日に追加可能なユーザ数が上限に到達したため、処理を中断します。')
+                pyl.log_war(lg, f'1日後({datetime_day_str})にオプション「差分ユーザ追加」を指定して再度実行してください。')
                 break
             
             # 待機
             if index != len(user_ids_list):
-                datetime_dt: datetime = \
-                    (datetime.now() + timedelta(minutes=EnumOfUserForList.MINUTE_INTERVAL.value))
-                datetime_str: str = datetime_dt.strftime('%Y-%m-%d %H:%M:%S')
-                pyl.log_inf(lg, f'{EnumOfUserForList.MINUTE_INTERVAL.value}分後' +
-                                f'({datetime_str})に後続の処理を実行します。')
-                time.sleep(60 * EnumOfUserForList.MINUTE_INTERVAL.value)
+                datetime_min_dt: datetime = (datetime.now() + timedelta(minutes=minute_interval))
+                datetime_min_str: str = datetime_min_dt.strftime('%Y-%m-%d %H:%M:%S')
+                pyl.log_inf(lg, f'{minute_interval}分後({datetime_min_str})に残りのユーザを追加します。')
+                time.sleep(60 * minute_interval)
     except Exception as e:
         if lg is not None:
             pyl.log_err(lg, f'ユーザ(複数)追加に失敗しました。')
