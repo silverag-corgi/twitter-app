@@ -64,7 +64,7 @@ per-file-ignores = [
     # F403 'from module import *' used; unable to detect undefined names
     "__init__.py: F401,F403",
 ]
-max-line-length = 100
+max-line-length = 120
 statistics = true
 max-complexity = 18 # if 20 or more, it is hard to test because of complex code.
 
@@ -94,7 +94,7 @@ pretty = true
 # static code analysis tool - formatter
 ####################################################################################################
 [tool.isort]
-line_length = 100
+line_length = 120
 profile = "black"
 src_paths = ["src", "tests"]
 
