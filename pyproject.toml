@@ -17,7 +17,7 @@ generate-setup-file = false
 
 [tool.poetry.dependencies]
 python = "^3.10"
-tweepy = "^4.4.0"
+tweepy = "4.13.0" # NOTE "4.14.0"では`tweepy.API#search_30_day()`と`tweepy.API#search_full_archive()`が削除されているためマイナーバージョンを固定する
 pandas = "^1.4.0"
 tzdata = "^2021.5"
 pyyaml = "^6.0"

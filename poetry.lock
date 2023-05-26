@@ -637,14 +637,14 @@ files = [
 
 [[package]]
 name = "tweepy"
-version = "4.14.0"
+version = "4.13.0"
 description = "Twitter library for Python"
 category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "tweepy-4.14.0-py3-none-any.whl", hash = "sha256:db6d3844ccc0c6d27f339f12ba8acc89912a961da513c1ae50fa2be502a56afb"},
-    {file = "tweepy-4.14.0.tar.gz", hash = "sha256:1f9f1707d6972de6cff6c5fd90dfe6a449cd2e0d70bd40043ffab01e07a06c8c"},
+    {file = "tweepy-4.13.0-py3-none-any.whl", hash = "sha256:95207c41023b75a066b0b442a0a907acada610a3cfa09c4ccb5f2d9e522c33b5"},
+    {file = "tweepy-4.13.0.tar.gz", hash = "sha256:097425335f9f6674826ba7e72b2247bbca39c9ca0a0bd82f30a38a5bef8c6c88"},
 ]
 
 [package.dependencies]
@@ -704,4 +704,4 @@ zstd = ["zstandard (>=0.18.0)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "d54999c525f2cc02ef3a51af58786ee6d351692b5c60295df1a5fd74b5aa672a"
+content-hash = "9c100aff3ccb21edf17bd60b4d43c64923c0242b49398ed20efd313c1d53932e"
