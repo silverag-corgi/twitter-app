@@ -1,7 +1,6 @@
 import argparse
 import os
 import sys
-from logging import Logger
 from typing import Optional
 
 import python_lib_for_me as pyl
@@ -33,15 +32,15 @@ def main() -> int:
         ツイート検索結果ファイル: ./dest/tweet_search_result/[クエリ].csv
     """
 
-    lg: Optional[Logger] = None
+    clg: Optional[pyl.CustomLogger] = None
 
     try:
         # ロガーの取得
-        lg = pyl.get_logger(__name__)
+        clg = pyl.CustomLogger(__name__)
 
         # 実行コマンドの表示
         sys.argv[0] = os.path.basename(sys.argv[0])
-        pyl.log_inf(lg, f"実行コマンド：{sys.argv}")
+        clg.log_inf(f"実行コマンド：{sys.argv}")
 
         # 引数の取得・検証
         args: argparse.Namespace = __get_args()
@@ -54,11 +53,11 @@ def main() -> int:
         # ロジック(Twitterツイート検索)の実行
         twitter_tweet_search.do_logic(api, args.query, args.num_of_tweets)
     except KeyboardInterrupt as e:
-        if lg is not None:
-            pyl.log_inf(lg, f"処理を中断しました。")
+        if clg is not None:
+            clg.log_inf(f"処理を中断しました。")
     except Exception as e:
-        if lg is not None:
-            pyl.log_exc(lg, "")
+        if clg is not None:
+            clg.log_exc("")
         return 1
 
     return 0
@@ -104,20 +103,20 @@ def __get_args() -> argparse.Namespace:
 def __validate_args(args: argparse.Namespace) -> bool:
     """引数検証"""
 
-    lg: Optional[Logger] = None
+    clg: Optional[pyl.CustomLogger] = None
 
     try:
         # ロガーの取得
-        lg = pyl.get_logger(__name__)
+        clg = pyl.CustomLogger(__name__)
 
         # 検証：クエリが1文字以上であること
         if not (len(args.query) >= 1):
-            pyl.log_err(lg, f"クエリが1文字以上ではありません。(query:{args.query})")
+            clg.log_err(f"クエリが1文字以上ではありません。(query:{args.query})")
             return False
 
         # 検証：ツイート数が1件以上であること
         if not (int(args.num_of_tweets) >= 1):
-            pyl.log_err(lg, f"ツイート数が1件以上ではありません。(num_of_tweets:{args.num_of_tweets})")
+            clg.log_err(f"ツイート数が1件以上ではありません。(num_of_tweets:{args.num_of_tweets})")
             return False
     except Exception as e:
         raise (e)

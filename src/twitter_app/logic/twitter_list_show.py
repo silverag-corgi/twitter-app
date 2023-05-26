@@ -1,5 +1,4 @@
 from enum import IntEnum, auto
-from logging import Logger
 from typing import Optional
 
 import pandas as pd
@@ -34,12 +33,12 @@ def do_logic(
         pd.DataFrame: リストデータフレーム
     """
 
-    lg: Optional[Logger] = None
+    clg: Optional[pyl.CustomLogger] = None
 
     try:
         # ロガーの取得
-        lg = pyl.get_logger(__name__)
-        pyl.log_inf(lg, f"Twitterリスト表示を開始します。")
+        clg = pyl.CustomLogger(__name__)
+        clg.log_inf(f"Twitterリスト表示を開始します。")
 
         # Pandasオプション設定
         pd.set_option("display.unicode.east_asian_width", True)
@@ -95,10 +94,11 @@ def do_logic(
                         list_df = pd.concat([list_df, list_info_df], ignore_index=True)
 
         # リストデータフレームの表示
-        pyl.log_inf(lg, f"リスト：\n{list_df}")
+        clg.log_inf(f"リスト：\n{list_df}")
     except Exception as e:
         raise (e)
     finally:
-        pyl.log_inf(lg, f"Twitterリスト表示を終了します。")
+        if clg is not None:
+            clg.log_inf(f"Twitterリスト表示を終了します。")
 
     return list_df

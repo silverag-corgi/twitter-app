@@ -1,6 +1,5 @@
 import json
 from datetime import datetime
-from logging import Logger
 from typing import Any, Optional
 
 import python_lib_for_me as pyl
@@ -46,14 +45,15 @@ def show_rate_limit(
             - https://developer.twitter.com/en/docs/twitter-api/v1/rate-limits
     """  # noqa: E501
 
-    lg: Optional[Logger] = None
+    clg: Optional[pyl.CustomLogger] = None
 
     # 認証方式の確認
     if isinstance(api.auth, (tweepy.OAuth1UserHandler, tweepy.OAuth2AppHandler)) is False:
         raise (pyl.CustomError(f"この認証方式ではTwitterAPIにアクセスできません。(Auth:{type(api.auth)})"))
 
     try:
-        lg = pyl.get_logger(__name__)
+        # ロガーの取得
+        clg = pyl.CustomLogger(__name__)
 
         # レート制限の表示
         rate_limits: Any = api.rate_limit_status()
@@ -62,19 +62,15 @@ def show_rate_limit(
             remaining: int = rate_limit["remaining"]
             limit: int = rate_limit["limit"]
             reset_datetime: datetime = datetime.fromtimestamp(rate_limit["reset"])
-            pyl.log_inf(
-                lg,
-                f"リクエスト回数(15分間隔)：{remaining}/{limit}、"
-                + f"制限リセット時刻：{reset_datetime} "
-                + f"(resource_family:{resource_family}, endpoint:{endpoint})",
+            clg.log_inf(
+                f"リクエスト回数(15分間隔)：{remaining}/{limit}、制限リセット時刻：{reset_datetime} "
+                + f"(resource_family:{resource_family}, endpoint:{endpoint})"
             )
         else:
-            pyl.log_inf(lg, f"レート制限：\n{json.dumps(rate_limits, indent=2)}")
+            clg.log_inf(f"レート制限：\n{json.dumps(rate_limits, indent=2)}")
     except Exception as e:
-        if lg is not None:
-            pyl.log_err(
-                lg, f"レート制限表示に失敗しました。" + f"(resource_family:{resource_family}, endpoint:{endpoint})"
-            )
+        if clg is not None:
+            clg.log_err(f"レート制限表示に失敗しました。(resource_family:{resource_family}, endpoint:{endpoint})")
         raise (e)
 
     return None

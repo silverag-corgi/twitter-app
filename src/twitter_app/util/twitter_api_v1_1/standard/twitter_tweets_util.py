@@ -1,6 +1,5 @@
 import math
 from enum import Enum, IntEnum
-from logging import Logger
 from typing import Any, Optional
 
 import python_lib_for_me as pyl
@@ -75,7 +74,7 @@ def search_tweets_in_past_7day(
             - https://developer.twitter.com/en/docs/twitter-api/v1/data-dictionary/object-model/tweet
     """  # noqa: E501
 
-    lg: Optional[Logger] = None
+    clg: Optional[pyl.CustomLogger] = None
     tweet_search_result_pages: list[SearchResults] = []
 
     # 認証方式の確認
@@ -83,8 +82,9 @@ def search_tweets_in_past_7day(
         raise (pyl.CustomError(f"この認証方式ではTwitterAPIにアクセスできません。(Auth:{type(api.auth)})"))
 
     try:
-        lg = pyl.get_logger(__name__)
-        pyl.log_inf(lg, f"時間がかかるため気長にお待ちください。")
+        # ロガーの取得
+        clg = pyl.CustomLogger(__name__)
+        clg.log_inf(f"時間がかかるため気長にお待ちください。")
 
         # リクエスト数の算出
         num_of_requests = math.ceil(num_of_data / num_of_data_per_request)
@@ -98,10 +98,10 @@ def search_tweets_in_past_7day(
         )
         tweet_search_result_pages = list(tweet_search_result_pagination.pages(num_of_requests))
 
-        pyl.log_inf(lg, f"ツイート検索(過去7日間)に成功しました。(query:{query})")
+        clg.log_inf(f"ツイート検索(過去7日間)に成功しました。(query:{query})")
     except Exception as e:
-        if lg is not None:
-            pyl.log_err(lg, f"ツイート検索(過去7日間)に失敗しました。(query:{query})")
+        if clg is not None:
+            clg.log_err(f"ツイート検索(過去7日間)に失敗しました。(query:{query})")
         raise (e)
 
     return tweet_search_result_pages
@@ -128,8 +128,11 @@ class CustomStream(tweepy.Stream):
         self,
         tweet: Any,
     ) -> None:
+        clg: Optional[pyl.CustomLogger] = None
+
         try:
-            lg: Logger = pyl.get_logger(__name__)
+            # ロガーの取得
+            clg = pyl.CustomLogger(__name__)
 
             # ツイート表示要否の判定(通常ツイート、リツイート、リプライの場合)
             display_tweet: bool = True
@@ -159,13 +162,12 @@ class CustomStream(tweepy.Stream):
                 text: str = str(tweet.text).replace("\n", "\n    ")
                 creation_timestamp: str = pyl.convert_timestamp_to_jst(str(tweet.created_at))
                 url: str = const_util.TWEET_URL.format(tweet.user.screen_name, tweet.id)
-                pyl.log_inf(
-                    lg,
+                clg.log_inf(
                     f"ツイート番号：{self.__tweet_num:04}\n"
                     + f"    {user_name} (@{user_id})\n"
                     + f"    {text}\n"
                     + f"    {creation_timestamp}\n"
-                    + f"    {url}",
+                    + f"    {url}"
                 )
         except Exception as e:
             raise (e)
@@ -212,14 +214,15 @@ def stream_tweets(
             - https://developer.twitter.com/en/docs/twitter-api/v1/data-dictionary/object-model/tweet
     """  # noqa: E501
 
-    lg: Optional[Logger] = None
+    clg: Optional[pyl.CustomLogger] = None
 
     # 認証方式の確認
     if isinstance(api.auth, (tweepy.OAuth1UserHandler)) is False:
         raise (pyl.CustomError(f"この認証方式ではTwitterAPIにアクセスできません。(Auth:{type(api.auth)})"))
 
     try:
-        lg = pyl.get_logger(__name__)
+        # ロガーの取得
+        clg = pyl.CustomLogger(__name__)
 
         # ストリームの生成
         stream: CustomStream = CustomStream(
@@ -230,8 +233,8 @@ def stream_tweets(
         # ツイートの配信
         stream.filter(follow=following_user_ids, track=keywords, languages=["ja"])
     except Exception as e:
-        if lg is not None:
-            pyl.log_err(lg, f"ツイート配信に失敗しました。")
+        if clg is not None:
+            clg.log_err(f"ツイート配信に失敗しました。")
         raise (e)
 
     return None

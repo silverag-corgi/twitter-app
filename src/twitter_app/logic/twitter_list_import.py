@@ -1,6 +1,5 @@
 import glob
 import os
-from logging import Logger
 from typing import Any, Optional
 
 import pandas as pd
@@ -20,23 +19,21 @@ def do_logic(
 ) -> None:
     """ロジック実行"""
 
-    lg: Optional[Logger] = None
+    clg: Optional[pyl.CustomLogger] = None
     list_: Any = None
 
     try:
         # ロガーの取得
-        lg = pyl.get_logger(__name__)
-        pyl.log_inf(lg, f"Twitterリストインポートを開始します。")
+        clg = pyl.CustomLogger(__name__)
+        clg.log_inf(f"Twitterリストインポートを開始します。")
 
         # リストメンバーファイルパスの取得
         list_member_file_paths: list[str] = glob.glob(list_member_file_path_with_wildcard)
 
         # リストメンバーファイルの件数が0件の場合
         if len(list_member_file_paths) == 0:
-            pyl.log_inf(
-                lg,
-                f"リストメンバーファイルの件数が0件です。"
-                + f"(list_member_file_path:{list_member_file_path_with_wildcard})",
+            clg.log_inf(
+                f"リストメンバーファイルの件数が0件です。(list_member_file_path:{list_member_file_path_with_wildcard})"
             )
         else:
             # TwitterAPIの実行
@@ -85,6 +82,7 @@ def do_logic(
 
         raise (e)
     finally:
-        pyl.log_inf(lg, f"Twitterリストインポートを終了します。")
+        if clg is not None:
+            clg.log_inf(f"Twitterリストインポートを終了します。")
 
     return None

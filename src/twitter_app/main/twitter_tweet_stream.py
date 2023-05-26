@@ -1,7 +1,6 @@
 import argparse
 import os
 import sys
-from logging import Logger
 from typing import Optional
 
 import python_lib_for_me as pyl
@@ -33,15 +32,15 @@ def main() -> int:
         int: 終了コード(0：正常、1：異常)
     """
 
-    lg: Optional[Logger] = None
+    clg: Optional[pyl.CustomLogger] = None
 
     try:
         # ロガーの取得
-        lg = pyl.get_logger(__name__)
+        clg = pyl.CustomLogger(__name__)
 
         # 実行コマンドの表示
         sys.argv[0] = os.path.basename(sys.argv[0])
-        pyl.log_inf(lg, f"実行コマンド：{sys.argv}")
+        clg.log_inf(f"実行コマンド：{sys.argv}")
 
         # 引数の取得・検証
         args: argparse.Namespace = __get_args()
@@ -82,11 +81,11 @@ def main() -> int:
                 int(args.following_user_file_path[1]),
             )
     except KeyboardInterrupt as e:
-        if lg is not None:
-            pyl.log_inf(lg, f"処理を中断しました。")
+        if clg is not None:
+            clg.log_inf(f"処理を中断しました。")
     except Exception as e:
-        if lg is not None:
-            pyl.log_exc(lg, "")
+        if clg is not None:
+            clg.log_exc("")
         return 1
 
     return 0
@@ -161,33 +160,29 @@ def __get_args() -> argparse.Namespace:
 def __validate_args(args: argparse.Namespace) -> bool:
     """引数検証"""
 
-    lg: Optional[Logger] = None
+    clg: Optional[pyl.CustomLogger] = None
 
     try:
         # ロガーの取得
-        lg = pyl.get_logger(__name__)
+        clg = pyl.CustomLogger(__name__)
 
         # 検証：グループAの引数が指定された場合は1文字以上であること
         if args.user_id_for_followees is not None and not (len(args.user_id_for_followees) >= 1):
-            pyl.log_err(
-                lg,
-                f"ユーザID(フォロイー用)が1文字以上ではありません。"
-                + f"(user_id_for_followees:{args.user_id_for_followees})",
+            clg.log_err(
+                f"ユーザID(フォロイー用)が1文字以上ではありません。(user_id_for_followees:{args.user_id_for_followees})",
             )
             return False
         elif args.list_id is not None and not (len(args.list_id) >= 1):
-            pyl.log_err(lg, f"リストIDが1文字以上ではありません。" + f"(list_id:{args.list_id})")
+            clg.log_err(f"リストIDが1文字以上ではありません。(list_id:{args.list_id})")
             return False
         elif args.list_name is not None and not (len(args.list_name) >= 1):
-            pyl.log_err(lg, f"リスト名が1文字以上ではありません。" + f"(list_name:{args.list_name})")
+            clg.log_err(f"リスト名が1文字以上ではありません。(list_name:{args.list_name})")
             return False
         elif args.following_user_file_path is not None and not (
             len(args.following_user_file_path[0]) >= 1
         ):
-            pyl.log_err(
-                lg,
-                f"フォローユーザファイルパスが1文字以上ではありません。"
-                + f"(following_user_file_path[0]:{args.following_user_file_path[0]})",
+            clg.log_err(
+                f"フォローユーザファイルパスが1文字以上ではありません。(following_user_file_path[0]:{args.following_user_file_path[0]})",
             )
             return False
 
@@ -195,10 +190,8 @@ def __validate_args(args: argparse.Namespace) -> bool:
         if args.following_user_file_path is not None and not (
             os.path.splitext(args.following_user_file_path[0])[1] == ".csv"
         ):
-            pyl.log_err(
-                lg,
-                f"フォローユーザファイルパスがcsvファイルのパスではありません。"
-                + f"(following_user_file_path[0]:{args.following_user_file_path[0]})",
+            clg.log_err(
+                f"フォローユーザファイルパスがcsvファイルのパスではありません。(following_user_file_path[0]:{args.following_user_file_path[0]})",
             )
             return False
 
@@ -206,19 +199,15 @@ def __validate_args(args: argparse.Namespace) -> bool:
         if args.following_user_file_path is not None and not (
             os.path.isfile(args.following_user_file_path[0]) is True
         ):
-            pyl.log_err(
-                lg,
-                f"フォローユーザファイルパスのファイルが存在しません。"
-                + f"(following_user_file_path[0]:{args.following_user_file_path[0]})",
+            clg.log_err(
+                f"フォローユーザファイルパスのファイルが存在しません。(following_user_file_path[0]:{args.following_user_file_path[0]})",
             )
             return False
 
         # 検証：ヘッダ行番号が0以上であること
         if not (args.following_user_file_path[1].isdecimal() is True):
-            pyl.log_err(
-                lg,
-                f"ヘッダ行番号が0以上ではありません。"
-                + f"(following_user_file_path[1]:{args.following_user_file_path[1]})",
+            clg.log_err(
+                f"ヘッダ行番号が0以上ではありません。(following_user_file_path[1]:{args.following_user_file_path[1]})",
             )
             return False
     except Exception as e:

@@ -1,5 +1,4 @@
 import webbrowser
-from logging import Logger
 from typing import Optional
 
 import python_lib_for_me as pyl
@@ -119,10 +118,10 @@ def generate_api_by_oauth_1_user(
             - https://developer.twitter.com/en/docs/authentication/oauth-1-0a
     """  # noqa: E501
 
-    lg: Optional[Logger] = None
+    clg: Optional[pyl.CustomLogger] = None
 
     try:
-        lg = pyl.get_logger(__name__)
+        clg = pyl.CustomLogger(__name__)
 
         auth: tweepy.OAuth1UserHandler = tweepy.OAuth1UserHandler(
             twitter_api_auth_info.api_key,
@@ -133,10 +132,10 @@ def generate_api_by_oauth_1_user(
         api: tweepy.API = tweepy.API(auth, wait_on_rate_limit=wait_on_rate_limit)
         api.verify_credentials()
 
-        pyl.log_inf(lg, f"API生成(OAuth 1.0a - User Access Tokens)に成功しました。")
+        clg.log_inf(f"API生成(OAuth 1.0a - User Access Tokens)に成功しました。")
     except Exception as e:
-        if lg is not None:
-            pyl.log_err(lg, f"API生成(OAuth 1.0a - User Access Tokens)に失敗しました。")
+        if clg is not None:
+            clg.log_err(f"API生成(OAuth 1.0a - User Access Tokens)に失敗しました。")
         raise (e)
 
     return api
@@ -168,10 +167,10 @@ def generate_api_by_oauth_1_user_using_pin(
             - https://developer.twitter.com/en/docs/authentication/oauth-1-0a/pin-based-oauth
     """  # noqa: E501
 
-    lg: Optional[Logger] = None
+    clg: Optional[pyl.CustomLogger] = None
 
     try:
-        lg = pyl.get_logger(__name__)
+        clg = pyl.CustomLogger(__name__)
 
         # 認証情報の設定(帯域外認証：Out of Band)
         auth: tweepy.OAuth1UserHandler = tweepy.OAuth1UserHandler(
@@ -194,12 +193,10 @@ def generate_api_by_oauth_1_user_using_pin(
         api: tweepy.API = tweepy.API(auth, wait_on_rate_limit=wait_on_rate_limit)
         api.verify_credentials()
 
-        pyl.log_inf(lg, f"API生成(OAuth 1.0a - User Access Tokens (PIN-Based OAuth flow))に成功しました。")
+        clg.log_inf(f"API生成(OAuth 1.0a - User Access Tokens (PIN-Based OAuth flow))に成功しました。")
     except Exception as e:
-        if lg is not None:
-            pyl.log_err(
-                lg, f"API生成(OAuth 1.0a - User Access Tokens (PIN-Based OAuth flow))に失敗しました。"
-            )
+        if clg is not None:
+            clg.log_err(f"API生成(OAuth 1.0a - User Access Tokens (PIN-Based OAuth flow))に失敗しました。")
         raise (e)
 
     return api, twitter_api_auth_info
@@ -230,10 +227,10 @@ def generate_api_by_oauth_2_app(
             - https://developer.twitter.com/en/docs/authentication/oauth-2-0
     """  # noqa: E501
 
-    lg: Optional[Logger] = None
+    clg: Optional[pyl.CustomLogger] = None
 
     try:
-        lg = pyl.get_logger(__name__)
+        clg = pyl.CustomLogger(__name__)
 
         auth: tweepy.OAuth2AppHandler = tweepy.OAuth2AppHandler(
             twitter_api_auth_info.api_key,
@@ -241,10 +238,10 @@ def generate_api_by_oauth_2_app(
         )
         api: tweepy.API = tweepy.API(auth, wait_on_rate_limit=wait_on_rate_limit)
 
-        pyl.log_inf(lg, f"API生成(OAuth 2.0 - Bearer Token (App-Only))に成功しました。")
+        clg.log_inf(f"API生成(OAuth 2.0 - Bearer Token (App-Only))に成功しました。")
     except Exception as e:
-        if lg is not None:
-            pyl.log_err(lg, f"API生成(OAuth 2.0 - Bearer Token (App-Only))に失敗しました。")
+        if clg is not None:
+            clg.log_err(f"API生成(OAuth 2.0 - Bearer Token (App-Only))に失敗しました。")
         raise (e)
 
     return api

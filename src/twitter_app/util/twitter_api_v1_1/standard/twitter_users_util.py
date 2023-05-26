@@ -2,7 +2,6 @@ import math
 import time
 from datetime import datetime, timedelta
 from enum import IntEnum
-from logging import Logger
 from typing import Any, Optional
 
 import python_lib_for_me as pyl
@@ -70,7 +69,7 @@ def get_followee_pages(
             - https://developer.twitter.com/en/docs/twitter-api/v1/data-dictionary/object-model/user
     """  # noqa: E501
 
-    lg: Optional[Logger] = None
+    clg: Optional[pyl.CustomLogger] = None
     followee_pages: list[ResultSet] = []
 
     # 認証方式の確認
@@ -78,8 +77,9 @@ def get_followee_pages(
         raise (pyl.CustomError(f"この認証方式ではTwitterAPIにアクセスできません。(Auth:{type(api.auth)})"))
 
     try:
-        lg = pyl.get_logger(__name__)
-        pyl.log_inf(lg, f"時間がかかるため気長にお待ちください。")
+        # ロガーの取得
+        clg = pyl.CustomLogger(__name__)
+        clg.log_inf(f"時間がかかるため気長にお待ちください。")
 
         # リクエスト数の算出
         num_of_requests = math.ceil(num_of_data / num_of_data_per_request)
@@ -92,10 +92,10 @@ def get_followee_pages(
         )
         followee_pages = list(followee_pagination.pages(num_of_requests))
 
-        pyl.log_inf(lg, f"フォロイーページ取得に成功しました。(user_id:{user_id})")
+        clg.log_inf(f"フォロイーページ取得に成功しました。(user_id:{user_id})")
     except Exception as e:
-        if lg is not None:
-            pyl.log_err(lg, f"フォロイーページ取得に失敗しました。(user_id:{user_id})")
+        if clg is not None:
+            clg.log_err(f"フォロイーページ取得に失敗しました。(user_id:{user_id})")
         raise (e)
 
     return followee_pages
@@ -155,7 +155,7 @@ def get_follower_pages(
             - https://developer.twitter.com/en/docs/twitter-api/v1/data-dictionary/object-model/user
     """  # noqa: E501
 
-    lg: Optional[Logger] = None
+    clg: Optional[pyl.CustomLogger] = None
     follower_pages: list[ResultSet] = []
 
     # 認証方式の確認
@@ -163,8 +163,9 @@ def get_follower_pages(
         raise (pyl.CustomError(f"この認証方式ではTwitterAPIにアクセスできません。(Auth:{type(api.auth)})"))
 
     try:
-        lg = pyl.get_logger(__name__)
-        pyl.log_inf(lg, f"時間がかかるため気長にお待ちください。")
+        # ロガーの取得
+        clg = pyl.CustomLogger(__name__)
+        clg.log_inf(f"時間がかかるため気長にお待ちください。")
 
         # リクエスト数の算出
         num_of_requests = math.ceil(num_of_data / num_of_data_per_request)
@@ -177,10 +178,10 @@ def get_follower_pages(
         )
         follower_pages = list(follower_pagination.pages(num_of_requests))
 
-        pyl.log_inf(lg, f"フォロワーページ取得に成功しました。(user_id:{user_id})")
+        clg.log_inf(f"フォロワーページ取得に成功しました。(user_id:{user_id})")
     except Exception as e:
-        if lg is not None:
-            pyl.log_err(lg, f"フォロワーページ取得に失敗しました。(user_id:{user_id})")
+        if clg is not None:
+            clg.log_err(f"フォロワーページ取得に失敗しました。(user_id:{user_id})")
         raise (e)
 
     return follower_pages
@@ -224,24 +225,25 @@ def get_friendship(
             - https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/follow-search-get-users/api-reference/get-friendships-show#example-response
     """  # noqa: E501
 
-    lg: Optional[Logger] = None
+    clg: Optional[pyl.CustomLogger] = None
 
     # 認証方式の確認
     if isinstance(api.auth, (tweepy.OAuth1UserHandler, tweepy.OAuth2AppHandler)) is False:
         raise (pyl.CustomError(f"この認証方式ではTwitterAPIにアクセスできません。(Auth:{type(api.auth)})"))
 
     try:
-        lg = pyl.get_logger(__name__)
+        # ロガーの取得
+        clg = pyl.CustomLogger(__name__)
 
         # 交友関係の取得
         friendship: Any = api.get_friendship(
             source_screen_name=user_id_source, target_screen_name=user_id_target
         )
 
-        pyl.log_deb(lg, f"交友関係取得に成功しました。")
+        clg.log_dbg(f"交友関係取得に成功しました。")
     except Exception as e:
-        if lg is not None:
-            pyl.log_err(lg, f"交友関係取得に失敗しました。")
+        if clg is not None:
+            clg.log_err(f"交友関係取得に失敗しました。")
         raise (e)
 
     return friendship
@@ -291,7 +293,7 @@ def lookup_users(
             - https://developer.twitter.com/en/docs/twitter-api/v1/data-dictionary/object-model/user
     """  # noqa: E501
 
-    lg: Optional[Logger] = None
+    clg: Optional[pyl.CustomLogger] = None
     user_pages: list[ResultSet] = []
 
     # 認証方式の確認
@@ -299,7 +301,8 @@ def lookup_users(
         raise (pyl.CustomError(f"この認証方式ではTwitterAPIにアクセスできません。(Auth:{type(api.auth)})"))
 
     try:
-        lg = pyl.get_logger(__name__)
+        # ロガーの取得
+        clg = pyl.CustomLogger(__name__)
 
         # ユーザIDリスト(100人ごと)の生成
         user_ids_list: list[list[str]] = pyl.split_list(user_ids, num_of_data_per_request)
@@ -309,10 +312,10 @@ def lookup_users(
             users: Any = api.lookup_users(screen_name=user_ids_by_element)
             user_pages.append(users)
 
-        pyl.log_inf(lg, f"ユーザ検索に成功しました。")
+        clg.log_inf(f"ユーザ検索に成功しました。")
     except Exception as e:
-        if lg is not None:
-            pyl.log_err(lg, f"ユーザ検索に失敗しました。")
+        if clg is not None:
+            clg.log_err(f"ユーザ検索に失敗しました。")
         raise (e)
 
     return user_pages
@@ -354,22 +357,23 @@ def get_user_info(
             - https://developer.twitter.com/en/docs/twitter-api/v1/data-dictionary/object-model/user
     """  # noqa: E501
 
-    lg: Optional[Logger] = None
+    clg: Optional[pyl.CustomLogger] = None
 
     # 認証方式の確認
     if isinstance(api.auth, (tweepy.OAuth1UserHandler, tweepy.OAuth2AppHandler)) is False:
         raise (pyl.CustomError(f"この認証方式ではTwitterAPIにアクセスできません。(Auth:{type(api.auth)})"))
 
     try:
-        lg = pyl.get_logger(__name__)
+        # ロガーの取得
+        clg = pyl.CustomLogger(__name__)
 
         # ユーザ情報の取得
         user_info: Any = api.get_user(screen_name=user_id)
 
-        pyl.log_deb(lg, f"ユーザ情報取得に成功しました。")
+        clg.log_dbg(f"ユーザ情報取得に成功しました。")
     except Exception as e:
-        if lg is not None:
-            pyl.log_err(lg, f"ユーザ情報取得に失敗しました。")
+        if clg is not None:
+            clg.log_err(f"ユーザ情報取得に失敗しました。")
         raise (e)
 
     return user_info
@@ -416,14 +420,15 @@ def get_lists(
             - https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/create-manage-lists/api-reference/get-lists-show#example-response
     """  # noqa: E501
 
-    lg: Optional[Logger] = None
+    clg: Optional[pyl.CustomLogger] = None
 
     # 認証方式の確認
     if isinstance(api.auth, (tweepy.OAuth1UserHandler, tweepy.OAuth2AppHandler)) is False:
         raise (pyl.CustomError(f"この認証方式ではTwitterAPIにアクセスできません。(Auth:{type(api.auth)})"))
 
     try:
-        lg = pyl.get_logger(__name__)
+        # ロガーの取得
+        clg = pyl.CustomLogger(__name__)
 
         # リスト(複数)の取得
         lists: Any
@@ -432,10 +437,10 @@ def get_lists(
         else:
             lists = api.get_lists(screen_name=user_id, reverse=True)
 
-        pyl.log_inf(lg, f"リスト(複数)取得に成功しました。(user_id:{user_id})")
+        clg.log_inf(f"リスト(複数)取得に成功しました。(user_id:{user_id})")
     except Exception as e:
-        if lg is not None:
-            pyl.log_err(lg, f"リスト(複数)取得に失敗しました。(user_id:{user_id})")
+        if clg is not None:
+            clg.log_err(f"リスト(複数)取得に失敗しました。(user_id:{user_id})")
         raise (e)
 
     return lists
@@ -495,7 +500,7 @@ def get_list_member_pages(
             - https://developer.twitter.com/en/docs/twitter-api/v1/data-dictionary/object-model/user
     """  # noqa: E501
 
-    lg: Optional[Logger] = None
+    clg: Optional[pyl.CustomLogger] = None
     list_member_pages: list[ResultSet] = []
 
     # 認証方式の確認
@@ -503,8 +508,9 @@ def get_list_member_pages(
         raise (pyl.CustomError(f"この認証方式ではTwitterAPIにアクセスできません。(Auth:{type(api.auth)})"))
 
     try:
-        lg = pyl.get_logger(__name__)
-        pyl.log_inf(lg, f"時間がかかるため気長にお待ちください。")
+        # ロガーの取得
+        clg = pyl.CustomLogger(__name__)
+        clg.log_inf(f"時間がかかるため気長にお待ちください。")
 
         # リクエスト数の算出
         num_of_requests = math.ceil(num_of_data / num_of_data_per_request)
@@ -517,10 +523,10 @@ def get_list_member_pages(
         )
         list_member_pages = list(list_member_pagination.pages(num_of_requests))
 
-        pyl.log_inf(lg, f"リストメンバーページ取得に成功しました。(list_id:{list_id})")
+        clg.log_inf(f"リストメンバーページ取得に成功しました。(list_id:{list_id})")
     except Exception as e:
-        if lg is not None:
-            pyl.log_err(lg, f"リストメンバーページ取得に失敗しました。(list_id:{list_id})")
+        if clg is not None:
+            clg.log_err(f"リストメンバーページ取得に失敗しました。(list_id:{list_id})")
         raise (e)
 
     return list_member_pages
@@ -557,22 +563,23 @@ def generate_list(
             - https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/create-manage-lists/api-reference/get-lists-show#example-response
     """  # noqa: E501
 
-    lg: Optional[Logger] = None
+    clg: Optional[pyl.CustomLogger] = None
 
     # 認証方式の確認
     if isinstance(api.auth, (tweepy.OAuth1UserHandler)) is False:
         raise (pyl.CustomError(f"この認証方式ではTwitterAPIにアクセスできません。(Auth:{type(api.auth)})"))
 
     try:
-        lg = pyl.get_logger(__name__)
+        # ロガーの取得
+        clg = pyl.CustomLogger(__name__)
 
         # リストの生成
         list_: Any = api.create_list(list_name, mode="private", description="")
 
-        pyl.log_inf(lg, f"リスト生成に成功しました。(list_name:{list_name})")
+        clg.log_inf(f"リスト生成に成功しました。(list_name:{list_name})")
     except Exception as e:
-        if lg is not None:
-            pyl.log_err(lg, f"リスト生成に失敗しました。(list_name:{list_name})")
+        if clg is not None:
+            clg.log_err(f"リスト生成に失敗しました。(list_name:{list_name})")
         raise (e)
 
     return list_
@@ -609,7 +616,7 @@ def destroy_list(
             - https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/create-manage-lists/api-reference/get-lists-show#example-response
     """  # noqa: E501
 
-    lg: Optional[Logger] = None
+    clg: Optional[pyl.CustomLogger] = None
     result: bool = False
 
     # 認証方式の確認
@@ -617,7 +624,8 @@ def destroy_list(
         raise (pyl.CustomError(f"この認証方式ではTwitterAPIにアクセスできません。(Auth:{type(api.auth)})"))
 
     try:
-        lg = pyl.get_logger(__name__)
+        # ロガーの取得
+        clg = pyl.CustomLogger(__name__)
 
         # リスト(複数)の取得
         lists: ResultSet = get_lists(api)
@@ -626,11 +634,11 @@ def destroy_list(
         for list in lists:
             if list.name == list_name:
                 api.destroy_list(list_id=list.id)
-                pyl.log_inf(lg, f"リスト破棄に成功しました。(list_name:{list_name})")
+                clg.log_inf(f"リスト破棄に成功しました。(list_name:{list_name})")
                 result = True
     except Exception as e:
-        if lg is not None:
-            pyl.log_err(lg, f"リスト破棄に失敗しました。(list_name:{list_name})")
+        if clg is not None:
+            clg.log_err(f"リスト破棄に失敗しました。(list_name:{list_name})")
         raise (e)
 
     return result
@@ -696,7 +704,7 @@ def add_users_to_list(
             - https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/create-manage-lists/api-reference/get-lists-show#example-response
     """  # noqa: E501
 
-    lg: Optional[Logger] = None
+    clg: Optional[pyl.CustomLogger] = None
 
     # 認証方式の確認
     if isinstance(api.auth, (tweepy.OAuth1UserHandler)) is False:
@@ -706,13 +714,13 @@ def add_users_to_list(
     if len(user_names) > 0 and len(user_ids) != len(user_names):
         raise (
             pyl.CustomError(
-                f"ユーザ名(複数)の長さがユーザID(複数)の長さと異なります。"
-                + f"(user_names:{len(user_names)}, user_ids:{len(user_ids)})"
+                f"ユーザ名(複数)の長さがユーザID(複数)の長さと異なります。(user_names:{len(user_names)}, user_ids:{len(user_ids)})"
             )
         )
 
     try:
-        lg = pyl.get_logger(__name__)
+        # ロガーの取得
+        clg = pyl.CustomLogger(__name__)
 
         # ユーザ名の初期化
         if len(user_names) == 0:
@@ -750,21 +758,16 @@ def add_users_to_list(
 
         # ログの出力
         if add_only_users_with_diff is True:
-            pyl.log_inf(
-                lg,
-                f"追加済みユーザを除外しました。"
-                + f"(num_of_users_of_added_account:{num_of_users_of_added_account})",
+            clg.log_inf(
+                f"追加済みユーザを除外しました。(num_of_users_of_added_account:{num_of_users_of_added_account})"
             )
-        pyl.log_inf(
-            lg,
-            f"下記ユーザは問題があるため除外しました。" + f"(num_of_users_with_problems:{num_of_users_with_problems})",
+        clg.log_inf(
+            f"下記ユーザは問題があるため除外しました。" + f"(num_of_users_with_problems:{num_of_users_with_problems})"
         )
-        pyl.log_inf(lg, f"ユーザID：{user_ids_with_problems}")
-        pyl.log_inf(lg, f"ユーザ名：{user_names_with_problems}")
-        pyl.log_inf(
-            lg,
-            f"{num_of_data_per_request}人ごとにユーザを追加します。"
-            + f"(num_of_users_without_problems:{num_of_users_without_problems})",
+        clg.log_inf(f"ユーザID：{user_ids_with_problems}")
+        clg.log_inf(f"ユーザ名：{user_names_with_problems}")
+        clg.log_inf(
+            f"{num_of_data_per_request}人ごとにユーザを追加します。(num_of_users_without_problems:{num_of_users_without_problems})"
         )
         util.show_estimated_proc_time(
             num_of_users_without_problems,
@@ -793,14 +796,12 @@ def add_users_to_list(
 
             # ログの出力
             num_of_users_by_element: int = len(user_ids_by_element)
-            pyl.log_inf(
-                lg,
+            clg.log_inf(
                 f"ユーザを追加しました。"
                 + f"(num_of_users_at_this_time:"
                 + f"{num_of_users_at_this_time}/{num_of_users_by_element}, "
                 + f"sum_of_users_at_this_time:"
-                + f"{sum_of_users_at_this_time - target_list.member_count}"
-                + f"/{num_of_users_without_problems})",
+                + f"{sum_of_users_at_this_time - target_list.member_count}/{num_of_users_without_problems})"
             )
 
             # 追加結果、ユーザ数の確認
@@ -810,19 +811,19 @@ def add_users_to_list(
             ):
                 datetime_day_dt: datetime = datetime.now() + timedelta(days=1)
                 datetime_day_str: str = datetime_day_dt.strftime("%Y-%m-%d %H:%M:%S")
-                pyl.log_war(lg, f"1日に追加可能なユーザ数が上限に到達したため、処理を中断します。")
-                pyl.log_war(lg, f"1日後({datetime_day_str})にオプション「差分ユーザ追加」を指定して再度実行してください。")
+                clg.log_wrn(f"1日に追加可能なユーザ数が上限に到達したため、処理を中断します。")
+                clg.log_wrn(f"1日後({datetime_day_str})にオプション「差分ユーザ追加」を指定して再度実行してください。")
                 break
 
             # 待機
             if index != len(user_ids_list):
                 datetime_min_dt: datetime = datetime.now() + timedelta(minutes=minute_interval)
                 datetime_min_str: str = datetime_min_dt.strftime("%Y-%m-%d %H:%M:%S")
-                pyl.log_inf(lg, f"{minute_interval}分後({datetime_min_str})に残りのユーザを追加します。")
+                clg.log_inf(f"{minute_interval}分後({datetime_min_str})に残りのユーザを追加します。")
                 time.sleep(60 * minute_interval)
     except Exception as e:
-        if lg is not None:
-            pyl.log_err(lg, f"ユーザ(複数)追加に失敗しました。")
+        if clg is not None:
+            clg.log_err(f"ユーザ(複数)追加に失敗しました。")
         raise (e)
 
     return None
@@ -837,7 +838,7 @@ def __split_users_into_unadded_and_added(
 ) -> tuple[list[str], list[str], list[str], list[str]]:
     """ユーザ分割(未追加、追加済み)"""
 
-    lg: Optional[Logger] = None
+    clg: Optional[pyl.CustomLogger] = None
 
     # ユーザID(未追加)
     user_ids_of_unadded_account: list[str] = []
@@ -851,7 +852,8 @@ def __split_users_into_unadded_and_added(
     user_names_of_added_account: list[str] = []
 
     try:
-        lg = pyl.get_logger(__name__)
+        # ロガーの取得
+        clg = pyl.CustomLogger(__name__)
 
         if add_only_users_with_diff is True:
             # ユーザID(追加済みアカウント)の生成
@@ -869,7 +871,7 @@ def __split_users_into_unadded_and_added(
                     user_ids_of_added_account.append(user_id)
                     user_names_of_added_account.append(user_names[index])
 
-            pyl.log_inf(lg, f"追加済みユーザの除外に成功しました。")
+            clg.log_inf(f"追加済みユーザの除外に成功しました。")
         else:
             user_ids_of_unadded_account = user_ids
             user_names_of_unadded_account = user_names
@@ -892,7 +894,7 @@ def __split_users_into_no_problems_and_problems(
 ) -> tuple[list[str], list[str], list[str], list[str]]:
     """ユーザ分割(問題なし、問題あり)"""
 
-    lg: Optional[Logger] = None
+    clg: Optional[pyl.CustomLogger] = None
 
     # ユーザID(問題なし)
     user_ids_without_problems: list[str] = []
@@ -904,7 +906,8 @@ def __split_users_into_no_problems_and_problems(
     user_names_with_problems: list[str] = []
 
     try:
-        lg = pyl.get_logger(__name__)
+        # ロガーの取得
+        clg = pyl.CustomLogger(__name__)
 
         # ユーザID(未削除・未凍結・未保護アカウント)の生成
         user_ids_of_unprotected_account: list[str] = []
@@ -914,8 +917,8 @@ def __split_users_into_no_problems_and_problems(
                 if user.protected is False:
                     user_ids_of_unprotected_account.append(user.screen_name)
 
-        pyl.log_inf(lg, f"削除されたアカウント、凍結されたアカウント、保護されたアカウントの除外に成功しました。")
-        pyl.log_inf(lg, f"時間がかかるため気長にお待ちください。")
+        clg.log_inf(f"削除されたアカウント、凍結されたアカウント、保護されたアカウントの除外に成功しました。")
+        clg.log_inf(f"時間がかかるため気長にお待ちください。")
 
         # ユーザID(未ブロックアカウント)の生成
         user_ids_of_accounts_that_has_not_blocked_me: list[str] = []
@@ -925,7 +928,7 @@ def __split_users_into_no_problems_and_problems(
             if friendship[0].blocking is None or friendship[0].blocking is False:
                 user_ids_of_accounts_that_has_not_blocked_me.append(user_id)
 
-        pyl.log_inf(lg, f"自分をブロックしたアカウントの除外に成功しました。")
+        clg.log_inf(f"自分をブロックしたアカウントの除外に成功しました。")
 
         # ユーザID(ブロック済みアカウント)の生成
         user_ids_of_accounts_that_i_have_blocked: list[str] = []
@@ -940,7 +943,7 @@ def __split_users_into_no_problems_and_problems(
             if not (user_id in user_ids_of_accounts_that_i_have_blocked):
                 user_ids_of_accounts_that_i_have_not_blocked.append(user_id)
 
-        pyl.log_inf(lg, f"自分がブロックしたアカウントの除外に成功しました。")
+        clg.log_inf(f"自分がブロックしたアカウントの除外に成功しました。")
 
         # ユーザID・名(問題なし・あり)の生成
         for index, user_id in enumerate(user_ids):
@@ -951,7 +954,7 @@ def __split_users_into_no_problems_and_problems(
                 user_ids_without_problems.append(user_id)
                 user_names_without_problems.append(user_names[index])
 
-        pyl.log_inf(lg, f"ユーザの分割に成功しました。")
+        clg.log_inf(f"ユーザの分割に成功しました。")
     except Exception as e:
         raise (e)
 
@@ -997,27 +1000,25 @@ def get_auth_user_info(
             - https://developer.twitter.com/en/docs/twitter-api/v1/data-dictionary/object-model/user
     """  # noqa: E501
 
-    lg: Optional[Logger] = None
+    clg: Optional[pyl.CustomLogger] = None
 
     # 認証方式の確認
     if isinstance(api.auth, (tweepy.OAuth1UserHandler)) is False:
         raise (pyl.CustomError(f"この認証方式ではTwitterAPIにアクセスできません。(Auth:{type(api.auth)})"))
 
     try:
-        lg = pyl.get_logger(__name__)
+        # ロガーの取得
+        clg = pyl.CustomLogger(__name__)
 
         # 認証ユーザ情報の取得
         auth_user_info: Any = api.verify_credentials()
 
-        pyl.log_inf(
-            lg,
-            f"認証ユーザ情報取得に成功しました。"
-            + f"(user_id:{auth_user_info.screen_name: <15}, "
-            + f"user_name:{auth_user_info.name})",
+        clg.log_inf(
+            f"認証ユーザ情報取得に成功しました。(user_id:{auth_user_info.screen_name: <15}, user_name:{auth_user_info.name})"
         )
     except Exception as e:
-        if lg is not None:
-            pyl.log_err(lg, f"認証ユーザ情報取得に失敗しました。")
+        if clg is not None:
+            clg.log_err(f"認証ユーザ情報取得に失敗しました。")
         raise (e)
 
     return auth_user_info
@@ -1070,7 +1071,7 @@ def get_blocked_users_pages(
             - https://developer.twitter.com/en/docs/twitter-api/v1/data-dictionary/object-model/user
     """  # noqa: E501
 
-    lg: Optional[Logger] = None
+    clg: Optional[pyl.CustomLogger] = None
     blocked_user_pages: list[ResultSet] = []
 
     # 認証方式の確認
@@ -1078,8 +1079,9 @@ def get_blocked_users_pages(
         raise (pyl.CustomError(f"この認証方式ではTwitterAPIにアクセスできません。(Auth:{type(api.auth)})"))
 
     try:
-        lg = pyl.get_logger(__name__)
-        # pyl.log_inf(lg, f'時間がかかるため気長にお待ちください。')
+        # ロガーの取得
+        clg = pyl.CustomLogger(__name__)
+        # pyl.log_inf(f'時間がかかるため気長にお待ちください。')
 
         # リクエスト数の算出
         num_of_requests = math.ceil(num_of_data / num_of_data_per_request)
@@ -1090,10 +1092,10 @@ def get_blocked_users_pages(
         )
         blocked_user_pages = list(blocked_user_pagination.pages(num_of_requests))
 
-        pyl.log_inf(lg, f"ブロックユーザページ取得に成功しました。")
+        clg.log_inf(f"ブロックユーザページ取得に成功しました。")
     except Exception as e:
-        if lg is not None:
-            pyl.log_err(lg, f"ブロックユーザページ取得に失敗しました。")
+        if clg is not None:
+            clg.log_err(f"ブロックユーザページ取得に失敗しました。")
         raise (e)
 
     return blocked_user_pages

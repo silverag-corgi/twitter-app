@@ -1,4 +1,3 @@
-from logging import Logger
 from typing import Optional
 
 import pandas as pd
@@ -21,12 +20,12 @@ def do_logic(api: tweepy.API, list_df: pd.DataFrame) -> None:
         -
     """
 
-    lg: Optional[Logger] = None
+    clg: Optional[pyl.CustomLogger] = None
 
     try:
         # ロガーの取得
-        lg = pyl.get_logger(__name__)
-        pyl.log_inf(lg, f"Twitterリストエクスポートを開始します。")
+        clg = pyl.CustomLogger(__name__)
+        clg.log_inf(f"Twitterリストエクスポートを開始します。")
 
         # Pandasオプション設定
         pd.set_option("display.unicode.east_asian_width", True)
@@ -67,8 +66,8 @@ def do_logic(api: tweepy.API, list_df: pd.DataFrame) -> None:
             )
 
             # リストメンバーデータフレームの保存
-            pyl.log_inf(lg, f"リストメンバー(追加分先頭n行)：\n{list_member_df.head(5)}")
-            pyl.log_inf(lg, f"リストメンバー(追加分末尾n行)：\n{list_member_df.tail(5)}")
+            clg.log_inf(f"リストメンバー(追加分先頭n行)：\n{list_member_df.head(5)}")
+            clg.log_inf(f"リストメンバー(追加分末尾n行)：\n{list_member_df.tail(5)}")
             pandas_util.save_list_member_df(list_member_df, list_member_file_path)
 
         # レート制限の表示
@@ -76,6 +75,7 @@ def do_logic(api: tweepy.API, list_df: pd.DataFrame) -> None:
     except Exception as e:
         raise (e)
     finally:
-        pyl.log_inf(lg, f"Twitterリストエクスポートを終了します。")
+        if clg is not None:
+            clg.log_inf(f"Twitterリストエクスポートを終了します。")
 
     return None

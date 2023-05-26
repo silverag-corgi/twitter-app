@@ -1,6 +1,5 @@
 import os
 import re
-from logging import Logger
 from typing import Optional
 
 import pandas as pd
@@ -16,13 +15,13 @@ from twitter_app.util.twitter_api_v1_1.standard import twitter_developer_util, t
 def do_logic(api: tweepy.API, query: str, num_of_tweets: int) -> None:
     """ロジック実行"""
 
-    lg: Optional[Logger] = None
+    clg: Optional[pyl.CustomLogger] = None
     tweet_search_result_file_path: str = ""
 
     try:
         # ロガーの取得
-        lg = pyl.get_logger(__name__)
-        pyl.log_inf(lg, f"Twitterツイート検索を開始します。")
+        clg = pyl.CustomLogger(__name__)
+        clg.log_inf(f"Twitterツイート検索を開始します。")
 
         # Pandasオプション設定
         pd.set_option("display.unicode.east_asian_width", True)
@@ -46,7 +45,7 @@ def do_logic(api: tweepy.API, query: str, num_of_tweets: int) -> None:
 
         # ツイート検索結果ページの件数が0件の場合
         if len(tweet_search_result_pages) == 0:
-            pyl.log_inf(lg, f"ツイート検索結果ページの件数が0件です。" + f"(query_with_filter:{query_with_filter})")
+            clg.log_inf(f"ツイート検索結果ページの件数が0件です。(query_with_filter:{query_with_filter})")
         else:
             # ツイート検索結果ファイルパスの生成
             query_for_name: str = re.sub(r'[\\/:*?"<>\|]+', "-", query)
@@ -83,8 +82,8 @@ def do_logic(api: tweepy.API, query: str, num_of_tweets: int) -> None:
                     )
 
             # ツイート検索結果データフレームの保存
-            pyl.log_inf(lg, f"ツイート検索結果(追加分先頭n行)：\n{tweet_search_result_df.head(5)}")
-            pyl.log_inf(lg, f"ツイート検索結果(追加分末尾n行)：\n{tweet_search_result_df.tail(5)}")
+            clg.log_inf(f"ツイート検索結果(追加分先頭n行)：\n{tweet_search_result_df.head(5)}")
+            clg.log_inf(f"ツイート検索結果(追加分末尾n行)：\n{tweet_search_result_df.tail(5)}")
             pandas_util.save_tweet_search_result_df(
                 tweet_search_result_df, tweet_search_result_file_path
             )
@@ -101,6 +100,7 @@ def do_logic(api: tweepy.API, query: str, num_of_tweets: int) -> None:
 
         raise (e)
     finally:
-        pyl.log_inf(lg, f"Twitterツイート検索を終了します。")
+        if clg is not None:
+            clg.log_inf(f"Twitterツイート検索を終了します。")
 
     return None

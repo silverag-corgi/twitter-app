@@ -1,7 +1,6 @@
 import argparse
 import os
 import sys
-from logging import Logger
 from typing import Optional
 
 import python_lib_for_me as pyl
@@ -31,15 +30,15 @@ def main() -> int:
         int: 終了コード(0：正常、1：異常)
     """
 
-    lg: Optional[Logger] = None
+    clg: Optional[pyl.CustomLogger] = None
 
     try:
         # ロガーの取得
-        lg = pyl.get_logger(__name__)
+        clg = pyl.CustomLogger(__name__)
 
         # 実行コマンドの表示
         sys.argv[0] = os.path.basename(sys.argv[0])
-        pyl.log_inf(lg, f"実行コマンド：{sys.argv}")
+        clg.log_inf(f"実行コマンド：{sys.argv}")
 
         # 引数の取得・検証
         args: argparse.Namespace = __get_args()
@@ -57,11 +56,11 @@ def main() -> int:
             args.add_only_users_with_diff,
         )
     except KeyboardInterrupt as e:
-        if lg is not None:
-            pyl.log_inf(lg, f"処理を中断しました。")
+        if clg is not None:
+            clg.log_inf(f"処理を中断しました。")
     except Exception as e:
-        if lg is not None:
-            pyl.log_exc(lg, "")
+        if clg is not None:
+            clg.log_exc("")
         return 1
 
     return 0
@@ -106,27 +105,25 @@ def __get_args() -> argparse.Namespace:
 def __validate_args(args: argparse.Namespace) -> bool:
     """引数検証"""
 
-    lg: Optional[Logger] = None
+    clg: Optional[pyl.CustomLogger] = None
 
     try:
         # ロガーの取得
-        lg = pyl.get_logger(__name__)
+        clg = pyl.CustomLogger(__name__)
 
         # 検証：リストメンバーファイルパスがcsvファイルのパスであること
         list_member_file_path_and_ext: tuple[str, str] = os.path.splitext(
             args.list_member_file_path
         )
         if not (list_member_file_path_and_ext[1] == ".csv"):
-            pyl.log_err(
-                lg,
-                f"リストメンバーファイルパスがcsvファイルのパスではありません。"
-                + f"(list_member_file_path:{args.list_member_file_path})",
+            clg.log_err(
+                f"リストメンバーファイルパスがcsvファイルのパスではありません。(list_member_file_path:{args.list_member_file_path})"
             )
             return False
 
         # 検証：ヘッダ行番号が0以上であること
         if not (int(args.header_line_num) >= 0):
-            pyl.log_err(lg, f"ヘッダ行番号が0以上ではありません。" + f"(header_line_num:{args.header_line_num})")
+            clg.log_err(f"ヘッダ行番号が0以上ではありません。(header_line_num:{args.header_line_num})")
             return False
     except Exception as e:
         raise (e)

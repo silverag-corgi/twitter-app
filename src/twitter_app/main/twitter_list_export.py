@@ -1,7 +1,6 @@
 import argparse
 import os
 import sys
-from logging import Logger
 from typing import Optional
 
 import pandas as pd
@@ -35,15 +34,15 @@ def main() -> int:
         リストメンバーファイル: ./dest/list_member/[リスト名].csv
     """
 
-    lg: Optional[Logger] = None
+    clg: Optional[pyl.CustomLogger] = None
 
     try:
         # ロガーの取得
-        lg = pyl.get_logger(__name__)
+        clg = pyl.CustomLogger(__name__)
 
         # 実行コマンドの表示
         sys.argv[0] = os.path.basename(sys.argv[0])
-        pyl.log_inf(lg, f"実行コマンド：{sys.argv}")
+        clg.log_inf(f"実行コマンド：{sys.argv}")
 
         # 引数の取得・検証
         args: argparse.Namespace = __get_args()
@@ -71,11 +70,11 @@ def main() -> int:
         # ロジック(Twitterリストエクスポート)の実行
         twitter_list_export.do_logic(api, list_df)
     except KeyboardInterrupt as e:
-        if lg is not None:
-            pyl.log_inf(lg, f"処理を中断しました。")
+        if clg is not None:
+            clg.log_inf(f"処理を中断しました。")
     except Exception as e:
-        if lg is not None:
-            pyl.log_exc(lg, "")
+        if clg is not None:
+            clg.log_exc("")
         return 1
 
     return 0
@@ -127,18 +126,18 @@ def __get_args() -> argparse.Namespace:
 def __validate_args(args: argparse.Namespace) -> bool:
     """引数検証"""
 
-    lg: Optional[Logger] = None
+    clg: Optional[pyl.CustomLogger] = None
 
     try:
         # ロガーの取得
-        lg = pyl.get_logger(__name__)
+        clg = pyl.CustomLogger(__name__)
 
         # 検証：グループBの引数が指定された場合は1文字以上であること
         if args.list_id is not None and not (len(args.list_id) >= 1):
-            pyl.log_err(lg, f"リストIDが1文字以上ではありません。" + f"(list_id:{args.list_id})")
+            clg.log_err(f"リストIDが1文字以上ではありません。(list_id:{args.list_id})")
             return False
         elif args.list_name is not None and not (len(args.list_name) >= 1):
-            pyl.log_err(lg, f"リスト名が1文字以上ではありません。" + f"(list_name:{args.list_name})")
+            clg.log_err(f"リスト名が1文字以上ではありません。(list_name:{args.list_name})")
             return False
     except Exception as e:
         raise (e)

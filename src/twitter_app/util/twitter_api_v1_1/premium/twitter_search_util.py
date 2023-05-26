@@ -1,6 +1,5 @@
 import math
 from enum import Enum, IntEnum, auto
-from logging import Logger
 from typing import Callable, Optional
 
 import python_lib_for_me as pyl
@@ -76,7 +75,7 @@ def search_tweets(
             - https://developer.twitter.com/en/docs/twitter-api/premium/data-dictionary/object-model/tweet
     """  # noqa: E501
 
-    lg: Optional[Logger] = None
+    clg: Optional[pyl.CustomLogger] = None
     tweet_search_result_pages: list[ResultSet] = []
 
     # 認証方式の確認
@@ -84,7 +83,8 @@ def search_tweets(
         raise (pyl.CustomError(f"この認証方式ではTwitterAPIにアクセスできません。(Auth:{type(api.auth)})"))
 
     try:
-        lg = pyl.get_logger(__name__)
+        # ロガーの取得
+        clg = pyl.CustomLogger(__name__)
 
         # 検索開始日付、検索終了日付のUTC変換
         start_date_utc: Optional[str] = None
@@ -123,10 +123,10 @@ def search_tweets(
         )
         tweet_search_result_pages = list(tweet_search_result_pagination.pages(num_of_requests))
 
-        pyl.log_inf(lg, f"ツイート検索(過去30日以内／フルアーカイブ)に成功しました。(query:{query})")
+        clg.log_inf(f"ツイート検索(過去30日以内／フルアーカイブ)に成功しました。(query:{query})")
     except Exception as e:
-        if lg is not None:
-            pyl.log_err(lg, f"ツイート検索(過去30日以内／フルアーカイブ)に失敗しました。(query:{query})")
+        if clg is not None:
+            clg.log_err(f"ツイート検索(過去30日以内／フルアーカイブ)に失敗しました。(query:{query})")
         raise (e)
 
     return tweet_search_result_pages

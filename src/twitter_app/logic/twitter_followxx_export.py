@@ -1,5 +1,4 @@
 from enum import IntEnum, auto
-from logging import Logger
 from typing import Any, Optional
 
 import pandas as pd
@@ -22,12 +21,12 @@ def do_logic(
 ) -> None:
     """ロジック実行"""
 
-    lg: Optional[Logger] = None
+    clg: Optional[pyl.CustomLogger] = None
 
     try:
         # ロガーの取得
-        lg = pyl.get_logger(__name__)
-        pyl.log_inf(lg, f"Twitterフォロイー(フォロワー)エクスポートを開始します。")
+        clg = pyl.CustomLogger(__name__)
+        clg.log_inf(f"Twitterフォロイー(フォロワー)エクスポートを開始します。")
 
         # Pandasオプション設定
         pd.set_option("display.unicode.east_asian_width", True)
@@ -72,7 +71,7 @@ def do_logic(
 
         # フォロイー(フォロワー)ページの件数が0件の場合
         if len(followxx_pages) == 0:
-            pyl.log_inf(lg, f"フォロイー(フォロワー)ページの件数が0件です。(user_id:{user_id})")
+            clg.log_inf(f"フォロイー(フォロワー)ページの件数が0件です。(user_id:{user_id})")
         else:
             # フォロイー(フォロワー)データフレームの初期化
             followxx_df: pd.DataFrame = pd.DataFrame(columns=const_util.LIST_MEMBER_HEADER)
@@ -101,8 +100,8 @@ def do_logic(
             )
 
             # フォロイー(フォロワー)データフレームの保存
-            pyl.log_inf(lg, f"フォロイー(フォロワー)(追加分先頭n行)：\n{followxx_df.head(5)}")
-            pyl.log_inf(lg, f"フォロイー(フォロワー)(追加分末尾n行)：\n{followxx_df.tail(5)}")
+            clg.log_inf(f"フォロイー(フォロワー)(追加分先頭n行)：\n{followxx_df.head(5)}")
+            clg.log_inf(f"フォロイー(フォロワー)(追加分末尾n行)：\n{followxx_df.tail(5)}")
             pandas_util.save_list_member_df(followxx_df, followxx_file_path)
 
         # レート制限の表示
@@ -113,6 +112,7 @@ def do_logic(
     except Exception as e:
         raise (e)
     finally:
-        pyl.log_inf(lg, f"Twitterフォロイー(フォロワー)エクスポートを終了します。")
+        if clg is not None:
+            clg.log_inf(f"Twitterフォロイー(フォロワー)エクスポートを終了します。")
 
     return None

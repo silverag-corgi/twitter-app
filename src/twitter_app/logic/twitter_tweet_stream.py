@@ -1,5 +1,4 @@
 from enum import IntEnum, auto
-from logging import Logger
 from typing import Optional
 
 import pandas as pd
@@ -25,12 +24,12 @@ def do_logic(
     keyword_of_csv_format: str,
     header_line_num: int = -1,
 ) -> None:
-    lg: Optional[Logger] = None
+    clg: Optional[pyl.CustomLogger] = None
 
     try:
         # ロガーの取得
-        lg = pyl.get_logger(__name__)
-        pyl.log_inf(lg, f"Twitterツイート配信を開始します。")
+        clg = pyl.CustomLogger(__name__)
+        clg.log_inf(f"Twitterツイート配信を開始します。")
 
         # ユーザページの取得
         user_pages: list[ResultSet] = []
@@ -65,7 +64,7 @@ def do_logic(
             user.id for users_by_page in user_pages for user in users_by_page
         ]
         if len(following_user_ids) > 0:
-            pyl.log_inf(lg, f"配信対象：{len(following_user_ids)}人")
+            clg.log_inf(f"配信対象：{len(following_user_ids)}人")
         else:
             raise (pyl.CustomError(f"フォローユーザが存在しません。"))
 
@@ -77,6 +76,7 @@ def do_logic(
     except Exception as e:
         raise (e)
     finally:
-        pyl.log_inf(lg, f"Twitterツイート配信を終了します。")
+        if clg is not None:
+            clg.log_inf(f"Twitterツイート配信を終了します。")
 
     return None
