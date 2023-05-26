@@ -174,6 +174,18 @@ files = [
 ]
 
 [[package]]
+name = "decli"
+version = "0.6.0"
+description = "Minimal, easy-to-use, declarative cli tool"
+category = "main"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "decli-0.6.0-py3-none-any.whl", hash = "sha256:d5ed1d509f5a6cf765a4d7350f7ffb0be0c1770840cbd38b05fb0aab642645e8"},
+    {file = "decli-0.6.0.tar.gz", hash = "sha256:2915a55525ef2b1a0ce88b8ccba62ac22df5b6ff3ed2094448e0f951f08e7ba5"},
+]
+
+[[package]]
 name = "flake8"
 version = "6.0.0"
 description = "the modular source code checker: pep8 pyflakes and co"
@@ -704,4 +716,4 @@ zstd = ["zstandard (>=0.18.0)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "9c100aff3ccb21edf17bd60b4d43c64923c0242b49398ed20efd313c1d53932e"
+content-hash = "0ea2c8f5e3561c80306582019458d602f18366653114c80219e7aeb919d00c5b"

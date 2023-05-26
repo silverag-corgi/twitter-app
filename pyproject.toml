@@ -21,6 +21,7 @@ tweepy = "4.13.0" # NOTE "4.14.0"では`tweepy.API#search_30_day()`と`tweepy.AP
 pandas = "^1.4.0"
 tzdata = "^2021.5"
 pyyaml = "^6.0"
+decli = "^0.6.0"
 python-lib-for-me = {path = "../python-lib-for-me", develop = true}
 
 [tool.poetry.group.dev.dependencies]
