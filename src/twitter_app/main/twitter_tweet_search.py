@@ -44,8 +44,7 @@ def main() -> int:
 
         # 引数の取得・検証
         args: argparse.Namespace = __get_args()
-        if __validate_args(args) is False:
-            return 1
+        __validate_args(args)
 
         # ロジック(TwitterAPI認証)の実行
         api: tweepy.API = twitter_api_auth.do_logic_that_generate_api_by_oauth_1_user()
@@ -55,6 +54,11 @@ def main() -> int:
     except KeyboardInterrupt as e:
         if clg is not None:
             clg.log_inf(f"処理を中断しました。")
+        return 1
+    except pyl.ArgumentValidationError as e:
+        if clg is not None:
+            clg.log_err(f"{e}")
+        return 1
     except Exception as e:
         if clg is not None:
             clg.log_exc("")
@@ -100,7 +104,7 @@ def __get_args() -> argparse.Namespace:
     return args
 
 
-def __validate_args(args: argparse.Namespace) -> bool:
+def __validate_args(args: argparse.Namespace) -> None:
     """引数検証"""
 
     clg: Optional[pyl.CustomLogger] = None
@@ -111,17 +115,17 @@ def __validate_args(args: argparse.Namespace) -> bool:
 
         # 検証：クエリが1文字以上であること
         if not (len(args.query) >= 1):
-            clg.log_err(f"クエリが1文字以上ではありません。(query:{args.query})")
-            return False
+            raise pyl.ArgumentValidationError(f"クエリが1文字以上ではありません。(query:{args.query})")
 
         # 検証：ツイート数が1件以上であること
         if not (int(args.num_of_tweets) >= 1):
-            clg.log_err(f"ツイート数が1件以上ではありません。(num_of_tweets:{args.num_of_tweets})")
-            return False
+            raise pyl.ArgumentValidationError(
+                f"ツイート数が1件以上ではありません。(num_of_tweets:{args.num_of_tweets})"
+            )
     except Exception as e:
         raise (e)
 
-    return True
+    return None
 
 
 if __name__ == "__main__":

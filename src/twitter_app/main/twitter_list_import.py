@@ -42,8 +42,7 @@ def main() -> int:
 
         # 引数の取得・検証
         args: argparse.Namespace = __get_args()
-        if __validate_args(args) is False:
-            return 1
+        __validate_args(args)
 
         # ロジック(TwitterAPI認証)の実行
         api: tweepy.API = twitter_api_auth.do_logic_that_generate_api_by_oauth_1_user()
@@ -58,6 +57,11 @@ def main() -> int:
     except KeyboardInterrupt as e:
         if clg is not None:
             clg.log_inf(f"処理を中断しました。")
+        return 1
+    except pyl.ArgumentValidationError as e:
+        if clg is not None:
+            clg.log_err(f"{e}")
+        return 1
     except Exception as e:
         if clg is not None:
             clg.log_exc("")
@@ -102,7 +106,7 @@ def __get_args() -> argparse.Namespace:
     return args
 
 
-def __validate_args(args: argparse.Namespace) -> bool:
+def __validate_args(args: argparse.Namespace) -> None:
     """引数検証"""
 
     clg: Optional[pyl.CustomLogger] = None
@@ -116,19 +120,19 @@ def __validate_args(args: argparse.Namespace) -> bool:
             args.list_member_file_path
         )
         if not (list_member_file_path_and_ext[1] == ".csv"):
-            clg.log_err(
+            raise pyl.ArgumentValidationError(
                 f"リストメンバーファイルパスがcsvファイルのパスではありません。(list_member_file_path:{args.list_member_file_path})"
             )
-            return False
 
         # 検証：ヘッダ行番号が0以上であること
         if not (int(args.header_line_num) >= 0):
-            clg.log_err(f"ヘッダ行番号が0以上ではありません。(header_line_num:{args.header_line_num})")
-            return False
+            raise pyl.ArgumentValidationError(
+                f"ヘッダ行番号が0以上ではありません。(header_line_num:{args.header_line_num})"
+            )
     except Exception as e:
         raise (e)
 
-    return True
+    return None
 
 
 if __name__ == "__main__":
