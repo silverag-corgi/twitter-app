@@ -20,6 +20,7 @@ python = "^3.10"
 tweepy = "^4.4.0"
 pandas = "^1.4.0"
 tzdata = "^2021.5"
+pyyaml = "^6.0"
 python-lib-for-me = {path = "../python-lib-for-me", develop = true}
 
 [tool.poetry.group.dev.dependencies]
