@@ -2,7 +2,7 @@ import argparse
 import textwrap
 from typing import Final
 
-from twitter_app.main import (
+from twitter_app.main.sub_commands import (
     twitter_api_auth,
     twitter_followxx_export,
     twitter_list_export,
