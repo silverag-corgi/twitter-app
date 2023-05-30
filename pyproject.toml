@@ -17,7 +17,7 @@ generate-setup-file = false
 
 [tool.poetry.dependencies]
 python = "^3.10"
-tweepy = "4.13.0" # NOTE "4.14.0"では`tweepy.API#search_30_day()`と`tweepy.API#search_full_archive()`が削除されているためマイナーバージョンを固定する
+tweepy = "4.13.0" # NOTE "4.14.0"では`tweepy.API#search_30_day()`と`tweepy.API#search_full_archive()`が削除されているためバージョンを固定する
 pandas = "^1.4.0"
 tzdata = "^2021.5"
 pyyaml = "^6.0"
@@ -31,14 +31,7 @@ isort = "^5.12.0"
 black = "^23.3.0"
 
 [tool.poetry.scripts]
-followxx-exp    = "twitter_app.main.twitter_followxx_export:main"
-list-exp        = "twitter_app.main.twitter_list_export:main"
-list-imp        = "twitter_app.main.twitter_list_import:main"
-list-show       = "twitter_app.main.twitter_list_show:main"
-pin-auth        = "twitter_app.main.twitter_api_auth:main"
-limit-show      = "twitter_app.main.twitter_rate_limit_show:main"
-tweet-search    = "twitter_app.main.twitter_tweet_search:main"
-tweet-stream    = "twitter_app.main.twitter_tweet_stream:main"
+twitter = "twitter_app.main.main:main"
 
 ####################################################################################################
 # build system

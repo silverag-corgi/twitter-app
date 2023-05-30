@@ -7,29 +7,21 @@ import python_lib_for_me as pyl
 import tweepy
 
 from twitter_app.logic import twitter_api_auth, twitter_tweet_stream
+from twitter_app.main import argument
 
 
-def main() -> int:
+def stream_twitter_tweet(arg_namespace: argparse.Namespace) -> None:
     """
-    メイン
+    Twitterツイート配信
 
     Summary:
-        コマンドラインから実行する。
-
         引数を検証して問題ない場合、指定したキーワードのツイートを配信する。
 
     Args:
-        -
-
-    Args on cmd line:
-        user_id_for_followees (str)     : [グループB][1つのみ必須] ユーザID(フォロイー用)
-        list_id (str)                   : [グループB][1つのみ必須] リストID
-        list_name (str)                 : [グループB][1つのみ必須] リスト名
-        following_user_file_path (str)  : [グループB][1つのみ必須] フォローユーザファイルパス(csvファイル)、ヘッダ行番号
-        keyword_of_csv_format (str)     : [グループC][任意] キーワード(csv形式)
+        arg_namespace (argparse.Namespace): 引数名前空間
 
     Returns:
-        int: 終了コード(0：正常、1：異常)
+        None
     """
 
     clg: Optional[pyl.CustomLogger] = None
@@ -38,130 +30,50 @@ def main() -> int:
         # ロガーの取得
         clg = pyl.CustomLogger(__name__)
 
-        # 実行コマンドの表示
-        sys.argv[0] = os.path.basename(sys.argv[0])
-        clg.log_inf(f"実行コマンド：{sys.argv}")
-
-        # 引数の取得・検証
-        args: argparse.Namespace = __get_args()
-        __validate_args(args)
+        # 引数の検証
+        arg: argument.TwitterTweetStreamArg = argument.TwitterTweetStreamArg(arg_namespace)
+        __validate_arg(arg)
 
         # ロジック(TwitterAPI認証)の実行
         api: tweepy.API = twitter_api_auth.do_logic_that_generate_api_by_oauth_1_user()
 
         # ロジック(Twitterツイート配信)の実行
-        if args.user_id_for_followees is not None:
+        if arg.user_id_for_followees is not None:
             twitter_tweet_stream.do_logic(
                 api,
                 twitter_tweet_stream.EnumOfProcTargetItem.USER_ID,
-                args.user_id_for_followees,
-                args.keyword_of_csv_format,
+                arg.user_id_for_followees,
+                arg.keyword_of_csv_format,
             )
-        elif args.list_id is not None:
+        elif arg.list_id is not None:
             twitter_tweet_stream.do_logic(
                 api,
                 twitter_tweet_stream.EnumOfProcTargetItem.LIST_ID,
-                args.list_id,
-                args.keyword_of_csv_format,
+                arg.list_id,
+                arg.keyword_of_csv_format,
             )
-        elif args.list_name is not None:
+        elif arg.list_name is not None:
             twitter_tweet_stream.do_logic(
                 api,
                 twitter_tweet_stream.EnumOfProcTargetItem.LIST_NAME,
-                args.list_name,
-                args.keyword_of_csv_format,
+                arg.list_name,
+                arg.keyword_of_csv_format,
             )
-        elif args.following_user_file_path is not None:
+        elif arg.following_user_file_path is not None:
             twitter_tweet_stream.do_logic(
                 api,
                 twitter_tweet_stream.EnumOfProcTargetItem.FILE_PATH,
-                args.following_user_file_path[0],
-                args.keyword_of_csv_format,
-                int(args.following_user_file_path[1]),
+                arg.following_user_file_path[0],
+                arg.keyword_of_csv_format,
+                int(arg.following_user_file_path[1]),
             )
-    except KeyboardInterrupt as e:
-        if clg is not None:
-            clg.log_inf(f"処理を中断しました。")
-        return 1
-    except pyl.ArgumentValidationError as e:
-        if clg is not None:
-            clg.log_err(f"{e}")
-        return 1
-    except Exception as e:
-        if clg is not None:
-            clg.log_exc("")
-        return 1
-
-    return 0
-
-
-def __get_args() -> argparse.Namespace:
-    """引数取得"""
-
-    try:
-        parser: pyl.CustomArgumentParser = pyl.CustomArgumentParser(
-            description="Twitterツイート配信\n" + "指定したキーワードのツイートを配信します",
-            formatter_class=argparse.RawTextHelpFormatter,
-            exit_on_error=True,
-        )
-
-        help_: str = ""
-
-        # グループBの引数(1つのみ必須な引数)
-        arg_group_b: argparse._ArgumentGroup = parser.add_argument_group(
-            "Group B - only one required arguments", "1つのみ必須な引数\n処理対象の項目を指定します"
-        )
-        mutually_exclusive_group_a: argparse._MutuallyExclusiveGroup = (
-            arg_group_b.add_mutually_exclusive_group(required=True)
-        )
-        help_ = "{0}\n" + "{1}のツイートを配信します"
-        mutually_exclusive_group_a.add_argument(
-            "-ui",
-            "--user_id_for_followees",
-            type=str,
-            help=help_.format("ユーザID(フォロイー用)", "指定したユーザIDのフォロイー"),
-        )
-        mutually_exclusive_group_a.add_argument(
-            "-li", "--list_id", type=str, help=help_.format("リストID", "指定したリストID")
-        )
-        mutually_exclusive_group_a.add_argument(
-            "-ln", "--list_name", type=str, help=help_.format("リスト名", "指定したリスト名")
-        )
-        help_ = "{0} {1}\n" + "{2}のツイートを配信します\n" + "{3}"
-        mutually_exclusive_group_a.add_argument(
-            "-fp",
-            "--following_user_file_path",
-            type=str,
-            nargs=2,
-            help=help_.format(
-                "フォローユーザファイルパス(csvファイル)",
-                "ヘッダ行番号",
-                "指定したファイルに記載されているユーザ",
-                "ヘッダ行番号は 0：ヘッダなし 1~：ヘッダとなるファイルの行番号 です",
-            ),
-            metavar=("FILE_PATH", "HEADER_LINE_NUM"),
-        )
-
-        # グループCの引数(任意の引数)
-        arg_group_c: argparse._ArgumentGroup = parser.add_argument_group(
-            "Group C - optional arguments", "任意の引数"
-        )
-        help_ = (
-            "キーワード(csv形式)\n"
-            + '例："Google Docs, Google Drive"\n'
-            + "スペースはAND検索(Google AND Docs)\n"
-            + "カンマはOR検索(Google Docs OR Google Drive)"
-        )
-        arg_group_c.add_argument("-k", "--keyword_of_csv_format", type=str, default="", help=help_)
-
-        args: argparse.Namespace = parser.parse_args()
     except Exception as e:
         raise (e)
 
-    return args
+    return None
 
 
-def __validate_args(args: argparse.Namespace) -> None:
+def __validate_arg(arg: argument.TwitterTweetStreamArg) -> None:
     """引数検証"""
 
     clg: Optional[pyl.CustomLogger] = None
@@ -170,48 +82,50 @@ def __validate_args(args: argparse.Namespace) -> None:
         # ロガーの取得
         clg = pyl.CustomLogger(__name__)
 
+        # 引数指定の確認
+        if arg.is_specified() is False:
+            raise pyl.ArgumentValidationError(f"サブコマンドの引数が指定されていません。")
+
         # 検証：グループAの引数が指定された場合は1文字以上であること
-        if args.user_id_for_followees is not None and not (len(args.user_id_for_followees) >= 1):
+        if arg.user_id_for_followees is not None and not (len(arg.user_id_for_followees) >= 1):
             raise pyl.ArgumentValidationError(
-                f"ユーザID(フォロイー用)が1文字以上ではありません。(user_id_for_followees:{args.user_id_for_followees})",
+                f"ユーザID(フォロイー用)が1文字以上ではありません。(user_id_for_followees:{arg.user_id_for_followees})",
             )
-        elif args.list_id is not None and not (len(args.list_id) >= 1):
-            raise pyl.ArgumentValidationError(f"リストIDが1文字以上ではありません。(list_id:{args.list_id})")
-        elif args.list_name is not None and not (len(args.list_name) >= 1):
-            raise pyl.ArgumentValidationError(f"リスト名が1文字以上ではありません。(list_name:{args.list_name})")
-        elif args.following_user_file_path is not None and not (
-            len(args.following_user_file_path[0]) >= 1
+        elif arg.list_id is not None and not (len(arg.list_id) >= 1):
+            raise pyl.ArgumentValidationError(f"リストIDが1文字以上ではありません。(list_id:{arg.list_id})")
+        elif arg.list_name is not None and not (len(arg.list_name) >= 1):
+            raise pyl.ArgumentValidationError(f"リスト名が1文字以上ではありません。(list_name:{arg.list_name})")
+        elif arg.following_user_file_path is not None and not (
+            len(arg.following_user_file_path[0]) >= 1
         ):
             raise pyl.ArgumentValidationError(
-                f"フォローユーザファイルパスが1文字以上ではありません。(following_user_file_path[0]:{args.following_user_file_path[0]})",
+                f"フォローユーザファイルパスが1文字以上ではありません。(following_user_file_path[0]:{arg.following_user_file_path[0]})",
             )
 
         # 検証：フォローユーザファイルパスがcsvファイルのパスであること
-        if args.following_user_file_path is not None and not (
-            os.path.splitext(args.following_user_file_path[0])[1] == ".csv"
+        if arg.following_user_file_path is not None and not (
+            os.path.splitext(arg.following_user_file_path[0])[1] == ".csv"
         ):
             raise pyl.ArgumentValidationError(
-                f"フォローユーザファイルパスがcsvファイルのパスではありません。(following_user_file_path[0]:{args.following_user_file_path[0]})",
+                f"フォローユーザファイルパスがcsvファイルのパスではありません。(following_user_file_path[0]:{arg.following_user_file_path[0]})",
             )
 
         # 検証：フォローユーザファイルパスのファイルが存在すること
-        if args.following_user_file_path is not None and not (
-            os.path.isfile(args.following_user_file_path[0]) is True
+        if arg.following_user_file_path is not None and not (
+            os.path.isfile(arg.following_user_file_path[0]) is True
         ):
             raise pyl.ArgumentValidationError(
-                f"フォローユーザファイルパスのファイルが存在しません。(following_user_file_path[0]:{args.following_user_file_path[0]})",
+                f"フォローユーザファイルパスのファイルが存在しません。(following_user_file_path[0]:{arg.following_user_file_path[0]})",
             )
 
         # 検証：ヘッダ行番号が0以上であること
-        if not (args.following_user_file_path[1].isdecimal() is True):
+        if arg.following_user_file_path is not None and not (
+            str(arg.following_user_file_path[1]).isdecimal() is True
+        ):
             raise pyl.ArgumentValidationError(
-                f"ヘッダ行番号が0以上ではありません。(following_user_file_path[1]:{args.following_user_file_path[1]})",
+                f"ヘッダ行番号が0以上ではありません。(following_user_file_path[1]:{arg.following_user_file_path[1]})",
             )
     except Exception as e:
         raise (e)
 
     return None
-
-
-if __name__ == "__main__":
-    sys.exit(main())

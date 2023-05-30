@@ -7,32 +7,21 @@ import python_lib_for_me as pyl
 import tweepy
 
 from twitter_app.logic import twitter_api_auth, twitter_followxx_export
+from twitter_app.main import argument
 
 
-def main() -> int:
+def export_twitter_followxx(arg_namespace: argparse.Namespace) -> None:
     """
-    メイン
+    Twitterフォロイー(フォロワー)エクスポート
 
     Summary:
-        コマンドラインから実行する。
-
         引数を検証して問題ない場合、指定したユーザのフォロイー(フォロワー)をエクスポートする。
 
     Args:
-        -
-
-    Args on cmd line:
-        user_id (str)           : [グループA][必須] ユーザID
-        export_followee (bool)  : [グループB][1つのみ必須] フォロイーエクスポート要否
-        export_follower (bool)  : [グループB][1つのみ必須] フォロワーエクスポート要否
-        num_of_followxxs (int)  : [グループC][任意] フォロイー(フォロワー)数
+        arg_namespace (argparse.Namespace): 引数名前空間
 
     Returns:
-        int: 終了コード(0：正常、1：異常)
-
-    Destinations:
-        フォロイーファイル: ./dest/followee/[ユーザID].csv
-        フォロワーファイル: ./dest/follower/[ユーザID].csv
+        None
     """
 
     clg: Optional[pyl.CustomLogger] = None
@@ -41,109 +30,37 @@ def main() -> int:
         # ロガーの取得
         clg = pyl.CustomLogger(__name__)
 
-        # 実行コマンドの表示
-        sys.argv[0] = os.path.basename(sys.argv[0])
-        clg.log_inf(f"実行コマンド：{sys.argv}")
-
-        # 引数の取得・検証
-        args: argparse.Namespace = __get_args()
-        __validate_args(args)
+        # 引数の検証
+        arg: argument.TwitterFollowxxExportArg = argument.TwitterFollowxxExportArg(arg_namespace)
+        __validate_arg(arg)
 
         # ロジック(TwitterAPI認証)の実行
         api: tweepy.API = twitter_api_auth.do_logic_that_generate_api_by_oauth_1_user()
 
         # ロジック(Twitterフォロイー(フォロワー)エクスポート)の実行
-        if bool(args.export_followee) is True:
+        if bool(arg.export_followee) is True:
             # ロジック(Twitterフォロイーエクスポート)の実行
             twitter_followxx_export.do_logic(
                 api,
                 twitter_followxx_export.EnumOfProc.EXPORT_FOLLOWEE,
-                args.user_id,
-                args.num_of_followxxs,
+                arg.user_id,
+                arg.num_of_followxxs,
             )
-        elif bool(args.export_follower) is True:
+        elif bool(arg.export_follower) is True:
             # ロジック(Twitterフォロワーエクスポート)の実行
             twitter_followxx_export.do_logic(
                 api,
                 twitter_followxx_export.EnumOfProc.EXPORT_FOLLOWER,
-                args.user_id,
-                args.num_of_followxxs,
+                arg.user_id,
+                arg.num_of_followxxs,
             )
-    except KeyboardInterrupt as e:
-        if clg is not None:
-            clg.log_inf(f"処理を中断しました。")
-        return 1
-    except pyl.ArgumentValidationError as e:
-        if clg is not None:
-            clg.log_err(f"{e}")
-        return 1
-    except Exception as e:
-        if clg is not None:
-            clg.log_exc("")
-        return 1
-
-    return 0
-
-
-def __get_args() -> argparse.Namespace:
-    """引数取得"""
-
-    try:
-        parser: pyl.CustomArgumentParser = pyl.CustomArgumentParser(
-            description="Twitterフォロイー(フォロワー)エクスポート\n" + "指定したユーザのフォロイー(フォロワー)をエクスポートします",
-            formatter_class=argparse.RawTextHelpFormatter,
-            exit_on_error=True,
-        )
-
-        help_: str = ""
-
-        # グループAの引数(全て必須な引数)
-        arg_group_a: argparse._ArgumentGroup = parser.add_argument_group(
-            "Group A - all required arguments", "全て必須な引数"
-        )
-        help_ = "ユーザID"
-        arg_group_a.add_argument("user_id", help=help_)
-
-        # グループBの引数(1つのみ必須な引数)
-        arg_group_b: argparse._ArgumentGroup = parser.add_argument_group(
-            "Group B - only one required arguments", "1つのみ必須な引数\n処理を指定します"
-        )
-        mutually_exclusive_group_b: argparse._MutuallyExclusiveGroup = (
-            arg_group_b.add_mutually_exclusive_group(required=True)
-        )
-        help_ = "{0}エクスポート要否\n" + "{1}をエクスポートします"
-        mutually_exclusive_group_b.add_argument(
-            "-e",
-            "--export_followee",
-            action="store_true",
-            help=help_.format("フォロイー", "フォロイー(指定したユーザがフォローしているユーザ)"),
-        )
-        mutually_exclusive_group_b.add_argument(
-            "-r",
-            "--export_follower",
-            action="store_true",
-            help=help_.format("フォロワー", "フォロワー(指定したユーザをフォローしているユーザ)"),
-        )
-
-        # グループCの引数(任意の引数)
-        arg_group_c: argparse._ArgumentGroup = parser.add_argument_group(
-            "Group C - optional arguments", "任意の引数"
-        )
-        help_ = (
-            "フォロイー(フォロワー)数 (デフォルト：%(default)s)\n"
-            + "エクスポートするフォロイー(フォロワー)の人数\n"
-            + "3000人を超過した場合はレート制限により3000人ごとに15分の待機時間が発生します"
-        )
-        arg_group_c.add_argument("-f", "--num_of_followxxs", type=int, default=3000, help=help_)
-
-        args: argparse.Namespace = parser.parse_args()
     except Exception as e:
         raise (e)
 
-    return args
+    return None
 
 
-def __validate_args(args: argparse.Namespace) -> None:
+def __validate_arg(arg: argument.TwitterFollowxxExportArg) -> None:
     """引数検証"""
 
     clg: Optional[pyl.CustomLogger] = None
@@ -152,20 +69,20 @@ def __validate_args(args: argparse.Namespace) -> None:
         # ロガーの取得
         clg = pyl.CustomLogger(__name__)
 
+        # 引数指定の確認
+        if arg.is_specified() is False:
+            raise pyl.ArgumentValidationError(f"サブコマンドの引数が指定されていません。")
+
         # 検証：ユーザIDが4文字以上であること
-        if not (len(args.user_id) >= 4):
-            raise pyl.ArgumentValidationError(f"ユーザIDが4文字以上ではありません。(user_id:{args.user_id})")
+        if not (len(arg.user_id) >= 4):
+            raise pyl.ArgumentValidationError(f"ユーザIDが4文字以上ではありません。(user_id:{arg.user_id})")
 
         # 検証：フォロイー(フォロワー)数が1人以上であること
-        if not (int(args.num_of_followxxs) >= 1):
+        if not (arg.num_of_followxxs >= 1):
             raise pyl.ArgumentValidationError(
-                f"フォロイー(フォロワー)数が1人以上ではありません。(num_of_followxxs:{args.num_of_followxxs})"
+                f"フォロイー(フォロワー)数が1人以上ではありません。(num_of_followxxs:{arg.num_of_followxxs})"
             )
     except Exception as e:
         raise (e)
 
     return None
-
-
-if __name__ == "__main__":
-    sys.exit(main())
