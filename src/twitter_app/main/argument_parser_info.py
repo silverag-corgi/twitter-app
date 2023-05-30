@@ -46,6 +46,8 @@ ARGUMENT_PARSER_INFO_DICT: Final[dict] = {
                     - 生成ファイル
                         - TwitterAPI認証情報ファイル
                             - config/twitter_api_auth_info.json
+                    - コマンド例
+                        - poetry run twitter auth-api
                     """  # noqa: E501
                 ),
                 "func": twitter_api_auth.authenticate_twitter_api,
@@ -65,6 +67,9 @@ ARGUMENT_PARSER_INFO_DICT: Final[dict] = {
                             - ./dest/followee/[ユーザID].csv
                         - フォロワーファイル
                             - ./dest/follower/[ユーザID].csv
+                    - コマンド例
+                        - poetry run twitter exp-followxx "silverag_corgi" -e -f 3000
+                        - poetry run twitter exp-followxx "silverag_corgi" -r -f 3000
                     """  # noqa: E501
                 ),
                 "func": twitter_followxx_export.export_twitter_followxx,
@@ -131,6 +136,10 @@ ARGUMENT_PARSER_INFO_DICT: Final[dict] = {
                     - 生成ファイル
                         - リストメンバーファイル
                             - ./dest/list_member/[リスト名].csv
+                    - コマンド例
+                        - poetry run twitter exp-list -all
+                        - poetry run twitter exp-list -id "0123456789111111111, 0123456789222222222"
+                        - poetry run twitter exp-list -name "Google関連, Microsoft関連"
                     """  # noqa: E501
                 ),
                 "func": twitter_list_export.export_twitter_list,
@@ -179,6 +188,8 @@ ARGUMENT_PARSER_INFO_DICT: Final[dict] = {
                         - Twitterリストインポート
                     - 概要
                         - 指定したcsvファイルをリストとしてTwitterにインポートします
+                    - コマンド例
+                        - poetry run twitter imp-list -l "input/list_member/*.csv" -hd 1 -d
                     """  # noqa: E501
                 ),
                 "func": twitter_list_import.import_twitter_list,
@@ -232,6 +243,10 @@ ARGUMENT_PARSER_INFO_DICT: Final[dict] = {
                         - Twitterリスト表示
                     - 概要
                         - 指定したリストを表示します
+                    - コマンド例
+                        - poetry run twitter show-list -all
+                        - poetry run twitter show-list -id "0123456789111111111, 0123456789222222222"
+                        - poetry run twitter show-list -name "Google関連, Microsoft関連"
                     """  # noqa: E501
                 ),
                 "func": twitter_list_show.show_twitter_list,
@@ -280,6 +295,9 @@ ARGUMENT_PARSER_INFO_DICT: Final[dict] = {
                         - Twitterレート制限表示
                     - 概要
                         - 指定したリソース群とエンドポイントのレート制限を表示します
+                    - コマンド例
+                        - poetry run twitter show-limit "friends" "/friends/list"
+                        - poetry run twitter show-limit "" ""
                     """  # noqa: E501
                 ),
                 "func": twitter_rate_limit_show.show_rate_limit,
@@ -323,6 +341,8 @@ ARGUMENT_PARSER_INFO_DICT: Final[dict] = {
                     - 生成ファイル
                         - ツイート検索結果ファイル
                             - ./dest/tweet_search_result/[クエリ].csv
+                    - コマンド例
+                        - poetry run twitter search-tweet "API" -t 100
                     """  # noqa: E501
                 ),
                 "func": twitter_tweet_search.search_twitter_tweet,
@@ -364,6 +384,11 @@ ARGUMENT_PARSER_INFO_DICT: Final[dict] = {
                         - Twitterツイート配信
                     - 概要
                         - 指定したキーワードのツイートを配信します
+                    - コマンド例
+                        - poetry run twitter stream-tweet -ui "silverag_corgi" -k "Google Docs, Google Drive"
+                        - poetry run twitter stream-tweet -li "0123456789111111111" -k "Google Docs, Google Drive"
+                        - poetry run twitter stream-tweet -ln "Google関連" -k "Google Docs, Google Drive"
+                        - poetry run twitter stream-tweet -fp "input/list_member/*.csv" 1 -k "Google Docs, Google Drive"
                     """  # noqa: E501
                 ),
                 "func": twitter_tweet_stream.stream_twitter_tweet,
