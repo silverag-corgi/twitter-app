@@ -55,7 +55,7 @@ def do_logic(
 
         # ツイート検索結果ページの件数が0件の場合
         if len(tweet_search_result_pages) == 0:
-            clg.log_inf(f"ツイート検索結果ページの件数が0件です。(query_with_filter:{query_with_filter})")
+            clg.log_wrn(f"ツイート検索結果ページの件数が0件です。(query_with_filter:{query_with_filter})")
         else:
             # ツイート検索結果ファイルパスの生成
             query_for_name: str = re.sub(r'[\\/:*?"<>\|]+', "-", query)

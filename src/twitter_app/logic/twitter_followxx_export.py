@@ -83,7 +83,7 @@ def do_logic(
 
         # フォロイー(フォロワー)ページの件数が0件の場合
         if len(followxx_pages) == 0:
-            clg.log_inf(f"フォロイー(フォロワー)ページの件数が0件です。(user_id:{user_id})")
+            clg.log_wrn(f"フォロイー(フォロワー)ページの件数が0件です。(user_id:{user_id})")
         else:
             # フォロイー(フォロワー)データフレームの初期化
             followxx_df: pd.DataFrame = pd.DataFrame(columns=const_util.LIST_MEMBER_HEADER)

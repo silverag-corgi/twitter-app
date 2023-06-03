@@ -33,7 +33,7 @@ def do_logic(
 
         # リストメンバーファイルの件数が0件の場合
         if len(list_member_file_paths) == 0:
-            clg.log_inf(
+            clg.log_wrn(
                 f"リストメンバーファイルの件数が0件です。(list_member_file_path:{list_member_file_path_with_wildcard})"
             )
         else:
