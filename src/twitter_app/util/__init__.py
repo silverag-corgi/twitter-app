@@ -10,6 +10,7 @@ from .twitter_api_v1_1 import *
 
 
 def show_estimated_proc_time(
+    use_debug_mode: bool,
     num_of_data: int,
     num_of_data_per_minute_interval: int,
     minute_interval: int = 15,
@@ -19,7 +20,7 @@ def show_estimated_proc_time(
     clg: Optional[pyl.CustomLogger] = None
 
     try:
-        clg = pyl.CustomLogger(__name__)
+        clg = pyl.CustomLogger(__name__, use_debug_mode=use_debug_mode)
 
         proc_time: int = math.ceil(num_of_data / num_of_data_per_minute_interval) * minute_interval
 

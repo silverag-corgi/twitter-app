@@ -1,6 +1,4 @@
 import argparse
-import os
-import sys
 from typing import Optional
 
 import python_lib_for_me as pyl
@@ -27,20 +25,25 @@ def export_twitter_followxx(arg_namespace: argparse.Namespace) -> None:
     clg: Optional[pyl.CustomLogger] = None
 
     try:
+        # 引数の取得
+        arg: argument.TwitterFollowxxExportArg = argument.TwitterFollowxxExportArg(arg_namespace)
+
         # ロガーの取得
-        clg = pyl.CustomLogger(__name__)
+        clg = pyl.CustomLogger(__name__, use_debug_mode=arg.use_debug_mode)
 
         # 引数の検証
-        arg: argument.TwitterFollowxxExportArg = argument.TwitterFollowxxExportArg(arg_namespace)
         __validate_arg(arg)
 
         # ロジック(TwitterAPI認証)の実行
-        api: tweepy.API = twitter_api_auth.do_logic_that_generate_api_by_oauth_1_user()
+        api: tweepy.API = twitter_api_auth.do_logic_that_generate_api_by_oauth_1_user(
+            arg.use_debug_mode
+        )
 
         # ロジック(Twitterフォロイー(フォロワー)エクスポート)の実行
         if bool(arg.export_followee) is True:
             # ロジック(Twitterフォロイーエクスポート)の実行
             twitter_followxx_export.do_logic(
+                arg.use_debug_mode,
                 api,
                 twitter_followxx_export.EnumOfProc.EXPORT_FOLLOWEE,
                 arg.user_id,
@@ -49,6 +52,7 @@ def export_twitter_followxx(arg_namespace: argparse.Namespace) -> None:
         elif bool(arg.export_follower) is True:
             # ロジック(Twitterフォロワーエクスポート)の実行
             twitter_followxx_export.do_logic(
+                arg.use_debug_mode,
                 api,
                 twitter_followxx_export.EnumOfProc.EXPORT_FOLLOWER,
                 arg.user_id,
@@ -67,7 +71,7 @@ def __validate_arg(arg: argument.TwitterFollowxxExportArg) -> None:
 
     try:
         # ロガーの取得
-        clg = pyl.CustomLogger(__name__)
+        clg = pyl.CustomLogger(__name__, use_debug_mode=arg.use_debug_mode)
 
         # 引数指定の確認
         if arg.is_specified() is False:

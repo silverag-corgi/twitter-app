@@ -1,6 +1,4 @@
 import argparse
-import os
-import sys
 from typing import Optional
 
 import python_lib_for_me as pyl
@@ -28,18 +26,23 @@ def show_rate_limit(arg_namespace: argparse.Namespace) -> None:
     clg: Optional[pyl.CustomLogger] = None
 
     try:
+        # 引数の取得
+        arg: argument.TwitterRateLimitShowArg = argument.TwitterRateLimitShowArg(arg_namespace)
+
         # ロガーの取得
-        clg = pyl.CustomLogger(__name__)
+        clg = pyl.CustomLogger(__name__, use_debug_mode=arg.use_debug_mode)
 
         # 引数の検証
-        arg: argument.TwitterRateLimitShowArg = argument.TwitterRateLimitShowArg(arg_namespace)
         __validate_arg(arg)
 
         # ロジック(TwitterAPI認証)の実行
-        api: tweepy.API = twitter_api_auth.do_logic_that_generate_api_by_oauth_1_user()
+        api: tweepy.API = twitter_api_auth.do_logic_that_generate_api_by_oauth_1_user(
+            arg.use_debug_mode,
+        )
 
         # レート制限の表示
         twitter_developer_util.show_rate_limit(
+            arg.use_debug_mode,
             api,
             arg.resource_family,
             arg.endpoint,
@@ -57,7 +60,7 @@ def __validate_arg(arg: argument.TwitterRateLimitShowArg) -> None:
 
     try:
         # ロガーの取得
-        clg = pyl.CustomLogger(__name__)
+        clg = pyl.CustomLogger(__name__, use_debug_mode=arg.use_debug_mode)
 
         # 引数指定の確認
         if arg.is_specified() is False:

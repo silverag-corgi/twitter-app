@@ -28,6 +28,7 @@ class EnumOfFollowee:
 
 
 def get_followee_pages(
+    use_debug_mode: bool,
     api: tweepy.API,
     user_id: str,
     num_of_data: int = EnumOfFollowee.EnumOfOauth1User.MAX_NUM_OF_DATA_PER_15MIN.value,
@@ -37,6 +38,7 @@ def get_followee_pages(
     フォロイーページ取得
 
     Args:
+        use_debug_mode (bool)                   : デバッグモード使用有無
         api (tweepy.API)                        : API
         user_id (str)                           : ユーザID
         num_of_data (int, optional)             : データ数
@@ -78,7 +80,7 @@ def get_followee_pages(
 
     try:
         # ロガーの取得
-        clg = pyl.CustomLogger(__name__)
+        clg = pyl.CustomLogger(__name__, use_debug_mode=use_debug_mode)
         clg.log_inf(f"時間がかかるため気長にお待ちください。")
 
         # リクエスト数の算出
@@ -114,6 +116,7 @@ class EnumOfFollower:
 
 
 def get_follower_pages(
+    use_debug_mode: bool,
     api: tweepy.API,
     user_id: str,
     num_of_data: int = EnumOfFollower.EnumOfOauth1User.MAX_NUM_OF_DATA_PER_15MIN.value,
@@ -123,6 +126,7 @@ def get_follower_pages(
     フォロワーページ取得
 
     Args:
+        use_debug_mode (bool)                   : デバッグモード使用有無
         api (tweepy.API)                        : API
         user_id (str)                           : ユーザID
         num_of_data (int, optional)             : データ数
@@ -164,7 +168,7 @@ def get_follower_pages(
 
     try:
         # ロガーの取得
-        clg = pyl.CustomLogger(__name__)
+        clg = pyl.CustomLogger(__name__, use_debug_mode=use_debug_mode)
         clg.log_inf(f"時間がかかるため気長にお待ちください。")
 
         # リクエスト数の算出
@@ -188,6 +192,7 @@ def get_follower_pages(
 
 
 def get_friendship(
+    use_debug_mode: bool,
     api: tweepy.API,
     user_id_source: str,
     user_id_target: str,
@@ -196,6 +201,7 @@ def get_friendship(
     交友関係取得
 
     Args:
+        use_debug_mode (bool)   : デバッグモード使用有無
         api (tweepy.API)        : API
         user_id_source (str)    : ユーザID(比較元)
         user_id_target (str)    : ユーザID(比較対象)
@@ -233,7 +239,7 @@ def get_friendship(
 
     try:
         # ロガーの取得
-        clg = pyl.CustomLogger(__name__)
+        clg = pyl.CustomLogger(__name__, use_debug_mode=use_debug_mode)
 
         # 交友関係の取得
         friendship: Any = api.get_friendship(
@@ -254,6 +260,7 @@ class EnumOfUserForLookup(IntEnum):
 
 
 def lookup_users(
+    use_debug_mode: bool,
     api: tweepy.API,
     user_ids: list[str],
     num_of_data_per_request: int = EnumOfUserForLookup.MAX_NUM_OF_DATA_PER_REQUEST.value,
@@ -262,6 +269,7 @@ def lookup_users(
     ユーザ検索
 
     Args:
+        use_debug_mode (bool)                   : デバッグモード使用有無
         api (tweepy.API)                        : API
         user_ids (str)                          : ユーザID(複数)
         num_of_data_per_request (int, optional) : リクエストごとのデータ数
@@ -302,7 +310,7 @@ def lookup_users(
 
     try:
         # ロガーの取得
-        clg = pyl.CustomLogger(__name__)
+        clg = pyl.CustomLogger(__name__, use_debug_mode=use_debug_mode)
 
         # ユーザIDリスト(100人ごと)の生成
         user_ids_list: list[list[str]] = pyl.split_list(user_ids, num_of_data_per_request)
@@ -322,6 +330,7 @@ def lookup_users(
 
 
 def get_user_info(
+    use_debug_mode: bool,
     api: tweepy.API,
     user_id: str,
 ) -> Any:
@@ -329,8 +338,9 @@ def get_user_info(
     ユーザ情報取得
 
     Args:
-        api (tweepy.API)    : API
-        user_id (str)       : ユーザID
+        use_debug_mode (bool)   : デバッグモード使用有無
+        api (tweepy.API)        : API
+        user_id (str)           : ユーザID
 
     Returns:
         Any: ユーザ情報 (tweepy.models.User)
@@ -365,7 +375,7 @@ def get_user_info(
 
     try:
         # ロガーの取得
-        clg = pyl.CustomLogger(__name__)
+        clg = pyl.CustomLogger(__name__, use_debug_mode=use_debug_mode)
 
         # ユーザ情報の取得
         user_info: Any = api.get_user(screen_name=user_id)
@@ -385,6 +395,7 @@ def get_user_info(
 
 
 def get_lists(
+    use_debug_mode: bool,
     api: tweepy.API,
     user_id: str = "",
 ) -> ResultSet:
@@ -392,8 +403,9 @@ def get_lists(
     リスト(複数)取得
 
     Args:
-        api (tweepy.API)    : API
-        user_id (str)       : ユーザID
+        use_debug_mode (bool)   : デバッグモード使用有無
+        api (tweepy.API)        : API
+        user_id (str)           : ユーザID
 
     Returns:
         ResultSet: リスト(複数) (ResultSet[tweepy.models.List])
@@ -428,7 +440,7 @@ def get_lists(
 
     try:
         # ロガーの取得
-        clg = pyl.CustomLogger(__name__)
+        clg = pyl.CustomLogger(__name__, use_debug_mode=use_debug_mode)
 
         # リスト(複数)の取得
         lists: Any
@@ -459,6 +471,7 @@ class EnumOfListMember:
 
 
 def get_list_member_pages(
+    use_debug_mode: bool,
     api: tweepy.API,
     list_id: str,
     num_of_data: int = EnumOfListMember.EnumOfOauth1User.MAX_NUM_OF_DATA_PER_15MIN.value,
@@ -468,6 +481,7 @@ def get_list_member_pages(
     リストメンバーページ取得
 
     Args:
+        use_debug_mode (bool)                   : デバッグモード使用有無
         api (tweepy.API)                        : API
         list_id (str)                           : リストID
         num_of_data (int, optional)             : データ数
@@ -509,7 +523,7 @@ def get_list_member_pages(
 
     try:
         # ロガーの取得
-        clg = pyl.CustomLogger(__name__)
+        clg = pyl.CustomLogger(__name__, use_debug_mode=use_debug_mode)
         clg.log_inf(f"時間がかかるため気長にお待ちください。")
 
         # リクエスト数の算出
@@ -533,6 +547,7 @@ def get_list_member_pages(
 
 
 def generate_list(
+    use_debug_mode: bool,
     api: tweepy.API,
     list_name: str,
 ) -> Any:
@@ -540,8 +555,9 @@ def generate_list(
     リスト生成
 
     Args:
-        api (tweepy.API)    : API
-        list_name (str)     : リスト名
+        use_debug_mode (bool)   : デバッグモード使用有無
+        api (tweepy.API)        : API
+        list_name (str)         : リスト名
 
     Returns:
         Any: リスト (tweepy.models.List)
@@ -571,7 +587,7 @@ def generate_list(
 
     try:
         # ロガーの取得
-        clg = pyl.CustomLogger(__name__)
+        clg = pyl.CustomLogger(__name__, use_debug_mode=use_debug_mode)
 
         # リストの生成
         list_: Any = api.create_list(list_name, mode="private", description="")
@@ -586,6 +602,7 @@ def generate_list(
 
 
 def destroy_list(
+    use_debug_mode: bool,
     api: tweepy.API,
     list_name: str,
 ) -> bool:
@@ -593,8 +610,9 @@ def destroy_list(
     リスト破棄
 
     Args:
-        api (tweepy.API)    : API
-        list_name (str)     : リスト名
+        use_debug_mode (bool)   : デバッグモード使用有無
+        api (tweepy.API)        : API
+        list_name (str)         : リスト名
 
     Returns:
         bool: 実行結果 (True：成功、False：失敗)
@@ -625,10 +643,10 @@ def destroy_list(
 
     try:
         # ロガーの取得
-        clg = pyl.CustomLogger(__name__)
+        clg = pyl.CustomLogger(__name__, use_debug_mode=use_debug_mode)
 
         # リスト(複数)の取得
-        lists: ResultSet = get_lists(api)
+        lists: ResultSet = get_lists(use_debug_mode, api)
 
         # リストの破棄
         for list in lists:
@@ -653,6 +671,7 @@ class EnumOfUserForList:
 
 
 def add_users_to_list(
+    use_debug_mode: bool,
     api: tweepy.API,
     target_list: Any,
     user_ids: list[str],
@@ -666,6 +685,7 @@ def add_users_to_list(
     ユーザ(複数)追加
 
     Args:
+        use_debug_mode (bool)                       : デバッグモード使用有無
         api (tweepy.API)                            : API
         target_list (Any)                           : 対象リスト
             id (str)                                : リストID
@@ -720,7 +740,7 @@ def add_users_to_list(
 
     try:
         # ロガーの取得
-        clg = pyl.CustomLogger(__name__)
+        clg = pyl.CustomLogger(__name__, use_debug_mode=use_debug_mode)
 
         # ユーザ名の初期化
         if len(user_names) == 0:
@@ -730,6 +750,7 @@ def add_users_to_list(
         users_of_unadded_and_added: tuple[
             list[str], list[str], list[str], list[str]
         ] = __split_users_into_unadded_and_added(
+            use_debug_mode,
             api,
             add_only_users_with_diff,
             target_list.id,
@@ -745,6 +766,7 @@ def add_users_to_list(
         users_with_no_problems_and_problems: tuple[
             list[str], list[str], list[str], list[str]
         ] = __split_users_into_no_problems_and_problems(
+            use_debug_mode,
             api,
             user_ids_of_unadded_account,
             user_names_of_unadded_account,
@@ -770,6 +792,7 @@ def add_users_to_list(
             f"{num_of_data_per_request}人ごとにユーザを追加します。(num_of_users_without_problems:{num_of_users_without_problems})"
         )
         util.show_estimated_proc_time(
+            use_debug_mode,
             num_of_users_without_problems,
             num_of_data_per_request,
             minute_interval=minute_interval,
@@ -830,6 +853,7 @@ def add_users_to_list(
 
 
 def __split_users_into_unadded_and_added(
+    use_debug_mode: bool,
     api: tweepy.API,
     add_only_users_with_diff: bool,
     list_id: str,
@@ -853,11 +877,11 @@ def __split_users_into_unadded_and_added(
 
     try:
         # ロガーの取得
-        clg = pyl.CustomLogger(__name__)
+        clg = pyl.CustomLogger(__name__, use_debug_mode=use_debug_mode)
 
         if add_only_users_with_diff is True:
             # ユーザID(追加済みアカウント)の生成
-            list_member_pages: list[ResultSet] = get_list_member_pages(api, list_id)
+            list_member_pages: list[ResultSet] = get_list_member_pages(use_debug_mode, api, list_id)
             for list_members_by_page in list_member_pages:
                 for list_member in list_members_by_page:
                     user_ids_of_added_account_temp.append(list_member.screen_name)
@@ -887,6 +911,7 @@ def __split_users_into_unadded_and_added(
 
 
 def __split_users_into_no_problems_and_problems(
+    use_debug_mode: bool,
     api: tweepy.API,
     user_ids: list[str],
     user_names: list[str],
@@ -907,11 +932,13 @@ def __split_users_into_no_problems_and_problems(
 
     try:
         # ロガーの取得
-        clg = pyl.CustomLogger(__name__)
+        clg = pyl.CustomLogger(__name__, use_debug_mode=use_debug_mode)
 
         # ユーザID(未削除・未凍結・未保護アカウント)の生成
         user_ids_of_unprotected_account: list[str] = []
-        user_pages: list[ResultSet] = lookup_users(api, user_ids, num_of_data_per_request)
+        user_pages: list[ResultSet] = lookup_users(
+            use_debug_mode, api, user_ids, num_of_data_per_request
+        )
         for users_by_page in user_pages:
             for user in users_by_page:
                 if user.protected is False:
@@ -922,9 +949,11 @@ def __split_users_into_no_problems_and_problems(
 
         # ユーザID(未ブロックアカウント)の生成
         user_ids_of_accounts_that_has_not_blocked_me: list[str] = []
-        auth_user_info: Any = get_auth_user_info(api)
+        auth_user_info: Any = get_auth_user_info(use_debug_mode, api)
         for user_id in user_ids_of_unprotected_account:
-            friendship: Any = get_friendship(api, user_id, auth_user_info.screen_name)
+            friendship: Any = get_friendship(
+                use_debug_mode, api, user_id, auth_user_info.screen_name
+            )
             if friendship[0].blocking is None or friendship[0].blocking is False:
                 user_ids_of_accounts_that_has_not_blocked_me.append(user_id)
 
@@ -932,7 +961,7 @@ def __split_users_into_no_problems_and_problems(
 
         # ユーザID(ブロック済みアカウント)の生成
         user_ids_of_accounts_that_i_have_blocked: list[str] = []
-        blocked_user_pages: list[ResultSet] = get_blocked_users_pages(api)
+        blocked_user_pages: list[ResultSet] = get_blocked_users_pages(use_debug_mode, api)
         for blocked_users_by_page in blocked_user_pages:
             for blocked_user in blocked_users_by_page:
                 user_ids_of_accounts_that_i_have_blocked.append(blocked_user.screen_name)
@@ -972,13 +1001,15 @@ def __split_users_into_no_problems_and_problems(
 
 
 def get_auth_user_info(
+    use_debug_mode: bool,
     api: tweepy.API,
 ) -> Any:
     """
     認証ユーザ情報取得
 
     Args:
-        api (tweepy.API) : API
+        use_debug_mode (bool)   : デバッグモード使用有無
+        api (tweepy.API)        : API
 
     Returns:
         Any: 認証ユーザ情報 (tweepy.models.User)
@@ -1008,7 +1039,7 @@ def get_auth_user_info(
 
     try:
         # ロガーの取得
-        clg = pyl.CustomLogger(__name__)
+        clg = pyl.CustomLogger(__name__, use_debug_mode=use_debug_mode)
 
         # 認証ユーザ情報の取得
         auth_user_info: Any = api.verify_credentials()
@@ -1037,6 +1068,7 @@ class EnumOfBlockedUser:
 
 
 def get_blocked_users_pages(
+    use_debug_mode: bool,
     api: tweepy.API,
     num_of_data: int = EnumOfBlockedUser.EnumOfOauth1User.MAX_NUM_OF_DATA_PER_15MIN.value,
     num_of_data_per_request: int = EnumOfBlockedUser.EnumOfOauth1User.MAX_NUM_OF_DATA_PER_REQUEST.value,
@@ -1045,6 +1077,7 @@ def get_blocked_users_pages(
     ブロックユーザページの取得
 
     Args:
+        use_debug_mode (bool)                   : デバッグモード使用有無
         api (tweepy.API)                        : API
         num_of_data (int, optional)             : データ数
         num_of_data_per_request (int, optional) : リクエストごとのデータ数
@@ -1080,7 +1113,7 @@ def get_blocked_users_pages(
 
     try:
         # ロガーの取得
-        clg = pyl.CustomLogger(__name__)
+        clg = pyl.CustomLogger(__name__, use_debug_mode=use_debug_mode)
         # pyl.log_inf(f'時間がかかるため気長にお待ちください。')
 
         # リクエスト数の算出

@@ -7,6 +7,7 @@ import tweepy
 
 
 def show_rate_limit(
+    use_debug_mode: bool,
     api: tweepy.API,
     resource_family: str,
     endpoint: str,
@@ -15,6 +16,7 @@ def show_rate_limit(
     レート制限表示
 
     Args:
+        use_debug_mode (bool)   : デバッグモード使用有無
         api (tweepy.API)        : API
         resource_family (str)   : リソース群
         endpoint (str)          : エンドポイント
@@ -53,7 +55,7 @@ def show_rate_limit(
 
     try:
         # ロガーの取得
-        clg = pyl.CustomLogger(__name__)
+        clg = pyl.CustomLogger(__name__, use_debug_mode=use_debug_mode)
 
         # レート制限の表示
         rate_limits: Any = api.rate_limit_status()
@@ -76,25 +78,37 @@ def show_rate_limit(
     return None
 
 
-def show_rate_limit_of_lists_members(api: tweepy.API) -> None:
+def show_rate_limit_of_lists_members(
+    use_debug_mode: bool,
+    api: tweepy.API,
+) -> None:
     """レート制限表示(GET lists/members)"""
-    show_rate_limit(api, "lists", "/lists/members")
+    show_rate_limit(use_debug_mode, api, "lists", "/lists/members")
     return None
 
 
-def show_rate_limit_of_friends_list(api: tweepy.API) -> None:
+def show_rate_limit_of_friends_list(
+    use_debug_mode: bool,
+    api: tweepy.API,
+) -> None:
     """レート制限表示(GET friends/list)"""
-    show_rate_limit(api, "friends", "/friends/list")
+    show_rate_limit(use_debug_mode, api, "friends", "/friends/list")
     return None
 
 
-def show_rate_limit_of_followers_list(api: tweepy.API) -> None:
+def show_rate_limit_of_followers_list(
+    use_debug_mode: bool,
+    api: tweepy.API,
+) -> None:
     """レート制限表示(GET followers/list)"""
-    show_rate_limit(api, "followers", "/followers/list")
+    show_rate_limit(use_debug_mode, api, "followers", "/followers/list")
     return None
 
 
-def show_rate_limit_of_search_tweets(api: tweepy.API) -> None:
+def show_rate_limit_of_search_tweets(
+    use_debug_mode: bool,
+    api: tweepy.API,
+) -> None:
     """レート制限表示(GET search/tweets)"""
-    show_rate_limit(api, "search", "/search/tweets")
+    show_rate_limit(use_debug_mode, api, "search", "/search/tweets")
     return None

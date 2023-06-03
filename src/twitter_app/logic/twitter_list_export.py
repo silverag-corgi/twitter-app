@@ -8,7 +8,11 @@ from twitter_app.util import const_util, pandas_util
 from twitter_app.util.twitter_api_v1_1.standard import twitter_developer_util, twitter_users_util
 
 
-def do_logic(api: tweepy.API, list_df: pd.DataFrame) -> None:
+def do_logic(
+    use_debug_mode: bool,
+    api: tweepy.API,
+    list_df: pd.DataFrame,
+) -> None:
     """
     ロジック実行
 
@@ -24,20 +28,22 @@ def do_logic(api: tweepy.API, list_df: pd.DataFrame) -> None:
 
     try:
         # ロガーの取得
-        clg = pyl.CustomLogger(__name__)
+        clg = pyl.CustomLogger(__name__, use_debug_mode=use_debug_mode)
         clg.log_inf(f"Twitterリストエクスポートを開始します。")
 
         # Pandasオプション設定
         pd.set_option("display.unicode.east_asian_width", True)
 
         # レート制限の表示
-        twitter_developer_util.show_rate_limit_of_lists_members(api)
+        twitter_developer_util.show_rate_limit_of_lists_members(use_debug_mode, api)
 
         # リストのエクスポート
         for _, list_ in list_df.iterrows():
             # リストメンバーページの取得
             list_member_pages = twitter_users_util.get_list_member_pages(
-                api, str(list_[const_util.LIST_HEADER[1]])
+                use_debug_mode,
+                api,
+                str(list_[const_util.LIST_HEADER[1]]),
             )
 
             # リストメンバーデータフレームの初期化
@@ -68,10 +74,10 @@ def do_logic(api: tweepy.API, list_df: pd.DataFrame) -> None:
             # リストメンバーデータフレームの保存
             clg.log_inf(f"リストメンバー(追加分先頭n行)：\n{list_member_df.head(5)}")
             clg.log_inf(f"リストメンバー(追加分末尾n行)：\n{list_member_df.tail(5)}")
-            pandas_util.save_list_member_df(list_member_df, list_member_file_path)
+            pandas_util.save_list_member_df(use_debug_mode, list_member_df, list_member_file_path)
 
         # レート制限の表示
-        twitter_developer_util.show_rate_limit_of_lists_members(api)
+        twitter_developer_util.show_rate_limit_of_lists_members(use_debug_mode, api)
     except Exception as e:
         raise (e)
     finally:

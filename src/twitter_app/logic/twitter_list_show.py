@@ -17,6 +17,7 @@ class EnumOfProcTargetList(IntEnum):
 
 
 def do_logic(
+    use_debug_mode: bool,
     api: tweepy.API,
     enum_of_proc_target_list: EnumOfProcTargetList,
     list_id_or_name_of_csv_format: str,
@@ -37,14 +38,14 @@ def do_logic(
 
     try:
         # ロガーの取得
-        clg = pyl.CustomLogger(__name__)
+        clg = pyl.CustomLogger(__name__, use_debug_mode=use_debug_mode)
         clg.log_inf(f"Twitterリスト表示を開始します。")
 
         # Pandasオプション設定
         pd.set_option("display.unicode.east_asian_width", True)
 
         # リスト(複数)の取得
-        lists: ResultSet = twitter_users_util.get_lists(api)
+        lists: ResultSet = twitter_users_util.get_lists(use_debug_mode, api)
 
         # リストデータフレームの初期化
         list_df: pd.DataFrame = pd.DataFrame(columns=const_util.LIST_HEADER)

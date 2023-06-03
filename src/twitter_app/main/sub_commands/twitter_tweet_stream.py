@@ -1,6 +1,5 @@
 import argparse
 import os
-import sys
 from typing import Optional
 
 import python_lib_for_me as pyl
@@ -27,19 +26,24 @@ def stream_twitter_tweet(arg_namespace: argparse.Namespace) -> None:
     clg: Optional[pyl.CustomLogger] = None
 
     try:
+        # 引数の取得
+        arg: argument.TwitterTweetStreamArg = argument.TwitterTweetStreamArg(arg_namespace)
+
         # ロガーの取得
-        clg = pyl.CustomLogger(__name__)
+        clg = pyl.CustomLogger(__name__, use_debug_mode=arg.use_debug_mode)
 
         # 引数の検証
-        arg: argument.TwitterTweetStreamArg = argument.TwitterTweetStreamArg(arg_namespace)
         __validate_arg(arg)
 
         # ロジック(TwitterAPI認証)の実行
-        api: tweepy.API = twitter_api_auth.do_logic_that_generate_api_by_oauth_1_user()
+        api: tweepy.API = twitter_api_auth.do_logic_that_generate_api_by_oauth_1_user(
+            arg.use_debug_mode,
+        )
 
         # ロジック(Twitterツイート配信)の実行
         if arg.user_id_for_followees is not None:
             twitter_tweet_stream.do_logic(
+                arg.use_debug_mode,
                 api,
                 twitter_tweet_stream.EnumOfProcTargetItem.USER_ID,
                 arg.user_id_for_followees,
@@ -47,6 +51,7 @@ def stream_twitter_tweet(arg_namespace: argparse.Namespace) -> None:
             )
         elif arg.list_id is not None:
             twitter_tweet_stream.do_logic(
+                arg.use_debug_mode,
                 api,
                 twitter_tweet_stream.EnumOfProcTargetItem.LIST_ID,
                 arg.list_id,
@@ -54,6 +59,7 @@ def stream_twitter_tweet(arg_namespace: argparse.Namespace) -> None:
             )
         elif arg.list_name is not None:
             twitter_tweet_stream.do_logic(
+                arg.use_debug_mode,
                 api,
                 twitter_tweet_stream.EnumOfProcTargetItem.LIST_NAME,
                 arg.list_name,
@@ -61,6 +67,7 @@ def stream_twitter_tweet(arg_namespace: argparse.Namespace) -> None:
             )
         elif arg.following_user_file_path is not None:
             twitter_tweet_stream.do_logic(
+                arg.use_debug_mode,
                 api,
                 twitter_tweet_stream.EnumOfProcTargetItem.FILE_PATH,
                 arg.following_user_file_path[0],
@@ -80,7 +87,7 @@ def __validate_arg(arg: argument.TwitterTweetStreamArg) -> None:
 
     try:
         # ロガーの取得
-        clg = pyl.CustomLogger(__name__)
+        clg = pyl.CustomLogger(__name__, use_debug_mode=arg.use_debug_mode)
 
         # 引数指定の確認
         if arg.is_specified() is False:

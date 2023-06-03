@@ -12,6 +12,7 @@ from twitter_app.util.twitter_api_v1_1.standard import twitter_users_util
 
 
 def do_logic(
+    use_debug_mode: bool,
     api: tweepy.API,
     list_member_file_path_with_wildcard: str,
     header_line_num: int,
@@ -24,7 +25,7 @@ def do_logic(
 
     try:
         # ロガーの取得
-        clg = pyl.CustomLogger(__name__)
+        clg = pyl.CustomLogger(__name__, use_debug_mode=use_debug_mode)
         clg.log_inf(f"Twitterリストインポートを開始します。")
 
         # リストメンバーファイルパスの取得
@@ -43,7 +44,7 @@ def do_logic(
 
                 # 既存リストの取得
                 if add_only_users_with_diff is True:
-                    existing_lists: ResultSet = twitter_users_util.get_lists(api)
+                    existing_lists: ResultSet = twitter_users_util.get_lists(use_debug_mode, api)
                     for existing_list in existing_lists:
                         if existing_list.name == list_name:
                             list_ = existing_list
@@ -51,18 +52,19 @@ def do_logic(
 
                 # リストの生成
                 if add_only_users_with_diff is True and list_ is None:
-                    list_ = twitter_users_util.generate_list(api, list_name)
+                    list_ = twitter_users_util.generate_list(use_debug_mode, api, list_name)
                 elif add_only_users_with_diff is False:
-                    twitter_users_util.destroy_list(api, list_name)
-                    list_ = twitter_users_util.generate_list(api, list_name)
+                    twitter_users_util.destroy_list(use_debug_mode, api, list_name)
+                    list_ = twitter_users_util.generate_list(use_debug_mode, api, list_name)
 
                 # リストメンバーデータフレームの取得(リストメンバーファイルの読み込み)
                 list_member_df: pd.DataFrame = pandas_util.read_list_member_file(
-                    list_member_file_path, header_line_num
+                    use_debug_mode, list_member_file_path, header_line_num
                 )
 
                 # ユーザの追加
                 twitter_users_util.add_users_to_list(
+                    use_debug_mode,
                     api,
                     list_,
                     [
@@ -78,7 +80,7 @@ def do_logic(
     except Exception as e:
         # リストの破棄
         if list_ is not None:
-            twitter_users_util.destroy_list(api, list_.name)
+            twitter_users_util.destroy_list(use_debug_mode, api, list_.name)
 
         raise (e)
     finally:

@@ -25,6 +25,7 @@ class EnumOfTweets:
 
 
 def search_tweets(
+    use_debug_mode: bool,
     api: tweepy.API,
     query: str,
     start_date: Optional[str] = None,
@@ -38,6 +39,7 @@ def search_tweets(
     ツイート検索(過去30日以内／フルアーカイブ)
 
     Args:
+        use_debug_mode (bool)                   : デバッグモード使用有無
         api (tweepy.API)                        : API
         query (str)                             : クエリ
         start_date (Optional[str], optional)    : 検索開始日付(JST)(yyyy-mm-dd hh:mm形式)
@@ -84,7 +86,7 @@ def search_tweets(
 
     try:
         # ロガーの取得
-        clg = pyl.CustomLogger(__name__)
+        clg = pyl.CustomLogger(__name__, use_debug_mode=use_debug_mode)
 
         # 検索開始日付、検索終了日付のUTC変換
         start_date_utc: Optional[str] = None

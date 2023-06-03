@@ -28,6 +28,7 @@ class EnumOfTweetsInPast7Day:
 
 
 def search_tweets_in_past_7day(
+    use_debug_mode: bool,
     api: tweepy.API,
     query: str,
     search_result_type: EnumOfSearchResultType,
@@ -38,6 +39,7 @@ def search_tweets_in_past_7day(
     ツイート検索(過去7日間)
 
     Args:
+        use_debug_mode (bool)                       : デバッグモード使用有無
         api (tweepy.API)                            : API
         query (str)                                 : クエリ
         search_result_type (EnumOfSearchResultType) : 検索結果の種類
@@ -83,7 +85,7 @@ def search_tweets_in_past_7day(
 
     try:
         # ロガーの取得
-        clg = pyl.CustomLogger(__name__)
+        clg = pyl.CustomLogger(__name__, use_debug_mode=use_debug_mode)
         clg.log_inf(f"時間がかかるため気長にお待ちください。")
 
         # リクエスト数の算出
@@ -110,10 +112,12 @@ def search_tweets_in_past_7day(
 class CustomStream(tweepy.Stream):
     def __init__(
         self,
+        use_debug_mode: bool,
         auth: Any,
         following_user_ids: Optional[list[str]],
         **kwargs: Any,
     ) -> None:
+        self.__use_debug_mode = use_debug_mode
         super().__init__(
             auth.consumer_key,
             auth.consumer_secret,
@@ -132,7 +136,7 @@ class CustomStream(tweepy.Stream):
 
         try:
             # ロガーの取得
-            clg = pyl.CustomLogger(__name__)
+            clg = pyl.CustomLogger(__name__, use_debug_mode=self.__use_debug_mode)
 
             # ツイート表示要否の判定(通常ツイート、リツイート、リプライの場合)
             display_tweet: bool = True
@@ -179,6 +183,7 @@ class EnumOfStream(IntEnum):
 
 
 def stream_tweets(
+    use_debug_mode: bool,
     api: tweepy.API,
     following_user_ids: Optional[list[str]] = None,
     keywords: Optional[list[str]] = None,
@@ -187,6 +192,7 @@ def stream_tweets(
     ツイート配信
 
     Args:
+        use_debug_mode (bool)                       : デバッグモード使用有無
         api (tweepy.API)                            : API
         following_user_ids (Optional[list[str]])    : フォローユーザID (×：screen_name、〇：user_id)
         keywords (Optional[list[str]])              : キーワード
@@ -222,10 +228,11 @@ def stream_tweets(
 
     try:
         # ロガーの取得
-        clg = pyl.CustomLogger(__name__)
+        clg = pyl.CustomLogger(__name__, use_debug_mode=use_debug_mode)
 
         # ストリームの生成
         stream: CustomStream = CustomStream(
+            use_debug_mode,
             api.auth,
             following_user_ids,
         )

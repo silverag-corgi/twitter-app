@@ -8,21 +8,23 @@ from twitter_app.util import const_util
 from twitter_app.util.twitter_api_v1_1 import twitter_api_auth_util
 
 
-def do_logic_that_generate_api_by_oauth_1_user() -> tweepy.API:
+def do_logic_that_generate_api_by_oauth_1_user(
+    use_debug_mode: bool,
+) -> tweepy.API:
     """ロジック実行(TwitterAPI認証)(OAuth 1.0a - User Access Tokens)"""
 
     clg: Optional[pyl.CustomLogger] = None
 
     try:
-        clg = pyl.CustomLogger(__name__)
+        clg = pyl.CustomLogger(__name__, use_debug_mode=use_debug_mode)
         clg.log_inf(f"TwitterAPI認証を開始します。")
 
         twitter_api_auth_info: twitter_api_auth_util.TwitterApiAuthInfo = (
-            __get_twitter_api_auth_info()
+            __get_twitter_api_auth_info(use_debug_mode)
         )
 
         api: tweepy.API = twitter_api_auth_util.generate_api_by_oauth_1_user(
-            twitter_api_auth_info, True
+            use_debug_mode, twitter_api_auth_info, True
         )
     except Exception as e:
         raise (e)
@@ -33,24 +35,26 @@ def do_logic_that_generate_api_by_oauth_1_user() -> tweepy.API:
     return api
 
 
-def do_logic_that_generate_api_by_oauth_1_user_using_pin() -> tweepy.API:
+def do_logic_that_generate_api_by_oauth_1_user_using_pin(
+    use_debug_mode: bool,
+) -> tweepy.API:
     """ロジック実行(TwitterAPI認証)(OAuth 1.0a - User Access Tokens (PIN-Based OAuth flow))"""
 
     clg: Optional[pyl.CustomLogger] = None
 
     try:
-        clg = pyl.CustomLogger(__name__)
+        clg = pyl.CustomLogger(__name__, use_debug_mode=use_debug_mode)
         clg.log_inf(f"TwitterAPI認証を開始します。")
 
         # TwitterAPI認証情報の取得
         twitter_api_auth_info: twitter_api_auth_util.TwitterApiAuthInfo = (
-            __get_twitter_api_auth_info()
+            __get_twitter_api_auth_info(use_debug_mode)
         )
 
         # APIの生成
         api: tweepy.API
         api, twitter_api_auth_info = twitter_api_auth_util.generate_api_by_oauth_1_user_using_pin(
-            twitter_api_auth_info, True
+            use_debug_mode, twitter_api_auth_info, True
         )
 
         # TwitterAPI認証情報の保存
@@ -68,20 +72,22 @@ def do_logic_that_generate_api_by_oauth_1_user_using_pin() -> tweepy.API:
     return api
 
 
-def do_logic_that_generate_api_by_oauth_2_app() -> tweepy.API:
+def do_logic_that_generate_api_by_oauth_2_app(
+    use_debug_mode: bool,
+) -> tweepy.API:
     """ロジック実行(TwitterAPI認証)(OAuth 2.0 - Bearer Token (App-Only))"""
 
     clg: Optional[pyl.CustomLogger] = None
 
     try:
-        clg = pyl.CustomLogger(__name__)
+        clg = pyl.CustomLogger(__name__, use_debug_mode=use_debug_mode)
         clg.log_inf(f"TwitterAPI認証を開始します。")
 
         twitter_api_auth_info: twitter_api_auth_util.TwitterApiAuthInfo = (
-            __get_twitter_api_auth_info()
+            __get_twitter_api_auth_info(use_debug_mode)
         )
         api: tweepy.API = twitter_api_auth_util.generate_api_by_oauth_2_app(
-            twitter_api_auth_info, True
+            use_debug_mode, twitter_api_auth_info, True
         )
     except Exception as e:
         raise (e)
@@ -92,13 +98,15 @@ def do_logic_that_generate_api_by_oauth_2_app() -> tweepy.API:
     return api
 
 
-def __get_twitter_api_auth_info() -> twitter_api_auth_util.TwitterApiAuthInfo:
+def __get_twitter_api_auth_info(
+    use_debug_mode: bool,
+) -> twitter_api_auth_util.TwitterApiAuthInfo:
     """TwitterAPI認証情報取得"""
 
     clg: Optional[pyl.CustomLogger] = None
 
     try:
-        clg = pyl.CustomLogger(__name__)
+        clg = pyl.CustomLogger(__name__, use_debug_mode=use_debug_mode)
 
         # TwitterAPI認証情報ファイルの読み込み
         twitter_api_auth_info_file: TextIO = open(const_util.TWITTER_API_AUTH_INFO_FILE_PATH, "r")

@@ -12,7 +12,12 @@ from twitter_app.util import const_util, pandas_util
 from twitter_app.util.twitter_api_v1_1.standard import twitter_developer_util, twitter_tweets_util
 
 
-def do_logic(api: tweepy.API, query: str, num_of_tweets: int) -> None:
+def do_logic(
+    use_debug_mode: bool,
+    api: tweepy.API,
+    query: str,
+    num_of_tweets: int,
+) -> None:
     """ロジック実行"""
 
     clg: Optional[pyl.CustomLogger] = None
@@ -20,7 +25,7 @@ def do_logic(api: tweepy.API, query: str, num_of_tweets: int) -> None:
 
     try:
         # ロガーの取得
-        clg = pyl.CustomLogger(__name__)
+        clg = pyl.CustomLogger(__name__, use_debug_mode=use_debug_mode)
         clg.log_inf(f"Twitterツイート検索を開始します。")
 
         # Pandasオプション設定
@@ -28,19 +33,24 @@ def do_logic(api: tweepy.API, query: str, num_of_tweets: int) -> None:
 
         # 想定処理時間の表示
         util.show_estimated_proc_time(
+            use_debug_mode,
             num_of_tweets,
             twitter_tweets_util.EnumOfTweetsInPast7Day.EnumOfOauth1User.MAX_NUM_OF_DATA_PER_15MIN.value,
         )
 
         # レート制限の表示
-        twitter_developer_util.show_rate_limit_of_search_tweets(api)
+        twitter_developer_util.show_rate_limit_of_search_tweets(use_debug_mode, api)
 
         # ツイート検索結果ページの取得
         query_with_filter: str = f"{query} -filter:replies -filter:retweets"
         tweet_search_result_pages: list[
             SearchResults
         ] = twitter_tweets_util.search_tweets_in_past_7day(
-            api, query_with_filter, twitter_tweets_util.EnumOfSearchResultType.RECENT, num_of_tweets
+            use_debug_mode,
+            api,
+            query_with_filter,
+            twitter_tweets_util.EnumOfSearchResultType.RECENT,
+            num_of_tweets,
         )
 
         # ツイート検索結果ページの件数が0件の場合
@@ -85,11 +95,11 @@ def do_logic(api: tweepy.API, query: str, num_of_tweets: int) -> None:
             clg.log_inf(f"ツイート検索結果(追加分先頭n行)：\n{tweet_search_result_df.head(5)}")
             clg.log_inf(f"ツイート検索結果(追加分末尾n行)：\n{tweet_search_result_df.tail(5)}")
             pandas_util.save_tweet_search_result_df(
-                tweet_search_result_df, tweet_search_result_file_path
+                use_debug_mode, tweet_search_result_df, tweet_search_result_file_path
             )
 
         # レート制限の表示
-        twitter_developer_util.show_rate_limit_of_search_tweets(api)
+        twitter_developer_util.show_rate_limit_of_search_tweets(use_debug_mode, api)
     except Exception as e:
         # ツイート検索結果ファイルの削除
         if (

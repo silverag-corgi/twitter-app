@@ -93,6 +93,7 @@ class TwitterApiAuthInfo:
 
 
 def generate_api_by_oauth_1_user(
+    use_debug_mode: bool,
     twitter_api_auth_info: TwitterApiAuthInfo,
     wait_on_rate_limit: bool,
 ) -> tweepy.API:
@@ -100,6 +101,7 @@ def generate_api_by_oauth_1_user(
     API生成(OAuth 1.0a - User Access Tokens)
 
     Args:
+        use_debug_mode (bool)                       : デバッグモード使用有無
         twitter_api_auth_info (TwitterApiAuthInfo)  : TwitterAPI認証情報
         wait_on_rate_limit (bool)                   : レート制限時待機有無
 
@@ -121,7 +123,7 @@ def generate_api_by_oauth_1_user(
     clg: Optional[pyl.CustomLogger] = None
 
     try:
-        clg = pyl.CustomLogger(__name__)
+        clg = pyl.CustomLogger(__name__, use_debug_mode=use_debug_mode)
 
         auth: tweepy.OAuth1UserHandler = tweepy.OAuth1UserHandler(
             twitter_api_auth_info.api_key,
@@ -142,6 +144,7 @@ def generate_api_by_oauth_1_user(
 
 
 def generate_api_by_oauth_1_user_using_pin(
+    use_debug_mode: bool,
     twitter_api_auth_info: TwitterApiAuthInfo,
     wait_on_rate_limit: bool,
 ) -> tuple[tweepy.API, TwitterApiAuthInfo]:
@@ -149,6 +152,7 @@ def generate_api_by_oauth_1_user_using_pin(
     API生成(OAuth 1.0a - User Access Tokens (PIN-Based OAuth flow))
 
     Args:
+        use_debug_mode (bool)                       : デバッグモード使用有無
         twitter_api_auth_info (TwitterApiAuthInfo)  : TwitterAPI認証情報
         wait_on_rate_limit (bool)                   : レート制限時待機有無
 
@@ -170,7 +174,7 @@ def generate_api_by_oauth_1_user_using_pin(
     clg: Optional[pyl.CustomLogger] = None
 
     try:
-        clg = pyl.CustomLogger(__name__)
+        clg = pyl.CustomLogger(__name__, use_debug_mode=use_debug_mode)
 
         # 認証情報の設定(帯域外認証：Out of Band)
         auth: tweepy.OAuth1UserHandler = tweepy.OAuth1UserHandler(
@@ -203,6 +207,7 @@ def generate_api_by_oauth_1_user_using_pin(
 
 
 def generate_api_by_oauth_2_app(
+    use_debug_mode: bool,
     twitter_api_auth_info: TwitterApiAuthInfo,
     wait_on_rate_limit: bool,
 ) -> tweepy.API:
@@ -210,6 +215,7 @@ def generate_api_by_oauth_2_app(
     API生成(OAuth 2.0 - Bearer Token (App-Only))
 
     Args:
+        use_debug_mode (bool)                       : デバッグモード使用有無
         twitter_api_auth_info (TwitterApiAuthInfo)  : TwitterAPI認証情報
         wait_on_rate_limit (bool)                   : レート制限時待機有無
 
@@ -230,7 +236,7 @@ def generate_api_by_oauth_2_app(
     clg: Optional[pyl.CustomLogger] = None
 
     try:
-        clg = pyl.CustomLogger(__name__)
+        clg = pyl.CustomLogger(__name__, use_debug_mode=use_debug_mode)
 
         auth: tweepy.OAuth2AppHandler = tweepy.OAuth2AppHandler(
             twitter_api_auth_info.api_key,
