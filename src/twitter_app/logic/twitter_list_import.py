@@ -26,7 +26,7 @@ def do_logic(
     try:
         # ロガーの取得
         clg = pyl.CustomLogger(__name__, use_debug_mode=use_debug_mode)
-        clg.log_inf(f"Twitterリストインポートを開始します。")
+        clg.log_inf(f"ロジック実行(Twitterリストインポート)を開始します。")
 
         # リストメンバーファイルパスの取得
         list_member_file_paths: list[str] = glob.glob(list_member_file_path_with_wildcard)
@@ -85,6 +85,6 @@ def do_logic(
         raise (e)
     finally:
         if clg is not None:
-            clg.log_inf(f"Twitterリストインポートを終了します。")
+            clg.log_inf(f"ロジック実行(Twitterリストインポート)を終了します。")
 
     return None

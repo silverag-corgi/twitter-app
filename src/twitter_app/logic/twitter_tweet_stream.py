@@ -30,7 +30,7 @@ def do_logic(
     try:
         # ロガーの取得
         clg = pyl.CustomLogger(__name__, use_debug_mode=use_debug_mode)
-        clg.log_inf(f"Twitterツイート配信を開始します。")
+        clg.log_inf(f"ロジック実行(Twitterツイート配信)を開始します。")
 
         # ユーザページの取得
         user_pages: list[ResultSet] = []
@@ -83,6 +83,6 @@ def do_logic(
         raise (e)
     finally:
         if clg is not None:
-            clg.log_inf(f"Twitterツイート配信を終了します。")
+            clg.log_inf(f"ロジック実行(Twitterツイート配信)を終了します。")
 
     return None

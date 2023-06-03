@@ -39,7 +39,7 @@ def do_logic(
     try:
         # ロガーの取得
         clg = pyl.CustomLogger(__name__, use_debug_mode=use_debug_mode)
-        clg.log_inf(f"Twitterリスト表示を開始します。")
+        clg.log_inf(f"ロジック実行(Twitterリスト表示)を開始します。")
 
         # Pandasオプション設定
         pd.set_option("display.unicode.east_asian_width", True)
@@ -100,6 +100,6 @@ def do_logic(
         raise (e)
     finally:
         if clg is not None:
-            clg.log_inf(f"Twitterリスト表示を終了します。")
+            clg.log_inf(f"ロジック実行(Twitterリスト表示)を終了します。")
 
     return list_df

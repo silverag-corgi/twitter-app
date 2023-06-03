@@ -29,7 +29,7 @@ def do_logic(
     try:
         # ロガーの取得
         clg = pyl.CustomLogger(__name__, use_debug_mode=use_debug_mode)
-        clg.log_inf(f"Twitterリストエクスポートを開始します。")
+        clg.log_inf(f"ロジック実行(Twitterリストエクスポート)を開始します。")
 
         # Pandasオプション設定
         pd.set_option("display.unicode.east_asian_width", True)
@@ -74,6 +74,7 @@ def do_logic(
             # リストメンバーデータフレームの保存
             clg.log_inf(f"リストメンバー(追加分先頭n行)：\n{list_member_df.head(5)}")
             clg.log_inf(f"リストメンバー(追加分末尾n行)：\n{list_member_df.tail(5)}")
+            clg.log_inf(f"リストメンバーファイルパス：\n{list_member_file_path}")
             pandas_util.save_list_member_df(use_debug_mode, list_member_df, list_member_file_path)
 
         # レート制限の表示
@@ -82,6 +83,6 @@ def do_logic(
         raise (e)
     finally:
         if clg is not None:
-            clg.log_inf(f"Twitterリストエクスポートを終了します。")
+            clg.log_inf(f"ロジック実行(Twitterリストエクスポート)を終了します。")
 
     return None
