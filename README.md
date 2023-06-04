@@ -313,6 +313,16 @@ $ poetry run twitter auth-api -h
 [INF][         MainProcess][          MainThread][                           arg_parser.py:0046][                          _print_message] 
 usage: twitter auth-api [-h]
 
+- 機能名
+    - TwitterAPI認証
+- 概要
+    - コンシューマーキーとPINコードを基にアクセストークンを生成し、認証情報ファイルに保存します
+- 生成ファイル
+    - TwitterAPI認証情報ファイル
+        - config/twitter_api_auth_info.json
+- コマンド例
+    - poetry run twitter auth-api
+
 options:
   -h, --help  show this help message and exit
 ```
@@ -347,6 +357,19 @@ $ poetry run twitter exp-followxx -h
 [INF][         MainProcess][          MainThread][                                 main.py:0021][                                    main] コマンド：['twitter', 'exp-followxx', '-h']
 [INF][         MainProcess][          MainThread][                           arg_parser.py:0046][                          _print_message] 
 usage: twitter exp-followxx [-h] [-e | -r] [-f NUM_OF_FOLLOWXXS] user_id
+
+- 機能名
+    - Twitterフォロイー(フォロワー)エクスポート
+- 概要
+    - 指定したユーザのフォロイー(フォロワー)をエクスポートします
+- 生成ファイル
+    - フォロイーファイル
+        - ./dest/followee/[ユーザID].csv
+    - フォロワーファイル
+        - ./dest/follower/[ユーザID].csv
+- コマンド例
+    - poetry run twitter exp-followxx "silverag_corgi" -e -f 3000
+    - poetry run twitter exp-followxx "silverag_corgi" -r -f 3000
 
 positional arguments:
   user_id               - [グループA(必須)] ユーザID
@@ -410,6 +433,18 @@ $ poetry run twitter exp-list -h
 [INF][         MainProcess][          MainThread][                                 main.py:0021][                                    main] コマンド：['twitter', 'exp-list', '-h']
 [INF][         MainProcess][          MainThread][                           arg_parser.py:0046][                          _print_message] 
 usage: twitter exp-list [-h] [-all | -id LIST_ID | -name LIST_NAME]
+
+- 機能名
+    - Twitterリストエクスポート
+- 概要
+    - 指定したリストをTwitterからエクスポートします
+- 生成ファイル
+    - リストメンバーファイル
+        - ./dest/list_member/[リスト名].csv
+- コマンド例
+    - poetry run twitter exp-list -all
+    - poetry run twitter exp-list -id "0123456789111111111, 0123456789222222222"
+    - poetry run twitter exp-list -name "Google関連, Microsoft関連"
 
 options:
   -h, --help            show this help message and exit
@@ -476,6 +511,13 @@ $ poetry run twitter imp-list -h
 [INF][         MainProcess][          MainThread][                           arg_parser.py:0046][                          _print_message] 
 usage: twitter imp-list [-h] [-l LIST_MEMBER_FILE_PATH] [-hd HEADER_LINE_NUM] [-d]
 
+- 機能名
+    - Twitterリストインポート
+- 概要
+    - 指定したcsvファイルをリストとしてTwitterにインポートします
+- コマンド例
+    - poetry run twitter imp-list -l "input/list_member/*.csv" -hd 1 -d
+
 options:
   -h, --help            show this help message and exit
   -l LIST_MEMBER_FILE_PATH, --list_member_file_path LIST_MEMBER_FILE_PATH
@@ -515,6 +557,15 @@ $ poetry run twitter show-list -h
 [INF][         MainProcess][          MainThread][                           arg_parser.py:0046][                          _print_message] 
 usage: twitter show-list [-h] [-all | -id LIST_ID | -name LIST_NAME]
 
+- 機能名
+    - Twitterリスト表示
+- 概要
+    - 指定したリストを表示します
+- コマンド例
+    - poetry run twitter show-list -all
+    - poetry run twitter show-list -id "0123456789111111111, 0123456789222222222"
+    - poetry run twitter show-list -name "Google関連, Microsoft関連"
+
 options:
   -h, --help            show this help message and exit
   -all, --all_list      - [グループB1(1つのみ必須)] 全てのリスト
@@ -552,6 +603,14 @@ $ poetry run twitter show-limit -h
 [INF][         MainProcess][          MainThread][                           arg_parser.py:0046][                          _print_message] 
 usage: twitter show-limit [-h] resource_family endpoint
 
+- 機能名
+    - Twitterレート制限表示
+- 概要
+    - 指定したリソース群とエンドポイントのレート制限を表示します
+- コマンド例
+    - poetry run twitter show-limit "friends" "/friends/list"
+    - poetry run twitter show-limit "" ""
+
 positional arguments:
   resource_family  - [グループA(必須)] リソース群
                        - 例："friends"
@@ -588,6 +647,16 @@ $ poetry run twitter search-tweet -h
 [INF][         MainProcess][          MainThread][                                 main.py:0021][                                    main] コマンド：['twitter', 'search-tweet', '-h']
 [INF][         MainProcess][          MainThread][                           arg_parser.py:0046][                          _print_message] 
 usage: twitter search-tweet [-h] [-t NUM_OF_TWEETS] query
+
+- 機能名
+    - Twitterツイート検索
+- 概要
+    - 指定したクエリでツイートを検索し、ツイート検索結果ファイルを生成します
+- 生成ファイル
+    - ツイート検索結果ファイル
+        - ./dest/tweet_search_result/[クエリ].csv
+- コマンド例
+    - poetry run twitter search-tweet "API" -t 100
 
 positional arguments:
   query                 - [グループA(必須)] クエリ
@@ -631,6 +700,16 @@ $ poetry run twitter stream-tweet -h
 [INF][         MainProcess][          MainThread][                                 main.py:0021][                                    main] コマンド：['twitter', 'stream-tweet', '-h']
 [INF][         MainProcess][          MainThread][                           arg_parser.py:0046][                          _print_message] 
 usage: twitter stream-tweet [-h] [-ui USER_ID_FOR_FOLLOWEES | -li LIST_ID | -ln LIST_NAME | -fp FILE_PATH HEADER_LINE_NUM] [-k KEYWORD_OF_CSV_FORMAT]
+
+- 機能名
+    - Twitterツイート配信
+- 概要
+    - 指定したキーワードのツイートを配信します
+- コマンド例
+    - poetry run twitter stream-tweet -ui "silverag_corgi" -k "Google Docs, Google Drive"
+    - poetry run twitter stream-tweet -li "0123456789111111111" -k "Google Docs, Google Drive"
+    - poetry run twitter stream-tweet -ln "Google関連" -k "Google Docs, Google Drive"
+    - poetry run twitter stream-tweet -fp "input/list_member/*.csv" 1 -k "Google Docs, Google Drive"
 
 options:
   -h, --help            show this help message and exit
