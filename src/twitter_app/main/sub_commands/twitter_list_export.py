@@ -43,7 +43,7 @@ def export_twitter_list(arg_namespace: argparse.Namespace) -> None:
 
         # ロジック(Twitterリスト表示)の実行
         list_df: pd.DataFrame = pd.DataFrame()
-        if bool(arg.all_list) is True:
+        if arg.all_list is True:
             list_df = twitter_list_show.do_logic(
                 arg.use_debug_mode,
                 api,

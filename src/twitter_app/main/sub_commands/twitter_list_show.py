@@ -41,7 +41,7 @@ def show_twitter_list(arg_namespace: argparse.Namespace) -> None:
         )
 
         # ロジック(Twitterリスト表示)の実行
-        if bool(arg.all_list) is True:
+        if arg.all_list is True:
             twitter_list_show.do_logic(
                 arg.use_debug_mode,
                 api,

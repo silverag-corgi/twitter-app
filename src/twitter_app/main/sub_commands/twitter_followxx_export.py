@@ -41,7 +41,7 @@ def export_twitter_followxx(arg_namespace: argparse.Namespace) -> None:
         )
 
         # ロジック(Twitterフォロイー(フォロワー)エクスポート)の実行
-        if bool(arg.export_followee) is True:
+        if arg.export_followee is True:
             # ロジック(Twitterフォロイーエクスポート)の実行
             twitter_followxx_export.do_logic(
                 arg.use_debug_mode,
@@ -50,7 +50,7 @@ def export_twitter_followxx(arg_namespace: argparse.Namespace) -> None:
                 arg.user_id,
                 arg.num_of_followxxs,
             )
-        elif bool(arg.export_follower) is True:
+        elif arg.export_follower is True:
             # ロジック(Twitterフォロワーエクスポート)の実行
             twitter_followxx_export.do_logic(
                 arg.use_debug_mode,
