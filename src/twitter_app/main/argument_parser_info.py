@@ -13,6 +13,117 @@ from twitter_app.main.sub_commands import (
     twitter_tweet_stream,
 )
 
+DESC_OF_AUTH_API: Final[str] = textwrap.dedent(
+    """\
+    - 機能名
+        - TwitterAPI認証
+    - 概要
+        - コンシューマーキーとPINコードを基にアクセストークンを生成し、認証情報ファイルに保存します
+    - 生成ファイル
+        - TwitterAPI認証情報ファイル
+            - config/twitter_api_auth_info.json
+    - コマンド例
+        - poetry run twitter auth-api
+    """
+)
+
+DESC_OF_EXP_FOLLOWXX: Final[str] = textwrap.dedent(
+    """\
+    - 機能名
+        - Twitterフォロイー(フォロワー)エクスポート
+    - 概要
+        - 指定したユーザのフォロイー(フォロワー)をエクスポートします
+    - 生成ファイル
+        - フォロイーファイル
+            - ./dest/followee/[ユーザID].csv
+        - フォロワーファイル
+            - ./dest/follower/[ユーザID].csv
+    - コマンド例
+        - poetry run twitter exp-followxx "silverag_corgi" -e -f 3000
+        - poetry run twitter exp-followxx "silverag_corgi" -r -f 3000
+    """
+)
+
+DESC_OF_EXP_LIST: Final[str] = textwrap.dedent(
+    """\
+    - 機能名
+        - Twitterリストエクスポート
+    - 概要
+        - 指定したリストをTwitterからエクスポートします
+    - 生成ファイル
+        - リストメンバーファイル
+            - ./dest/list_member/[リスト名].csv
+    - コマンド例
+        - poetry run twitter exp-list -all
+        - poetry run twitter exp-list -id "0123456789111111111, 0123456789222222222"
+        - poetry run twitter exp-list -name "Google関連, Microsoft関連"
+    """
+)
+
+DESC_OF_IMP_LIST: Final[str] = textwrap.dedent(
+    """\
+    - 機能名
+        - Twitterリストインポート
+    - 概要
+        - 指定したcsvファイルをリストとしてTwitterにインポートします
+    - コマンド例
+        - poetry run twitter imp-list -l "input/list_member/*.csv" -hd 1 -d
+    """
+)
+
+DESC_OF_SHOW_LIST: Final[str] = textwrap.dedent(
+    """\
+    - 機能名
+        - Twitterリスト表示
+    - 概要
+        - 指定したリストを表示します
+    - コマンド例
+        - poetry run twitter show-list -all
+        - poetry run twitter show-list -id "0123456789111111111, 0123456789222222222"
+        - poetry run twitter show-list -name "Google関連, Microsoft関連"
+    """
+)
+
+DESC_OF_SHOW_LIMIT: Final[str] = textwrap.dedent(
+    """\
+    - 機能名
+        - Twitterレート制限表示
+    - 概要
+        - 指定したリソース群とエンドポイントのレート制限を表示します
+    - コマンド例
+        - poetry run twitter show-limit "friends" "/friends/list"
+        - poetry run twitter show-limit "" ""
+    """
+)
+
+DESC_OF_SEARCH_TWEET: Final[str] = textwrap.dedent(
+    """\
+    - 機能名
+        - Twitterツイート検索
+    - 概要
+        - 指定したクエリでツイートを検索し、ツイート検索結果ファイルを生成します
+    - 生成ファイル
+        - ツイート検索結果ファイル
+            - ./dest/tweet_search_result/[クエリ].csv
+    - コマンド例
+        - poetry run twitter search-tweet "API" -t 100
+    """
+)
+
+DESC_OF_STREAM_TWEET: Final[str] = textwrap.dedent(
+    """\
+    - 機能名
+        - Twitterツイート配信
+    - 概要
+        - 指定したキーワードのツイートを配信します
+    - コマンド例
+        - poetry run twitter stream-tweet -ui "silverag_corgi" -k "Google Docs, Google Drive"
+        - poetry run twitter stream-tweet -li "0123456789111111111" -k "Google Docs, Google Drive"
+        - poetry run twitter stream-tweet -ln "Google関連" -k "Google Docs, Google Drive"
+        - poetry run twitter stream-tweet -fp "input/list_member/*.csv" 1 -k "Google Docs, Google Drive"
+    """
+)
+
 ARGUMENT_PARSER_INFO_DICT: Final[dict] = {
     "description": textwrap.dedent(
         """\
@@ -36,41 +147,16 @@ ARGUMENT_PARSER_INFO_DICT: Final[dict] = {
         "commands": [
             {
                 "name": ["auth-api"],
-                "help": textwrap.dedent(
-                    """\
-                    - 機能名
-                        - TwitterAPI認証
-                    - 概要
-                        - コンシューマーキーとPINコードを基にアクセストークンを生成し、認証情報ファイルに保存します
-                    - 生成ファイル
-                        - TwitterAPI認証情報ファイル
-                            - config/twitter_api_auth_info.json
-                    - コマンド例
-                        - poetry run twitter auth-api
-                    """  # noqa: E501
-                ),
+                "help": DESC_OF_AUTH_API,
+                "description": DESC_OF_AUTH_API,
                 "func": twitter_api_auth.authenticate_twitter_api,
                 "formatter_class": argparse.RawTextHelpFormatter,
                 "arguments": [],
             },
             {
                 "name": ["exp-followxx"],
-                "help": textwrap.dedent(
-                    """\
-                    - 機能名
-                        - Twitterフォロイー(フォロワー)エクスポート
-                    - 概要
-                        - 指定したユーザのフォロイー(フォロワー)をエクスポートします
-                    - 生成ファイル
-                        - フォロイーファイル
-                            - ./dest/followee/[ユーザID].csv
-                        - フォロワーファイル
-                            - ./dest/follower/[ユーザID].csv
-                    - コマンド例
-                        - poetry run twitter exp-followxx "silverag_corgi" -e -f 3000
-                        - poetry run twitter exp-followxx "silverag_corgi" -r -f 3000
-                    """  # noqa: E501
-                ),
+                "help": DESC_OF_EXP_FOLLOWXX,
+                "description": DESC_OF_EXP_FOLLOWXX,
                 "func": twitter_followxx_export.export_twitter_followxx,
                 "formatter_class": argparse.RawTextHelpFormatter,
                 "arguments": [
@@ -126,21 +212,8 @@ ARGUMENT_PARSER_INFO_DICT: Final[dict] = {
             },
             {
                 "name": ["exp-list"],
-                "help": textwrap.dedent(
-                    """\
-                    - 機能名
-                        - Twitterリストエクスポート
-                    - 概要
-                        - 指定したリストをTwitterからエクスポートします
-                    - 生成ファイル
-                        - リストメンバーファイル
-                            - ./dest/list_member/[リスト名].csv
-                    - コマンド例
-                        - poetry run twitter exp-list -all
-                        - poetry run twitter exp-list -id "0123456789111111111, 0123456789222222222"
-                        - poetry run twitter exp-list -name "Google関連, Microsoft関連"
-                    """  # noqa: E501
-                ),
+                "help": DESC_OF_EXP_LIST,
+                "description": DESC_OF_EXP_LIST,
                 "func": twitter_list_export.export_twitter_list,
                 "formatter_class": argparse.RawTextHelpFormatter,
                 "arguments": [
@@ -181,16 +254,8 @@ ARGUMENT_PARSER_INFO_DICT: Final[dict] = {
             },
             {
                 "name": ["imp-list"],
-                "help": textwrap.dedent(
-                    """\
-                    - 機能名
-                        - Twitterリストインポート
-                    - 概要
-                        - 指定したcsvファイルをリストとしてTwitterにインポートします
-                    - コマンド例
-                        - poetry run twitter imp-list -l "input/list_member/*.csv" -hd 1 -d
-                    """  # noqa: E501
-                ),
+                "help": DESC_OF_IMP_LIST,
+                "description": DESC_OF_IMP_LIST,
                 "func": twitter_list_import.import_twitter_list,
                 "formatter_class": argparse.RawTextHelpFormatter,
                 "arguments": [
@@ -236,18 +301,8 @@ ARGUMENT_PARSER_INFO_DICT: Final[dict] = {
             },
             {
                 "name": ["show-list"],
-                "help": textwrap.dedent(
-                    """\
-                    - 機能名
-                        - Twitterリスト表示
-                    - 概要
-                        - 指定したリストを表示します
-                    - コマンド例
-                        - poetry run twitter show-list -all
-                        - poetry run twitter show-list -id "0123456789111111111, 0123456789222222222"
-                        - poetry run twitter show-list -name "Google関連, Microsoft関連"
-                    """  # noqa: E501
-                ),
+                "help": DESC_OF_SHOW_LIST,
+                "description": DESC_OF_SHOW_LIST,
                 "func": twitter_list_show.show_twitter_list,
                 "formatter_class": argparse.RawTextHelpFormatter,
                 "arguments": [
@@ -288,17 +343,8 @@ ARGUMENT_PARSER_INFO_DICT: Final[dict] = {
             },
             {
                 "name": ["show-limit"],
-                "help": textwrap.dedent(
-                    """\
-                    - 機能名
-                        - Twitterレート制限表示
-                    - 概要
-                        - 指定したリソース群とエンドポイントのレート制限を表示します
-                    - コマンド例
-                        - poetry run twitter show-limit "friends" "/friends/list"
-                        - poetry run twitter show-limit "" ""
-                    """  # noqa: E501
-                ),
+                "help": DESC_OF_SHOW_LIMIT,
+                "description": DESC_OF_SHOW_LIMIT,
                 "func": twitter_rate_limit_show.show_rate_limit,
                 "formatter_class": argparse.RawTextHelpFormatter,
                 "arguments": [
@@ -331,19 +377,8 @@ ARGUMENT_PARSER_INFO_DICT: Final[dict] = {
             },
             {
                 "name": ["search-tweet"],
-                "help": textwrap.dedent(
-                    """\
-                    - 機能名
-                        - Twitterツイート検索
-                    - 概要
-                        - 指定したクエリでツイートを検索し、ツイート検索結果ファイルを生成します
-                    - 生成ファイル
-                        - ツイート検索結果ファイル
-                            - ./dest/tweet_search_result/[クエリ].csv
-                    - コマンド例
-                        - poetry run twitter search-tweet "API" -t 100
-                    """  # noqa: E501
-                ),
+                "help": DESC_OF_SEARCH_TWEET,
+                "description": DESC_OF_SEARCH_TWEET,
                 "func": twitter_tweet_search.search_twitter_tweet,
                 "formatter_class": argparse.RawTextHelpFormatter,
                 "arguments": [
@@ -377,19 +412,8 @@ ARGUMENT_PARSER_INFO_DICT: Final[dict] = {
             },
             {
                 "name": ["stream-tweet"],
-                "help": textwrap.dedent(
-                    """\
-                    - 機能名
-                        - Twitterツイート配信
-                    - 概要
-                        - 指定したキーワードのツイートを配信します
-                    - コマンド例
-                        - poetry run twitter stream-tweet -ui "silverag_corgi" -k "Google Docs, Google Drive"
-                        - poetry run twitter stream-tweet -li "0123456789111111111" -k "Google Docs, Google Drive"
-                        - poetry run twitter stream-tweet -ln "Google関連" -k "Google Docs, Google Drive"
-                        - poetry run twitter stream-tweet -fp "input/list_member/*.csv" 1 -k "Google Docs, Google Drive"
-                    """  # noqa: E501
-                ),
+                "help": DESC_OF_STREAM_TWEET,
+                "description": DESC_OF_STREAM_TWEET,
                 "func": twitter_tweet_stream.stream_twitter_tweet,
                 "formatter_class": argparse.RawTextHelpFormatter,
                 "arguments": [
