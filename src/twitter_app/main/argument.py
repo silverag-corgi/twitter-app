@@ -1,12 +1,13 @@
 import argparse
 import os
+from abc import ABCMeta
 from typing import Optional
 
 import python_lib_for_me as pyl
 
 
-class TwitterApiBaseArg:
-    """TwitterAPI基本引数"""
+class TwitterApiAbstractBaseArg(metaclass=ABCMeta):
+    """TwitterAPI抽象基底引数"""
 
     def __init__(
         self,
@@ -20,7 +21,7 @@ class TwitterApiBaseArg:
         return self.__use_debug_mode
 
 
-class TwitterApiAuthArg(TwitterApiBaseArg):
+class TwitterApiAuthArg(TwitterApiAbstractBaseArg):
     """TwitterAPI認証引数"""
 
     def __init__(
@@ -57,7 +58,7 @@ class TwitterApiAuthArg(TwitterApiBaseArg):
         return True
 
 
-class TwitterFollowxxExportArg(TwitterApiBaseArg):
+class TwitterFollowxxExportArg(TwitterApiAbstractBaseArg):
     """Twitterフォロイー(フォロワー)エクスポート引数"""
 
     def __init__(
@@ -126,7 +127,7 @@ class TwitterFollowxxExportArg(TwitterApiBaseArg):
         return self.__num_of_followxxs
 
 
-class TwitterListExportArg(TwitterApiBaseArg):
+class TwitterListExportArg(TwitterApiAbstractBaseArg):
     """Twitterリストエクスポート引数"""
 
     def __init__(
@@ -182,7 +183,7 @@ class TwitterListExportArg(TwitterApiBaseArg):
         return self.__list_name
 
 
-class TwitterListImportArg(TwitterApiBaseArg):
+class TwitterListImportArg(TwitterApiAbstractBaseArg):
     """Twitterリストインポート引数"""
 
     def __init__(
@@ -247,7 +248,7 @@ class TwitterListImportArg(TwitterApiBaseArg):
         return self.__add_only_users_with_diff
 
 
-class TwitterListShowArg(TwitterApiBaseArg):
+class TwitterListShowArg(TwitterApiAbstractBaseArg):
     """Twitterリスト表示引数"""
 
     def __init__(
@@ -303,7 +304,7 @@ class TwitterListShowArg(TwitterApiBaseArg):
         return self.__list_name
 
 
-class TwitterRateLimitShowArg(TwitterApiBaseArg):
+class TwitterRateLimitShowArg(TwitterApiAbstractBaseArg):
     """Twitterレート制限表示引数"""
 
     def __init__(
@@ -350,7 +351,7 @@ class TwitterRateLimitShowArg(TwitterApiBaseArg):
         return self.__endpoint
 
 
-class TwitterTweetSearchArg(TwitterApiBaseArg):
+class TwitterTweetSearchArg(TwitterApiAbstractBaseArg):
     """Twitterツイート検索引数"""
 
     def __init__(
@@ -406,7 +407,7 @@ class TwitterTweetSearchArg(TwitterApiBaseArg):
         return self.__num_of_tweets
 
 
-class TwitterTweetStreamArg(TwitterApiBaseArg):
+class TwitterTweetStreamArg(TwitterApiAbstractBaseArg):
     """Twitterツイート配信引数"""
 
     def __init__(
