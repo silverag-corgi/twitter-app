@@ -1,5 +1,4 @@
 import argparse
-import os
 from typing import Optional
 
 import python_lib_for_me as pyl
@@ -32,9 +31,6 @@ def stream_twitter_tweet(arg_namespace: argparse.Namespace) -> None:
         # ロガーの取得
         clg = pyl.CustomLogger(__name__, use_debug_mode=arg.use_debug_mode)
         clg.log_inf(f"Twitterツイート配信を開始します。")
-
-        # 引数の検証
-        __validate_arg(arg)
 
         # ロジック(TwitterAPI認証)の実行
         api: tweepy.API = twitter_api_auth.do_logic_that_generate_api_by_oauth_1_user(
@@ -80,63 +76,5 @@ def stream_twitter_tweet(arg_namespace: argparse.Namespace) -> None:
     finally:
         if clg is not None:
             clg.log_inf(f"Twitterツイート配信を終了します。")
-
-    return None
-
-
-def __validate_arg(arg: argument.TwitterTweetStreamArg) -> None:
-    """引数検証"""
-
-    clg: Optional[pyl.CustomLogger] = None
-
-    try:
-        # ロガーの取得
-        clg = pyl.CustomLogger(__name__, use_debug_mode=arg.use_debug_mode)
-
-        # 引数指定の確認
-        if arg.is_specified() is False:
-            raise pyl.ArgumentValidationError(f"サブコマンドの引数が指定されていません。")
-
-        # 検証：グループAの引数が指定された場合は1文字以上であること
-        if arg.user_id_for_followees is not None and not (len(arg.user_id_for_followees) >= 1):
-            raise pyl.ArgumentValidationError(
-                f"ユーザID(フォロイー用)が1文字以上ではありません。(user_id_for_followees:{arg.user_id_for_followees})",
-            )
-        elif arg.list_id is not None and not (len(arg.list_id) >= 1):
-            raise pyl.ArgumentValidationError(f"リストIDが1文字以上ではありません。(list_id:{arg.list_id})")
-        elif arg.list_name is not None and not (len(arg.list_name) >= 1):
-            raise pyl.ArgumentValidationError(f"リスト名が1文字以上ではありません。(list_name:{arg.list_name})")
-        elif arg.following_user_file_path is not None and not (
-            len(arg.following_user_file_path[0]) >= 1
-        ):
-            raise pyl.ArgumentValidationError(
-                f"フォローユーザファイルパスが1文字以上ではありません。(following_user_file_path[0]:{arg.following_user_file_path[0]})",
-            )
-
-        # 検証：フォローユーザファイルパスがcsvファイルのパスであること
-        if arg.following_user_file_path is not None and not (
-            os.path.splitext(arg.following_user_file_path[0])[1] == ".csv"
-        ):
-            raise pyl.ArgumentValidationError(
-                f"フォローユーザファイルパスがcsvファイルのパスではありません。(following_user_file_path[0]:{arg.following_user_file_path[0]})",
-            )
-
-        # 検証：フォローユーザファイルパスのファイルが存在すること
-        if arg.following_user_file_path is not None and not (
-            os.path.isfile(arg.following_user_file_path[0]) is True
-        ):
-            raise pyl.ArgumentValidationError(
-                f"フォローユーザファイルパスのファイルが存在しません。(following_user_file_path[0]:{arg.following_user_file_path[0]})",
-            )
-
-        # 検証：ヘッダ行番号が0以上であること
-        if arg.following_user_file_path is not None and not (
-            str(arg.following_user_file_path[1]).isdecimal() is True
-        ):
-            raise pyl.ArgumentValidationError(
-                f"ヘッダ行番号が0以上ではありません。(following_user_file_path[1]:{arg.following_user_file_path[1]})",
-            )
-    except Exception as e:
-        raise (e)
 
     return None

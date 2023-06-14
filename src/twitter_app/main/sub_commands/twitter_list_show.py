@@ -32,9 +32,6 @@ def show_twitter_list(arg_namespace: argparse.Namespace) -> None:
         clg = pyl.CustomLogger(__name__, use_debug_mode=arg.use_debug_mode)
         clg.log_inf(f"Twitterリスト表示を開始します。")
 
-        # 引数の検証
-        __validate_arg(arg)
-
         # ロジック(TwitterAPI認証)の実行
         api: tweepy.API = twitter_api_auth.do_logic_that_generate_api_by_oauth_1_user(
             arg.use_debug_mode,
@@ -67,29 +64,5 @@ def show_twitter_list(arg_namespace: argparse.Namespace) -> None:
     finally:
         if clg is not None:
             clg.log_inf(f"Twitterリスト表示を終了します。")
-
-    return None
-
-
-def __validate_arg(arg: argument.TwitterListShowArg) -> None:
-    """引数検証"""
-
-    clg: Optional[pyl.CustomLogger] = None
-
-    try:
-        # ロガーの取得
-        clg = pyl.CustomLogger(__name__, use_debug_mode=arg.use_debug_mode)
-
-        # 引数指定の確認
-        if arg.is_specified() is False:
-            raise pyl.ArgumentValidationError(f"サブコマンドの引数が指定されていません。")
-
-        # 検証：グループBの引数が指定された場合は1文字以上であること
-        if arg.list_id is not None and not (len(arg.list_id) >= 1):
-            raise pyl.ArgumentValidationError(f"リストIDが1文字以上ではありません。(list_id:{arg.list_id})")
-        elif arg.list_name is not None and not (len(arg.list_name) >= 1):
-            raise pyl.ArgumentValidationError(f"リスト名が1文字以上ではありません。(list_name:{arg.list_name})")
-    except Exception as e:
-        raise (e)
 
     return None

@@ -32,9 +32,6 @@ def export_twitter_followxx(arg_namespace: argparse.Namespace) -> None:
         clg = pyl.CustomLogger(__name__, use_debug_mode=arg.use_debug_mode)
         clg.log_inf(f"Twitterフォロイー(フォロワー)エクスポートを開始します。")
 
-        # 引数の検証
-        __validate_arg(arg)
-
         # ロジック(TwitterAPI認証)の実行
         api: tweepy.API = twitter_api_auth.do_logic_that_generate_api_by_oauth_1_user(
             arg.use_debug_mode
@@ -64,33 +61,5 @@ def export_twitter_followxx(arg_namespace: argparse.Namespace) -> None:
     finally:
         if clg is not None:
             clg.log_inf(f"Twitterフォロイー(フォロワー)エクスポートを終了します。")
-
-    return None
-
-
-def __validate_arg(arg: argument.TwitterFollowxxExportArg) -> None:
-    """引数検証"""
-
-    clg: Optional[pyl.CustomLogger] = None
-
-    try:
-        # ロガーの取得
-        clg = pyl.CustomLogger(__name__, use_debug_mode=arg.use_debug_mode)
-
-        # 引数指定の確認
-        if arg.is_specified() is False:
-            raise pyl.ArgumentValidationError(f"サブコマンドの引数が指定されていません。")
-
-        # 検証：ユーザIDが4文字以上であること
-        if not (len(arg.user_id) >= 4):
-            raise pyl.ArgumentValidationError(f"ユーザIDが4文字以上ではありません。(user_id:{arg.user_id})")
-
-        # 検証：フォロイー(フォロワー)数が1人以上であること
-        if not (arg.num_of_followxxs >= 1):
-            raise pyl.ArgumentValidationError(
-                f"フォロイー(フォロワー)数が1人以上ではありません。(num_of_followxxs:{arg.num_of_followxxs})"
-            )
-    except Exception as e:
-        raise (e)
 
     return None
