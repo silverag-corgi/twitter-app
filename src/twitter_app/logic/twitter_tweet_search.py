@@ -43,9 +43,7 @@ def do_logic(
 
         # ツイート検索結果ページの取得
         query_with_filter: str = f"{query} -filter:replies -filter:retweets"
-        tweet_search_result_pages: list[
-            SearchResults
-        ] = twitter_tweets_util.search_tweets_in_past_7day(
+        tweet_search_result_pages: list[SearchResults] = twitter_tweets_util.search_tweets_in_past_7day(
             use_debug_mode,
             api,
             query_with_filter,
@@ -59,14 +57,10 @@ def do_logic(
         else:
             # ツイート検索結果ファイルパスの生成
             query_for_name: str = re.sub(r'[\\/:*?"<>\|]+', "-", query)
-            tweet_search_result_file_path = const_util.TWEET_SEARCH_RESULT_FILE_PATH.format(
-                query_for_name
-            )
+            tweet_search_result_file_path = const_util.TWEET_SEARCH_RESULT_FILE_PATH.format(query_for_name)
 
             # ツイート検索結果データフレームの初期化
-            tweet_search_result_df: pd.DataFrame = pd.DataFrame(
-                columns=const_util.TWEET_SEARCH_RESULT_HEADER
-            )
+            tweet_search_result_df: pd.DataFrame = pd.DataFrame(columns=const_util.TWEET_SEARCH_RESULT_HEADER)
 
             # ツイート検索結果データフレームへの格納
             for tweets_by_page in tweet_search_result_pages:
@@ -87,9 +81,7 @@ def do_logic(
                         ],
                         columns=const_util.TWEET_SEARCH_RESULT_HEADER,
                     )
-                    tweet_search_result_df = pd.concat(
-                        [tweet_search_result_df, tweet_info_df], ignore_index=True
-                    )
+                    tweet_search_result_df = pd.concat([tweet_search_result_df, tweet_info_df], ignore_index=True)
 
             # ツイート検索結果データフレームの保存
             clg.log_inf(f"ツイート検索結果(追加分先頭n行)：\n{tweet_search_result_df.head(5)}")
@@ -103,10 +95,7 @@ def do_logic(
         twitter_developer_util.show_rate_limit_of_search_tweets(use_debug_mode, api)
     except Exception as e:
         # ツイート検索結果ファイルの削除
-        if (
-            tweet_search_result_file_path != ""
-            and os.path.isfile(tweet_search_result_file_path) is True
-        ):
+        if tweet_search_result_file_path != "" and os.path.isfile(tweet_search_result_file_path) is True:
             os.remove(tweet_search_result_file_path)
 
         raise (e)

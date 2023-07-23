@@ -86,9 +86,7 @@ class TwitterApiAuthInfo:
 
     @access_token_secret.setter
     def access_token_secret(self, access_token_secret: str) -> None:
-        self.__twitter_api_auth_info_dict["authentication_tokens"][
-            "access_token_secret"
-        ] = access_token_secret
+        self.__twitter_api_auth_info_dict["authentication_tokens"]["access_token_secret"] = access_token_secret
         self.__access_token_secret = access_token_secret
 
 

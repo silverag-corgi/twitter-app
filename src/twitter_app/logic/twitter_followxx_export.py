@@ -107,9 +107,7 @@ def do_logic(
 
             # フォロイー(フォロワー)ファイルパスの生成
             user_info: Any = twitter_users_util.get_user_info(use_debug_mode, api, user_id)
-            followxx_file_path: str = followxx_file_path_format.format(
-                user_info.screen_name, user_info.name
-            )
+            followxx_file_path: str = followxx_file_path_format.format(user_info.screen_name, user_info.name)
 
             # フォロイー(フォロワー)データフレームの保存
             clg.log_inf(f"フォロイー(フォロワー)(追加分先頭n行)：\n{followxx_df.head(5)}")

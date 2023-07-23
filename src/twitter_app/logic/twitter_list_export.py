@@ -67,9 +67,7 @@ def do_logic(
                     list_member_df = pd.concat([list_member_df, user_info_df], ignore_index=True)
 
             # リストメンバーファイルパスの生成
-            list_member_file_path = const_util.LIST_MEMBER_FILE_PATH.format(
-                str(list_[const_util.LIST_HEADER[2]])
-            )
+            list_member_file_path = const_util.LIST_MEMBER_FILE_PATH.format(str(list_[const_util.LIST_HEADER[2]]))
 
             # リストメンバーデータフレームの保存
             clg.log_inf(f"リストメンバー(追加分先頭n行)：\n{list_member_df.head(5)}")

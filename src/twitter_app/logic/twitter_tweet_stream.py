@@ -50,25 +50,18 @@ def do_logic(
             lists: ResultSet = twitter_users_util.get_lists(use_debug_mode, api)
             for list_ in lists:
                 if list_.name == item:
-                    user_pages = twitter_users_util.get_list_member_pages(
-                        use_debug_mode, api, list_id=list_.id
-                    )
+                    user_pages = twitter_users_util.get_list_member_pages(use_debug_mode, api, list_id=list_.id)
                     break
         elif enum_of_proc_target_item == EnumOfProcTargetItem.FILE_PATH:
             # 指定したファイルに記載されているユーザのツイートを配信する場合
-            list_member_df: pd.DataFrame = pandas_util.read_list_member_file(
-                use_debug_mode, item, header_line_num
-            )
+            list_member_df: pd.DataFrame = pandas_util.read_list_member_file(use_debug_mode, item, header_line_num)
             user_ids: list[str] = [
-                str(list_member[const_util.LIST_MEMBER_HEADER[0]])
-                for _, list_member in list_member_df.iterrows()
+                str(list_member[const_util.LIST_MEMBER_HEADER[0]]) for _, list_member in list_member_df.iterrows()
             ]
             user_pages = twitter_users_util.lookup_users(use_debug_mode, api, user_ids)
 
         # フォローユーザIDの生成
-        following_user_ids: list[str] = [
-            user.id for users_by_page in user_pages for user in users_by_page
-        ]
+        following_user_ids: list[str] = [user.id for users_by_page in user_pages for user in users_by_page]
         if len(following_user_ids) > 0:
             clg.log_inf(f"配信対象：{len(following_user_ids)}人")
         else:

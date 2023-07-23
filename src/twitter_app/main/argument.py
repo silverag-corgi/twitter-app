@@ -106,9 +106,7 @@ class TwitterFollowxxExportArg(TwitterApiAbstractBaseArg):
 
     def __is_specified(self) -> bool:
         """引数指定確認"""
-        return (self.user_id is not None) and (
-            self.export_followee is True or self.export_follower is True
-        )
+        return (self.user_id is not None) and (self.export_followee is True or self.export_follower is True)
 
     @property
     def user_id(self) -> str:
@@ -213,9 +211,7 @@ class TwitterListImportArg(TwitterApiAbstractBaseArg):
                 raise pyl.ArgumentValidationError(f"サブコマンドの引数が指定されていません。")
 
             # 検証：リストメンバーファイルパスがcsvファイルのパスであること
-            list_member_file_path_and_ext: tuple[str, str] = os.path.splitext(
-                self.list_member_file_path
-            )
+            list_member_file_path_and_ext: tuple[str, str] = os.path.splitext(self.list_member_file_path)
             if not (list_member_file_path_and_ext[1] == ".csv"):
                 raise pyl.ArgumentValidationError(
                     f"リストメンバーファイルパスがcsvファイルのパスではありません。(list_member_file_path:{self.list_member_file_path})"
@@ -223,9 +219,7 @@ class TwitterListImportArg(TwitterApiAbstractBaseArg):
 
             # 検証：ヘッダ行番号が0以上であること
             if not (self.header_line_num >= 0):
-                raise pyl.ArgumentValidationError(
-                    f"ヘッダ行番号が0以上ではありません。(header_line_num:{self.header_line_num})"
-                )
+                raise pyl.ArgumentValidationError(f"ヘッダ行番号が0以上ではありません。(header_line_num:{self.header_line_num})")
         except Exception as e:
             raise (e)
 
@@ -386,9 +380,7 @@ class TwitterTweetSearchArg(TwitterApiAbstractBaseArg):
 
             # 検証：ツイート数が1件以上であること
             if not (self.num_of_tweets >= 1):
-                raise pyl.ArgumentValidationError(
-                    f"ツイート数が1件以上ではありません。(num_of_tweets:{self.num_of_tweets})"
-                )
+                raise pyl.ArgumentValidationError(f"ツイート数が1件以上ではありません。(num_of_tweets:{self.num_of_tweets})")
         except Exception as e:
             raise (e)
 
@@ -440,9 +432,7 @@ class TwitterTweetStreamArg(TwitterApiAbstractBaseArg):
                 raise pyl.ArgumentValidationError(f"サブコマンドの引数が指定されていません。")
 
             # 検証：グループAの引数が指定された場合は1文字以上であること
-            if self.user_id_for_followees is not None and not (
-                len(self.user_id_for_followees) >= 1
-            ):
+            if self.user_id_for_followees is not None and not (len(self.user_id_for_followees) >= 1):
                 raise pyl.ArgumentValidationError(
                     f"ユーザID(フォロイー用)が1文字以上ではありません。(user_id_for_followees:{self.user_id_for_followees})",
                 )
@@ -450,9 +440,7 @@ class TwitterTweetStreamArg(TwitterApiAbstractBaseArg):
                 raise pyl.ArgumentValidationError(f"リストIDが1文字以上ではありません。(list_id:{self.list_id})")
             elif self.list_name is not None and not (len(self.list_name) >= 1):
                 raise pyl.ArgumentValidationError(f"リスト名が1文字以上ではありません。(list_name:{self.list_name})")
-            elif self.following_user_file_path is not None and not (
-                len(self.following_user_file_path[0]) >= 1
-            ):
+            elif self.following_user_file_path is not None and not (len(self.following_user_file_path[0]) >= 1):
                 raise pyl.ArgumentValidationError(
                     f"フォローユーザファイルパスが1文字以上ではありません。(following_user_file_path[0]:{self.following_user_file_path[0]})",
                 )

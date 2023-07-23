@@ -242,9 +242,7 @@ def get_friendship(
         clg = pyl.CustomLogger(__name__, use_debug_mode=use_debug_mode)
 
         # 交友関係の取得
-        friendship: Any = api.get_friendship(
-            source_screen_name=user_id_source, target_screen_name=user_id_target
-        )
+        friendship: Any = api.get_friendship(source_screen_name=user_id_source, target_screen_name=user_id_target)
 
         clg.log_dbg(f"交友関係取得に成功しました。")
     except Exception as e:
@@ -733,9 +731,7 @@ def add_users_to_list(
     # 引数の検証：ユーザ名の長さがユーザIDの長さと同じであること
     if len(user_names) > 0 and len(user_ids) != len(user_names):
         raise (
-            pyl.CustomError(
-                f"ユーザ名(複数)の長さがユーザID(複数)の長さと異なります。(user_names:{len(user_names)}, user_ids:{len(user_ids)})"
-            )
+            pyl.CustomError(f"ユーザ名(複数)の長さがユーザID(複数)の長さと異なります。(user_names:{len(user_names)}, user_ids:{len(user_ids)})")
         )
 
     try:
@@ -780,12 +776,8 @@ def add_users_to_list(
 
         # ログの出力
         if add_only_users_with_diff is True:
-            clg.log_inf(
-                f"追加済みユーザを除外しました。(num_of_users_of_added_account:{num_of_users_of_added_account})"
-            )
-        clg.log_inf(
-            f"下記ユーザは問題があるため除外しました。" + f"(num_of_users_with_problems:{num_of_users_with_problems})"
-        )
+            clg.log_inf(f"追加済みユーザを除外しました。(num_of_users_of_added_account:{num_of_users_of_added_account})")
+        clg.log_inf(f"下記ユーザは問題があるため除外しました。" + f"(num_of_users_with_problems:{num_of_users_with_problems})")
         clg.log_inf(f"ユーザID：{user_ids_with_problems}")
         clg.log_inf(f"ユーザ名：{user_names_with_problems}")
         clg.log_inf(
@@ -799,9 +791,7 @@ def add_users_to_list(
         )
 
         # ユーザIDリスト
-        user_ids_list: list[list[str]] = pyl.split_list(
-            user_ids_without_problems, num_of_data_per_request
-        )
+        user_ids_list: list[list[str]] = pyl.split_list(user_ids_without_problems, num_of_data_per_request)
 
         # ユーザIDリストの要素ごと
         user_ids_by_element: list[str]
@@ -811,9 +801,7 @@ def add_users_to_list(
         for index, user_ids_by_element in enumerate(user_ids_list, start=1):
             # ユーザの追加
             sum_of_users_at_last_time = sum_of_users_at_this_time
-            list_: Any = api.add_list_members(
-                list_id=target_list.id, screen_name=user_ids_by_element
-            )
+            list_: Any = api.add_list_members(list_id=target_list.id, screen_name=user_ids_by_element)
             sum_of_users_at_this_time = list_.member_count
             num_of_users_at_this_time = sum_of_users_at_this_time - sum_of_users_at_last_time
 
@@ -936,9 +924,7 @@ def __split_users_into_no_problems_and_problems(
 
         # ユーザID(未削除・未凍結・未保護アカウント)の生成
         user_ids_of_unprotected_account: list[str] = []
-        user_pages: list[ResultSet] = lookup_users(
-            use_debug_mode, api, user_ids, num_of_data_per_request
-        )
+        user_pages: list[ResultSet] = lookup_users(use_debug_mode, api, user_ids, num_of_data_per_request)
         for users_by_page in user_pages:
             for user in users_by_page:
                 if user.protected is False:
@@ -951,9 +937,7 @@ def __split_users_into_no_problems_and_problems(
         user_ids_of_accounts_that_has_not_blocked_me: list[str] = []
         auth_user_info: Any = get_auth_user_info(use_debug_mode, api)
         for user_id in user_ids_of_unprotected_account:
-            friendship: Any = get_friendship(
-                use_debug_mode, api, user_id, auth_user_info.screen_name
-            )
+            friendship: Any = get_friendship(use_debug_mode, api, user_id, auth_user_info.screen_name)
             if friendship[0].blocking is None or friendship[0].blocking is False:
                 user_ids_of_accounts_that_has_not_blocked_me.append(user_id)
 
@@ -1044,9 +1028,7 @@ def get_auth_user_info(
         # 認証ユーザ情報の取得
         auth_user_info: Any = api.verify_credentials()
 
-        clg.log_inf(
-            f"認証ユーザ情報取得に成功しました。(user_id:{auth_user_info.screen_name: <15}, user_name:{auth_user_info.name})"
-        )
+        clg.log_inf(f"認証ユーザ情報取得に成功しました。(user_id:{auth_user_info.screen_name: <15}, user_name:{auth_user_info.name})")
     except Exception as e:
         if clg is not None:
             clg.log_err(f"認証ユーザ情報取得に失敗しました。")

@@ -33,9 +33,7 @@ def export_twitter_followxx(arg_namespace: argparse.Namespace) -> None:
         clg.log_inf(f"Twitterフォロイー(フォロワー)エクスポートを開始します。")
 
         # ロジック(TwitterAPI認証)の実行
-        api: tweepy.API = twitter_api_auth.do_logic_that_generate_api_by_oauth_1_user(
-            arg.use_debug_mode
-        )
+        api: tweepy.API = twitter_api_auth.do_logic_that_generate_api_by_oauth_1_user(arg.use_debug_mode)
 
         # ロジック(Twitterフォロイー(フォロワー)エクスポート)の実行
         if arg.export_followee is True:

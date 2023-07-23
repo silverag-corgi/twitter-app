@@ -68,9 +68,7 @@ def do_logic(
                 list_df = pd.concat([list_df, list_info_df], ignore_index=True)
             elif enum_of_proc_target_list == EnumOfProcTargetList.ID:
                 # リストID(複数)(引数から)の生成
-                list_ids_by_arg: list[str] = pyl.generate_str_list_from_csv(
-                    list_id_or_name_of_csv_format
-                )
+                list_ids_by_arg: list[str] = pyl.generate_str_list_from_csv(list_id_or_name_of_csv_format)
 
                 # リストID(APIから)がリストID(複数)(引数から)に存在する場合
                 if list_id_by_api in list_ids_by_arg:
@@ -81,9 +79,7 @@ def do_logic(
                     list_df = pd.concat([list_df, list_info_df], ignore_index=True)
             elif enum_of_proc_target_list == EnumOfProcTargetList.NAME:
                 # リスト名(複数)(引数から)の生成
-                list_names_by_arg: list[str] = pyl.generate_str_list_from_csv(
-                    list_id_or_name_of_csv_format
-                )
+                list_names_by_arg: list[str] = pyl.generate_str_list_from_csv(list_id_or_name_of_csv_format)
 
                 # リスト名(引数から)がリスト名(APIから)に部分一致する場合
                 for list_name_by_arg in list_names_by_arg:

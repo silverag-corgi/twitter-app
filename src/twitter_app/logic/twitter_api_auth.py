@@ -19,9 +19,7 @@ def do_logic_that_generate_api_by_oauth_1_user(
         clg = pyl.CustomLogger(__name__, use_debug_mode=use_debug_mode)
         clg.log_inf(f"ロジック実行(TwitterAPI認証)を開始します。")
 
-        twitter_api_auth_info: twitter_api_auth_util.TwitterApiAuthInfo = (
-            __get_twitter_api_auth_info(use_debug_mode)
-        )
+        twitter_api_auth_info: twitter_api_auth_util.TwitterApiAuthInfo = __get_twitter_api_auth_info(use_debug_mode)
 
         api: tweepy.API = twitter_api_auth_util.generate_api_by_oauth_1_user(
             use_debug_mode, twitter_api_auth_info, True
@@ -47,9 +45,7 @@ def do_logic_that_generate_api_by_oauth_1_user_using_pin(
         clg.log_inf(f"ロジック実行(TwitterAPI認証)を開始します。")
 
         # TwitterAPI認証情報の取得
-        twitter_api_auth_info: twitter_api_auth_util.TwitterApiAuthInfo = (
-            __get_twitter_api_auth_info(use_debug_mode)
-        )
+        twitter_api_auth_info: twitter_api_auth_util.TwitterApiAuthInfo = __get_twitter_api_auth_info(use_debug_mode)
 
         # APIの生成
         api: tweepy.API
@@ -84,12 +80,8 @@ def do_logic_that_generate_api_by_oauth_2_app(
         clg = pyl.CustomLogger(__name__, use_debug_mode=use_debug_mode)
         clg.log_inf(f"ロジック実行(TwitterAPI認証)を開始します。")
 
-        twitter_api_auth_info: twitter_api_auth_util.TwitterApiAuthInfo = (
-            __get_twitter_api_auth_info(use_debug_mode)
-        )
-        api: tweepy.API = twitter_api_auth_util.generate_api_by_oauth_2_app(
-            use_debug_mode, twitter_api_auth_info, True
-        )
+        twitter_api_auth_info: twitter_api_auth_util.TwitterApiAuthInfo = __get_twitter_api_auth_info(use_debug_mode)
+        api: tweepy.API = twitter_api_auth_util.generate_api_by_oauth_2_app(use_debug_mode, twitter_api_auth_info, True)
     except Exception as e:
         raise (e)
     finally:
@@ -114,8 +106,8 @@ def __get_twitter_api_auth_info(
         twitter_api_auth_info_dict: dict[str, dict] = json.load(twitter_api_auth_info_file)
 
         # TwitterAPI認証情報の生成
-        twitter_api_auth_info: twitter_api_auth_util.TwitterApiAuthInfo = (
-            twitter_api_auth_util.TwitterApiAuthInfo(twitter_api_auth_info_dict)
+        twitter_api_auth_info: twitter_api_auth_util.TwitterApiAuthInfo = twitter_api_auth_util.TwitterApiAuthInfo(
+            twitter_api_auth_info_dict
         )
 
         clg.log_inf(f"TwitterAPI認証情報取得に成功しました。")
