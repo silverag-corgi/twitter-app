@@ -94,4 +94,4 @@ profile = "black"
 src_paths = ["src", "tests"]
 
 [tool.black]
-line-length = 100
+line-length = 120
